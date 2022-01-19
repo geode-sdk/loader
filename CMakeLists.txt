@@ -4,13 +4,25 @@ project(GeodeLoader VERSION 0.1.0 LANGUAGES C CXX)
 
 file(GLOB CORE_SOURCES src/*.cpp src/internal/*.cpp)
 
-set(SOURCE_FILES main.cpp ${CORE_SOURCES})
-include(sdk/SDK/BuildFiles/cmake/CacaoRoot.cmake)
+add_subdirectory(core)
 
-set_target_properties(GeodeLoader PROPERTIES PREFIX "" OUTPUT_NAME "geode")
-
-target_include_directories(GeodeLoader PUBLIC 
+set(SOURCE_FILES 
+	main.cpp 
+	${CORE_SOURCES}
+)
+set(INCLUDE_DIRECTORIES
 	src/internal/
 	utils/include/
 	core/include/
+	core/include/geode/core
 )
+set(LINK_DIRECTORIES
+	PRIVATE core
+)
+set(LINK_LIBRARIES
+	geode_core_hook
+)
+include(sdk/SDK/BuildFiles/cmake/Root.cmake)
+
+set_target_properties(GeodeLoader PROPERTIES PREFIX "" OUTPUT_NAME "geode")
+

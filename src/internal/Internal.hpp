@@ -6,24 +6,24 @@
 #include <helpers/Result.hpp>
 #include "FileWatcher.hpp"
 
-USE_LILAC_NAMESPACE();
+USE_GEODE_NAMESPACE();
 
 /**
  * For internal state management.
- * @class Lilac
+ * @class Geode
  */
-class Lilac {
+class Geode {
 protected:
 	std::vector<LogMessage*> m_logQueue;
 	std::unordered_map<Mod*, FileWatcher*> m_hotReloads;
 	std::vector<std::function<void(void)>> m_gdThreadQueue;
 	bool m_platformConsoleReady = false;
 
-	Lilac();
+	Geode();
 
 public:
-	static Lilac* get();
-	~Lilac();
+	static Geode* get();
+	~Geode();
 
 	bool setup();
 

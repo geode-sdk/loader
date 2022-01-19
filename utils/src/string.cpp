@@ -1,9 +1,9 @@
 #include <helpers/ext.hpp>
 #include <algorithm>
 
-USE_LILAC_NAMESPACE();
+USE_GEODE_NAMESPACE();
 
-#ifdef LILAC_IS_WINDOWS
+#ifdef GEODE_IS_WINDOWS
 
 #include <cwctype>
 #include <Windows.h>

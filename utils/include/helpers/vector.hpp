@@ -6,7 +6,7 @@
 #include <functional>
 #include <algorithm>
 
-namespace lilac::vector_utils {
+namespace geode::vector_utils {
     /**
      * Check if a vector contains an element by value.
      * @param vec The vector to check.

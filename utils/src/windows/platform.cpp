@@ -1,8 +1,8 @@
 #include <helpers/platform.hpp>
 
-#ifdef LILAC_IS_WINDOWS
+#ifdef GEODE_IS_WINDOWS
 
-USE_LILAC_NAMESPACE();
+USE_GEODE_NAMESPACE();
 
 #include <iostream>
 #include <sstream>

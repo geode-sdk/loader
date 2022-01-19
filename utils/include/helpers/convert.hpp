@@ -2,7 +2,7 @@
 
 #include <Geode>
 
-namespace lilac::cocos {
+namespace geode::cocos {
     void ccDrawColor4B(cocos2d::ccColor4B const& color);
     cocos2d::ccColor4B invert4B(cocos2d::ccColor4B const& color);
     cocos2d::ccColor3B invert3B(cocos2d::ccColor3B const& color);

@@ -4,7 +4,7 @@
 #include <string>
 #include <fs/filesystem.hpp>
 #include <Macros.hpp>
-#include <Types.hpp>
+#include <types.hpp>
 
 template<class Impl>
 class FileWatcherBase {

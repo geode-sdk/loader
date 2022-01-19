@@ -2,7 +2,7 @@
 
 #include <inttypes.h>
 
-namespace lilac::cast {
+namespace geode::cast {
     /** 
      * Alias for reinterpret_cast
      */

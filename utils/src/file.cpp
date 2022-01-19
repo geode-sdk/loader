@@ -1,7 +1,7 @@
 #include <helpers/file.hpp>
 #include <fstream>
 
-USE_LILAC_NAMESPACE();
+USE_GEODE_NAMESPACE();
 
 Result<std::string> file_utils::readString(std::string const& path) {
     std::ifstream in(path, std::ios::in | std::ios::binary);

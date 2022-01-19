@@ -5,7 +5,7 @@
 
 using namespace std::string_view_literals;
 
-namespace lilac::utils {
+namespace geode::utils {
     static constexpr const std::string_view sv_null = "\0";
     static constexpr const std::string_view sv_none = "";
     static constexpr const std::string_view sv_path = "/";

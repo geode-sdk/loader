@@ -2,7 +2,7 @@
 
 #include "FileWatcher.hpp"
 
-#ifdef LILAC_IS_WINDOWS
+#ifdef GEODE_IS_WINDOWS
 
 #include <Windows.h>
 #include <thread>

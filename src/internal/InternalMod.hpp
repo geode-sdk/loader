@@ -4,13 +4,13 @@ class InternalMod;
 
 #include <Mod.hpp>
 
-USE_LILAC_NAMESPACE();
+USE_GEODE_NAMESPACE();
 
-class Lilac;
+class Geode;
 
 class InternalMod : public Mod {
     protected:
-        friend class Lilac;
+        friend class Geode;
 
         InternalMod();
         virtual ~InternalMod();

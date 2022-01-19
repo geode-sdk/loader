@@ -33,16 +33,16 @@
 					"shell_cmd": "make -j4 SourceRun",
 				},
 				{
+					"name": "GeodeLoader",
+					"shell_cmd": "make -j4 GeodeLoader",
+				},
+				{
 					"name": "HeaderGen",
 					"shell_cmd": "make -j4 HeaderGen",
 				},
 				{
 					"name": "InterfaceGen",
 					"shell_cmd": "make -j4 InterfaceGen",
-				},
-				{
-					"name": "GeodeLoader",
-					"shell_cmd": "make -j4 GeodeLoader",
 				},
 				{
 					"name": "SourceGen",
@@ -63,162 +63,6 @@
 				{
 					"name": "Gen/Source.s",
 					"shell_cmd": "make -j4 Gen/Source.s",
-				},
-				{
-					"name": "loader-core/CLIManager.o",
-					"shell_cmd": "make -j4 loader-core/CLIManager.o",
-				},
-				{
-					"name": "loader-core/CLIManager.i",
-					"shell_cmd": "make -j4 loader-core/CLIManager.i",
-				},
-				{
-					"name": "loader-core/CLIManager.s",
-					"shell_cmd": "make -j4 loader-core/CLIManager.s",
-				},
-				{
-					"name": "loader-core/Hook.o",
-					"shell_cmd": "make -j4 loader-core/Hook.o",
-				},
-				{
-					"name": "loader-core/Hook.i",
-					"shell_cmd": "make -j4 loader-core/Hook.i",
-				},
-				{
-					"name": "loader-core/Hook.s",
-					"shell_cmd": "make -j4 loader-core/Hook.s",
-				},
-				{
-					"name": "loader-core/Interface.o",
-					"shell_cmd": "make -j4 loader-core/Interface.o",
-				},
-				{
-					"name": "loader-core/Interface.i",
-					"shell_cmd": "make -j4 loader-core/Interface.i",
-				},
-				{
-					"name": "loader-core/Interface.s",
-					"shell_cmd": "make -j4 loader-core/Interface.s",
-				},
-				{
-					"name": "loader-core/Loader.o",
-					"shell_cmd": "make -j4 loader-core/Loader.o",
-				},
-				{
-					"name": "loader-core/Loader.i",
-					"shell_cmd": "make -j4 loader-core/Loader.i",
-				},
-				{
-					"name": "loader-core/Loader.s",
-					"shell_cmd": "make -j4 loader-core/Loader.s",
-				},
-				{
-					"name": "loader-core/Log.o",
-					"shell_cmd": "make -j4 loader-core/Log.o",
-				},
-				{
-					"name": "loader-core/Log.i",
-					"shell_cmd": "make -j4 loader-core/Log.i",
-				},
-				{
-					"name": "loader-core/Log.s",
-					"shell_cmd": "make -j4 loader-core/Log.s",
-				},
-				{
-					"name": "loader-core/Mod.o",
-					"shell_cmd": "make -j4 loader-core/Mod.o",
-				},
-				{
-					"name": "loader-core/Mod.i",
-					"shell_cmd": "make -j4 loader-core/Mod.i",
-				},
-				{
-					"name": "loader-core/Mod.s",
-					"shell_cmd": "make -j4 loader-core/Mod.s",
-				},
-				{
-					"name": "loader-core/Patch.o",
-					"shell_cmd": "make -j4 loader-core/Patch.o",
-				},
-				{
-					"name": "loader-core/Patch.i",
-					"shell_cmd": "make -j4 loader-core/Patch.i",
-				},
-				{
-					"name": "loader-core/Patch.s",
-					"shell_cmd": "make -j4 loader-core/Patch.s",
-				},
-				{
-					"name": "loader-core/Setting.o",
-					"shell_cmd": "make -j4 loader-core/Setting.o",
-				},
-				{
-					"name": "loader-core/Setting.i",
-					"shell_cmd": "make -j4 loader-core/Setting.i",
-				},
-				{
-					"name": "loader-core/Setting.s",
-					"shell_cmd": "make -j4 loader-core/Setting.s",
-				},
-				{
-					"name": "loader-core/clilac.o",
-					"shell_cmd": "make -j4 loader-core/clilac.o",
-				},
-				{
-					"name": "loader-core/clilac.i",
-					"shell_cmd": "make -j4 loader-core/clilac.i",
-				},
-				{
-					"name": "loader-core/clilac.s",
-					"shell_cmd": "make -j4 loader-core/clilac.s",
-				},
-				{
-					"name": "loader-core/internal/FileWatcherWin.o",
-					"shell_cmd": "make -j4 loader-core/internal/FileWatcherWin.o",
-				},
-				{
-					"name": "loader-core/internal/FileWatcherWin.i",
-					"shell_cmd": "make -j4 loader-core/internal/FileWatcherWin.i",
-				},
-				{
-					"name": "loader-core/internal/FileWatcherWin.s",
-					"shell_cmd": "make -j4 loader-core/internal/FileWatcherWin.s",
-				},
-				{
-					"name": "loader-core/internal/Internal.o",
-					"shell_cmd": "make -j4 loader-core/internal/Internal.o",
-				},
-				{
-					"name": "loader-core/internal/Internal.i",
-					"shell_cmd": "make -j4 loader-core/internal/Internal.i",
-				},
-				{
-					"name": "loader-core/internal/Internal.s",
-					"shell_cmd": "make -j4 loader-core/internal/Internal.s",
-				},
-				{
-					"name": "loader-core/internal/InternalMod.o",
-					"shell_cmd": "make -j4 loader-core/internal/InternalMod.o",
-				},
-				{
-					"name": "loader-core/internal/InternalMod.i",
-					"shell_cmd": "make -j4 loader-core/internal/InternalMod.i",
-				},
-				{
-					"name": "loader-core/internal/InternalMod.s",
-					"shell_cmd": "make -j4 loader-core/internal/InternalMod.s",
-				},
-				{
-					"name": "loader-core/load.o",
-					"shell_cmd": "make -j4 loader-core/load.o",
-				},
-				{
-					"name": "loader-core/load.i",
-					"shell_cmd": "make -j4 loader-core/load.i",
-				},
-				{
-					"name": "loader-core/load.s",
-					"shell_cmd": "make -j4 loader-core/load.s",
 				},
 				{
 					"name": "main.o",
@@ -255,6 +99,162 @@
 				{
 					"name": "sdk/SDK/Source/HandlerFixes.s",
 					"shell_cmd": "make -j4 sdk/SDK/Source/HandlerFixes.s",
+				},
+				{
+					"name": "src/CLIManager.o",
+					"shell_cmd": "make -j4 src/CLIManager.o",
+				},
+				{
+					"name": "src/CLIManager.i",
+					"shell_cmd": "make -j4 src/CLIManager.i",
+				},
+				{
+					"name": "src/CLIManager.s",
+					"shell_cmd": "make -j4 src/CLIManager.s",
+				},
+				{
+					"name": "src/Hook.o",
+					"shell_cmd": "make -j4 src/Hook.o",
+				},
+				{
+					"name": "src/Hook.i",
+					"shell_cmd": "make -j4 src/Hook.i",
+				},
+				{
+					"name": "src/Hook.s",
+					"shell_cmd": "make -j4 src/Hook.s",
+				},
+				{
+					"name": "src/Interface.o",
+					"shell_cmd": "make -j4 src/Interface.o",
+				},
+				{
+					"name": "src/Interface.i",
+					"shell_cmd": "make -j4 src/Interface.i",
+				},
+				{
+					"name": "src/Interface.s",
+					"shell_cmd": "make -j4 src/Interface.s",
+				},
+				{
+					"name": "src/Loader.o",
+					"shell_cmd": "make -j4 src/Loader.o",
+				},
+				{
+					"name": "src/Loader.i",
+					"shell_cmd": "make -j4 src/Loader.i",
+				},
+				{
+					"name": "src/Loader.s",
+					"shell_cmd": "make -j4 src/Loader.s",
+				},
+				{
+					"name": "src/Log.o",
+					"shell_cmd": "make -j4 src/Log.o",
+				},
+				{
+					"name": "src/Log.i",
+					"shell_cmd": "make -j4 src/Log.i",
+				},
+				{
+					"name": "src/Log.s",
+					"shell_cmd": "make -j4 src/Log.s",
+				},
+				{
+					"name": "src/Mod.o",
+					"shell_cmd": "make -j4 src/Mod.o",
+				},
+				{
+					"name": "src/Mod.i",
+					"shell_cmd": "make -j4 src/Mod.i",
+				},
+				{
+					"name": "src/Mod.s",
+					"shell_cmd": "make -j4 src/Mod.s",
+				},
+				{
+					"name": "src/Patch.o",
+					"shell_cmd": "make -j4 src/Patch.o",
+				},
+				{
+					"name": "src/Patch.i",
+					"shell_cmd": "make -j4 src/Patch.i",
+				},
+				{
+					"name": "src/Patch.s",
+					"shell_cmd": "make -j4 src/Patch.s",
+				},
+				{
+					"name": "src/Setting.o",
+					"shell_cmd": "make -j4 src/Setting.o",
+				},
+				{
+					"name": "src/Setting.i",
+					"shell_cmd": "make -j4 src/Setting.i",
+				},
+				{
+					"name": "src/Setting.s",
+					"shell_cmd": "make -j4 src/Setting.s",
+				},
+				{
+					"name": "src/cgeode.o",
+					"shell_cmd": "make -j4 src/cgeode.o",
+				},
+				{
+					"name": "src/cgeode.i",
+					"shell_cmd": "make -j4 src/cgeode.i",
+				},
+				{
+					"name": "src/cgeode.s",
+					"shell_cmd": "make -j4 src/cgeode.s",
+				},
+				{
+					"name": "src/internal/FileWatcherWin.o",
+					"shell_cmd": "make -j4 src/internal/FileWatcherWin.o",
+				},
+				{
+					"name": "src/internal/FileWatcherWin.i",
+					"shell_cmd": "make -j4 src/internal/FileWatcherWin.i",
+				},
+				{
+					"name": "src/internal/FileWatcherWin.s",
+					"shell_cmd": "make -j4 src/internal/FileWatcherWin.s",
+				},
+				{
+					"name": "src/internal/Internal.o",
+					"shell_cmd": "make -j4 src/internal/Internal.o",
+				},
+				{
+					"name": "src/internal/Internal.i",
+					"shell_cmd": "make -j4 src/internal/Internal.i",
+				},
+				{
+					"name": "src/internal/Internal.s",
+					"shell_cmd": "make -j4 src/internal/Internal.s",
+				},
+				{
+					"name": "src/internal/InternalMod.o",
+					"shell_cmd": "make -j4 src/internal/InternalMod.o",
+				},
+				{
+					"name": "src/internal/InternalMod.i",
+					"shell_cmd": "make -j4 src/internal/InternalMod.i",
+				},
+				{
+					"name": "src/internal/InternalMod.s",
+					"shell_cmd": "make -j4 src/internal/InternalMod.s",
+				},
+				{
+					"name": "src/load.o",
+					"shell_cmd": "make -j4 src/load.o",
+				},
+				{
+					"name": "src/load.i",
+					"shell_cmd": "make -j4 src/load.i",
+				},
+				{
+					"name": "src/load.s",
+					"shell_cmd": "make -j4 src/load.s",
 				},
 			],
 			"working_dir": "${project_path}/build",

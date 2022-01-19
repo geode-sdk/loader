@@ -10,7 +10,7 @@
 #include <helpers/map.hpp>
 #include <helpers/types.hpp>
 
-USE_LILAC_NAMESPACE();
+USE_GEODE_NAMESPACE();
 
 Loader* Loader::get() {
     static auto g_loader = new Loader;
@@ -19,10 +19,10 @@ Loader* Loader::get() {
 
 void Loader::createDirectories() {
     try {
-        file_utils::createDirectory(const_join_path_c_str<lilac_directory>);
-        file_utils::createDirectory(const_join_path_c_str<lilac_directory, lilac_resource_directory>);
-        file_utils::createDirectory(const_join_path_c_str<lilac_directory, lilac_mod_directory>);
-        ghc::filesystem::remove_all(const_join_path_c_str<lilac_directory, lilac_temp_directory>);
+        file_utils::createDirectory(const_join_path_c_str<geode_directory>);
+        file_utils::createDirectory(const_join_path_c_str<geode_directory, geode_resource_directory>);
+        file_utils::createDirectory(const_join_path_c_str<geode_directory, geode_mod_directory>);
+        ghc::filesystem::remove_all(const_join_path_c_str<geode_directory, geode_temp_directory>);
     } catch(...) {}
 }
 
@@ -30,21 +30,21 @@ size_t Loader::updateMods() {
     InternalMod::get()->log()
         << Severity::Debug
         << "Loading mods..."
-        << lilac::endl;
+        << geode::endl;
 
     size_t loaded = 0;
     this->createDirectories();
     for (auto const& entry : ghc::filesystem::directory_iterator(
-        ghc::filesystem::absolute(lilac_directory) / lilac_mod_directory
+        ghc::filesystem::absolute(geode_directory) / geode_mod_directory
     )) {
         if (
             ghc::filesystem::is_regular_file(entry) &&
-            entry.path().extension() == lilac_mod_extension
+            entry.path().extension() == geode_mod_extension
         ) {
             InternalMod::get()->log()
                 << Severity::Debug
                 << "Loading " << entry.path().string()
-                << lilac::endl;
+                << geode::endl;
             if (!map_utils::contains<std::string, Mod*>(
                 this->m_mods,
                 [entry](Mod* p) -> bool {
@@ -56,10 +56,10 @@ size_t Loader::updateMods() {
                     if (!res.value()->hasUnresolvedDependencies()) {
                         loaded++;
                         InternalMod::get()->log()
-                            << "Succesfully loaded " << res.value() << lilac::endl;
+                            << "Succesfully loaded " << res.value() << geode::endl;
                     } else {
                         InternalMod::get()->log()
-                            << res.value() << " has unresolved dependencies" << lilac::endl;
+                            << res.value() << " has unresolved dependencies" << geode::endl;
                     }
                 } else {
                     InternalMod::get()->throwError(res.error(), Severity::Error);
@@ -70,7 +70,7 @@ size_t Loader::updateMods() {
     InternalMod::get()->log()
         << Severity::Debug
         << "Loaded " << loaded << " new mods"
-        << lilac::endl;
+        << geode::endl;
     return loaded;
 }
 
@@ -119,7 +119,7 @@ bool Loader::setup() {
     InternalMod::get()->log()
         << Severity::Debug
         << "Setting up Loader..."
-        << lilac::endl;
+        << geode::endl;
 
     this->createDirectories();
     this->updateMods();
@@ -143,7 +143,7 @@ Loader::~Loader() {
     }
     this->m_logs.clear();
     delete this->m_logStream;
-    ghc::filesystem::remove_all(const_join_path<lilac_directory, lilac_temp_directory>);
+    ghc::filesystem::remove_all(const_join_path<geode_directory, geode_temp_directory>);
 }
 
 LogStream& Loader::logStream() {
@@ -182,5 +182,5 @@ std::vector<LogMessage*> Loader::getLogs(
 }
 
 void Loader::queueInGDThread(std::function<void()> func) {
-    Lilac::get()->queueInGDThread(func);
+    Geode::get()->queueInGDThread(func);
 }

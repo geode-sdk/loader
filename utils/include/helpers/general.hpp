@@ -6,7 +6,7 @@
 #include <Macros.hpp>
 #include "Result.hpp"
 
-namespace lilac::utils {
+namespace geode::utils {
     constexpr unsigned int hash(const char* str, int h = 0) {
         return !str[h] ? 5381 : (hash(str, h+1) * 33) ^ str[h];
     }
@@ -16,11 +16,11 @@ namespace lilac::utils {
     }
 
     constexpr size_t operator"" _h (const char* txt, size_t) {
-        return lilac::utils::hash(txt);
+        return geode::utils::hash(txt);
     }
 
     constexpr size_t operator"" _h (const wchar_t* txt, size_t) {
-        return lilac::utils::hash(txt);
+        return geode::utils::hash(txt);
     }
 
     template<typename T>
@@ -51,5 +51,5 @@ namespace lilac::utils {
         return ptr;
     }
 
-    LILAC_DLL std::string timePointAsString(const std::chrono::system_clock::time_point& tp);
+    GEODE_DLL std::string timePointAsString(const std::chrono::system_clock::time_point& tp);
 }

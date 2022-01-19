@@ -9,72 +9,72 @@
 #include <CLIManager.hpp>
 #include <Geode>
 
-#ifdef LILAC_LOADER
+#ifdef GEODE_LOADER
 #include <HotReloadLayer.hpp>
 #endif
 
-Lilac::Lilac() {
+geode::Geode() {
 
-    #ifdef LILAC_PLATFORM_CONSOLE
+    #ifdef GEODE_PLATFORM_CONSOLE
     this->setupPlatformConsole();
     #endif
 }
 
-Lilac::~Lilac() {
+geode::~Geode() {
     this->closePlatformConsole();
     delete Loader::get();
 }
 
-Lilac* Lilac::get() {
-    static auto g_lilac = new Lilac;
-    return g_lilac;
+Geode* geode::get() {
+    static auto g_geode = new Geode;
+    return g_geode;
 }
 
-bool Lilac::setup() {
+bool geode::setup() {
     InternalMod::get()->log()
-        << Severity::Debug << "Set up internal mod representation" << lilac::endl;
+        << Severity::Debug << "Set up internal mod representation" << geode::endl;
 
     InternalMod::get()->log()
-        << Severity::Debug << "Loading hooks... " << lilac::endl;
+        << Severity::Debug << "Loading hooks... " << geode::endl;
 
     if (!this->loadHooks()) {
         InternalMod::get()->log()
             << "There were errors loading some hooks, "
-            "see console for details" << lilac::endl;
+            "see console for details" << geode::endl;
     }
 
     InternalMod::get()->log()
-        << Severity::Debug << "Loaded hooks" << lilac::endl;
+        << Severity::Debug << "Loaded hooks" << geode::endl;
 
     return true;
 }
 
-void Lilac::queueInGDThread(std::function<void()> func) {
+void geode::queueInGDThread(std::function<void()> func) {
     this->m_gdThreadQueue.push_back(func);
 }
 
-void Lilac::executeGDThreadQueue() {
+void geode::executeGDThreadQueue() {
     for (auto const& func : this->m_gdThreadQueue) {
         func();
     }
     this->m_gdThreadQueue.clear();
 }
 
-Result<> Lilac::enableHotReload(Mod* mod, ghc::filesystem::path const& path) {
+Result<> geode::enableHotReload(Mod* mod, ghc::filesystem::path const& path) {
     if (this->m_hotReloads.count(mod)) {
         return Ok<>();
     }
     FileWatcher* reload = new FileWatcher(path, [this, mod](ghc::filesystem::path const& file) -> void {
         try {
             if (!ghc::filesystem::copy_file(file, mod->m_info.m_path, ghc::filesystem::copy_options::overwrite_existing)) {
-                mod->throwError("Unable to copy compiled .lilac file!", Severity::Error);
+                mod->throwError("Unable to copy compiled .geode file!", Severity::Error);
             }
         } catch(std::exception const& e) {
             mod->throwError(e.what(), Severity::Error);
         }
 
         this->queueInGDThread([file, mod]() -> void {
-            #ifdef LILAC_LOADER
+            #ifdef GEODE_LOADER
             HotReloadLayer::scene(file.filename().string());
             #endif
 
@@ -102,39 +102,39 @@ Result<> Lilac::enableHotReload(Mod* mod, ghc::filesystem::path const& path) {
     return Ok<>();
 }
 
-void Lilac::disableHotReload(Mod* mod) {
+void geode::disableHotReload(Mod* mod) {
     if (this->m_hotReloads.count(mod)) {
         delete this->m_hotReloads[mod];
         this->m_hotReloads.erase(mod);
     }
 }
 
-bool Lilac::isHotReloadEnabled(Mod* mod) const {
+bool geode::isHotReloadEnabled(Mod* mod) const {
     return this->m_hotReloads.count(mod);
 }
 
-std::string Lilac::getHotReloadPath(Mod* mod) const {
+std::string geode::getHotReloadPath(Mod* mod) const {
     if (!this->isHotReloadEnabled(mod)) {
         return "";
     }
     return this->m_hotReloads.at(mod)->path().string();
 }
 
-#ifdef LILAC_IS_WINDOWS
+#ifdef GEODE_IS_WINDOWS
 
-void Lilac::queueConsoleMessage(LogMessage* msg) {
+void geode::queueConsoleMessage(LogMessage* msg) {
     this->m_logQueue.push_back(msg);
 }
 
-bool Lilac::platformConsoleReady() const {
+bool geode::platformConsoleReady() const {
     return m_platformConsoleReady;
 }
 
-void Lilac::platformMessageBox(const char* title, const char* info) {
+void geode::platformMessageBox(const char* title, const char* info) {
     MessageBoxA(nullptr, title, info, MB_OK);
 }
 
-void Lilac::setupPlatformConsole() {
+void geode::setupPlatformConsole() {
     if (m_platformConsoleReady) return;
     if (AllocConsole() == 0)    return;
     // redirect console output
@@ -144,7 +144,7 @@ void Lilac::setupPlatformConsole() {
     m_platformConsoleReady = true;
 }
 
-void Lilac::awaitPlatformConsole() {
+void geode::awaitPlatformConsole() {
     if (!m_platformConsoleReady) return;
 
     for (auto const& log : this->m_logQueue) {
@@ -221,7 +221,7 @@ void Lilac::awaitPlatformConsole() {
     if (inp != "e") this->awaitPlatformConsole();
 }
 
-void Lilac::closePlatformConsole() {
+void geode::closePlatformConsole() {
     if (!m_platformConsoleReady) return;
 
     fclose(stdin);

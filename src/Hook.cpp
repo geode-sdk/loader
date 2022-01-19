@@ -4,11 +4,11 @@
 #include <Loader.hpp>
 #include <helpers/casts.hpp>
 #include <helpers/vector.hpp>
-#include <core/hook.hpp>
+#include <hook/hook.hpp>
 #include "Internal.hpp"
 #include "InternalMod.hpp"
 
-USE_LILAC_NAMESPACE();
+USE_GEODE_NAMESPACE();
 
 struct hook_info {
     Hook* hook;
@@ -27,7 +27,7 @@ Result<Hook*> Mod::addHookBase(void* addr, void* detour, Hook* hook) {
         hook = new Hook();
         hook->m_address = addr;
     }
-    if ((hook->m_handle = const_cast<void*>(lilac::core::hook::add(addr, detour)))) {
+    if ((hook->m_handle = const_cast<void*>(geode::core::hook::add(addr, detour)))) {
         this->m_hooks.push_back(hook);
         hook->m_enabled = true;
         return Ok<Hook*>(hook);
@@ -50,7 +50,7 @@ Result<Hook*> Mod::addHookBase(Hook* hook) {
 Result<> Mod::enableHook(Hook* hook) {
     if (!hook->isEnabled()) {
         if (!hook->m_handle) {
-            if ((hook->m_handle = const_cast<void*>(lilac::core::hook::add(hook->m_address, hook->m_detour)))) {
+            if ((hook->m_handle = const_cast<void*>(geode::core::hook::add(hook->m_address, hook->m_detour)))) {
                 hook->m_enabled = true;
                 return Ok<>();
             }
@@ -64,7 +64,7 @@ Result<> Mod::enableHook(Hook* hook) {
 Result<> Mod::disableHook(Hook* hook) {
     if (hook->isEnabled()) {
         if (hook->m_handle) {
-            if (lilac::core::hook::remove(hook->m_handle)) {
+            if (geode::core::hook::remove(hook->m_handle)) {
                 hook->m_enabled = false;
                 hook->m_handle = nullptr;
                 return Ok<>();
@@ -103,7 +103,7 @@ Result<Hook*> Mod::addHook(void* addr, void* detour, void** trampoline) {
     return this->addHook(addr, detour);
 }
 
-bool Lilac::loadHooks() {
+bool Geode::loadHooks() {
     g_readyToHook = true;
     auto thereWereErrors = false;
     for (auto const& hook : *g_hooks) {

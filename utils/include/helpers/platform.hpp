@@ -6,7 +6,7 @@
 #include <vector>
 #include <functional>
 
-namespace lilac::utils::clipboard {
-    LILAC_DLL bool write(std::string const& data);
-    LILAC_DLL std::string read();
+namespace geode::utils::clipboard {
+    GEODE_DLL bool write(std::string const& data);
+    GEODE_DLL std::string read();
 }

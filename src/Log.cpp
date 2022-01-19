@@ -7,7 +7,7 @@
 #include <helpers/casts.hpp>
 #include <Internal.hpp>
 
-USE_LILAC_NAMESPACE();
+USE_GEODE_NAMESPACE();
 
 Mod* LogMod::getMod() const { return m_mod; }
 
@@ -106,8 +106,8 @@ void LogStream::log() {
 
     Loader::get()->log(this->m_log);
 
-    #ifdef LILAC_PLATFORM_CONSOLE
-    if (Lilac::get()->platformConsoleReady()) {
+    #ifdef GEODE_PLATFORM_CONSOLE
+    if (geode::get()->platformConsoleReady()) {
         std::cout << this->m_log->toString(true);
     }
     #endif
@@ -116,11 +116,11 @@ void LogStream::log() {
 void LogStream::finish() {
     this->log();
 
-    #ifdef LILAC_PLATFORM_CONSOLE
-    if (Lilac::get()->platformConsoleReady()) {
+    #ifdef GEODE_PLATFORM_CONSOLE
+    if (geode::get()->platformConsoleReady()) {
         std::cout << "\n";
     } else {
-        Lilac::get()->queueConsoleMessage(this->m_log);
+        geode::get()->queueConsoleMessage(this->m_log);
     }
     #endif
 
@@ -231,12 +231,12 @@ LogStream& LogStream::operator<<(cocos2d::CCRect const& rect) {
     return *this;
 }
 
-LogStream& LogStream::operator<<(lilac::endl_type) {
+LogStream& LogStream::operator<<(geode::endl_type) {
     this->finish();
     return *this;
 }
 
-LogStream& LogStream::operator<<(lilac::continue_type) {
+LogStream& LogStream::operator<<(geode::continue_type) {
     this->log();
     return *this;
 }

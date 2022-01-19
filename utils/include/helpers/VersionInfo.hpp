@@ -3,13 +3,13 @@
 #include <Macros.hpp>
 #include <string_view>
 
-namespace lilac {
+namespace geode {
     /**
      * Class representing version 
      * information
      * @class VersionInfo
      */
-    class LILAC_DLL VersionInfo {
+    class GEODE_DLL VersionInfo {
     public:
         enum Compare : char {
             // Other version is lower or exactly the same

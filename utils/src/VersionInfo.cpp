@@ -4,7 +4,7 @@
 #include <helpers/ext.hpp>
 #include <helpers/general.hpp>
 
-USE_LILAC_NAMESPACE();
+USE_GEODE_NAMESPACE();
 
 VersionInfo::VersionInfo(int major, int minor, int patch) {
     this->m_major = major;

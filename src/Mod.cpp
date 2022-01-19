@@ -9,7 +9,7 @@
 #include <helpers/map.hpp>
 #include <helpers/conststring.hpp>
 
-USE_LILAC_NAMESPACE();
+USE_GEODE_NAMESPACE();
 
 Mod::Mod(ModInfo const& info) {
     this->m_info = info;
@@ -37,7 +37,7 @@ Result<> Mod::createTempDir() {
         );
     }
 
-    auto tempDir = const_join_path_c_str<lilac_directory, lilac_temp_directory>;
+    auto tempDir = const_join_path_c_str<geode_directory, geode_temp_directory>;
     if (!ghc::filesystem::exists(tempDir)) {
         if (!ghc::filesystem::create_directory(tempDir)) {
             return Err<>("Unable to create temp directory for mods!");
@@ -263,11 +263,11 @@ void Mod::throwError(
         this
     );
     Loader::get()->log(log);
-    #ifdef LILAC_PLATFORM_CONSOLE
-    if (Lilac::get()->platformConsoleReady()) {
+    #ifdef GEODE_PLATFORM_CONSOLE
+    if (geode::get()->platformConsoleReady()) {
         std::cout << log->toString(true) << "\n";
     } else {
-        Lilac::get()->queueConsoleMessage(log);
+        geode::get()->queueConsoleMessage(log);
     }
     #endif
 }

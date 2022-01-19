@@ -4,16 +4,16 @@
 #include <Loader.hpp>
 #include <helpers/casts.hpp>
 #include <helpers/vector.hpp>
-#include <core/hook.hpp>
+#include <hook/hook.hpp>
 #include "Internal.hpp"
 
-USE_LILAC_NAMESPACE();
+USE_GEODE_NAMESPACE();
 
 Result<Patch*> Mod::patch(void* address, byte_array data) {
     auto p = new Patch;
     p->m_address = address;
     p->m_original = byte_array(data.size());
-    if (!lilac::core::hook::read_memory(address, p->m_original.data(), data.size())) {
+    if (!geode::core::hook::read_memory(address, p->m_original.data(), data.size())) {
         delete p;
         return Err<>("Unable to read memory at " + std::to_string(p->getAddress()));
     }
@@ -37,13 +37,13 @@ Result<> Mod::unpatch(Patch* patch) {
 }
 
 bool Patch::apply() {
-    return lilac::core::hook::write_memory(
+    return geode::core::hook::write_memory(
         this->m_address, this->m_patch.data(), this->m_patch.size()
     );
 }
 
 bool Patch::restore() {
-    return lilac::core::hook::write_memory(
+    return geode::core::hook::write_memory(
         this->m_address, this->m_original.data(), this->m_original.size()
     );
 }

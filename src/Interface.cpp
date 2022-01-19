@@ -4,7 +4,7 @@
 #include <Log.hpp>
 #include <Loader.hpp>
 
-USE_LILAC_NAMESPACE();
+USE_GEODE_NAMESPACE();
 
 void Interface::init(Mod* mod) {
 	if (!this->m_mod) {

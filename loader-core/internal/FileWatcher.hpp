@@ -3,7 +3,7 @@
 #include <functional>
 #include <string>
 #include <fs/filesystem.hpp>
-#include <Macros.hpp>
+#include "Macros.hpp"
 #include <types.hpp>
 
 template<class Impl>
@@ -28,9 +28,9 @@ public:
 	}
 };
 
-#ifdef LILAC_IS_WINDOWS
+#ifdef GEODE_IS_WINDOWS
 #include "FileWatcherWin.hpp"
 #endif
-#ifdef LILAC_IS_MACOS
+#ifdef GEODE_IS_MACOS
 #include "FileWatcherMac.hpp"
 #endif

@@ -1,6 +1,6 @@
 #include <CLIManager.hpp>
 
-USE_LILAC_NAMESPACE();
+USE_GEODE_NAMESPACE();
 
 CLIManager* CLIManager::get() {
     static auto g_cli = new CLIManager;

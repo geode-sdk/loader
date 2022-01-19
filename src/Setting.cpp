@@ -6,7 +6,7 @@
 #include <helpers/general.hpp>
 #include <helpers/convert.hpp>
 
-USE_LILAC_NAMESPACE();
+USE_GEODE_NAMESPACE();
 
 bool StringSetting::replaceWithBuiltInFilter(std::string& filter) {
 	switch (hash(string_utils::toLower(filter).c_str())) {
@@ -271,7 +271,7 @@ Result<ccColor4B> ColorAlphaSetting::parseColor(nlohmann::json const& json) {
 }
 
 template <>
-Result<BoolSetting*> LilacSetting<BoolSetting>::parse(nlohmann::json const& json) {
+Result<BoolSetting*> GeodeSetting<BoolSetting>::parse(nlohmann::json const& json) {
 	auto res = new BoolSetting;
 	res->parseFields(json);
 	bool foundDefaultValue = false;
@@ -322,7 +322,7 @@ Result<BoolSetting*> LilacSetting<BoolSetting>::parse(nlohmann::json const& json
 }
 
 template<>
-Result<IntSetting*> LilacSetting<IntSetting>::parse(nlohmann::json const& json) {
+Result<IntSetting*> GeodeSetting<IntSetting>::parse(nlohmann::json const& json) {
 	auto res = new IntSetting;
 	res->parseFields(json);
 	if (json.contains("value")) {
@@ -401,7 +401,7 @@ Result<IntSetting*> LilacSetting<IntSetting>::parse(nlohmann::json const& json) 
 }
 
 template<>
-Result<FloatSetting*> LilacSetting<FloatSetting>::parse(nlohmann::json const& json) {
+Result<FloatSetting*> GeodeSetting<FloatSetting>::parse(nlohmann::json const& json) {
 	auto res = new FloatSetting;
 	res->parseFields(json);
 	if (json.contains("value")) {
@@ -480,7 +480,7 @@ Result<FloatSetting*> LilacSetting<FloatSetting>::parse(nlohmann::json const& js
 }
 
 template<>
-Result<StringSetting*> LilacSetting<StringSetting>::parse(nlohmann::json const& json) {
+Result<StringSetting*> GeodeSetting<StringSetting>::parse(nlohmann::json const& json) {
 	auto res = new StringSetting;
 	res->parseFields(json);
 	if (json.contains("value")) {
@@ -518,7 +518,7 @@ Result<StringSetting*> LilacSetting<StringSetting>::parse(nlohmann::json const& 
 }
 
 template<>
-Result<ColorSetting*> LilacSetting<ColorSetting>::parse(nlohmann::json const& json) {
+Result<ColorSetting*> GeodeSetting<ColorSetting>::parse(nlohmann::json const& json) {
 	auto res = new ColorSetting;
 	res->parseFields(json);
 	if (json.contains("value")) {
@@ -548,7 +548,7 @@ Result<ColorSetting*> LilacSetting<ColorSetting>::parse(nlohmann::json const& js
 }
 
 template<>
-Result<ColorAlphaSetting*> LilacSetting<ColorAlphaSetting>::parse(nlohmann::json const& json) {
+Result<ColorAlphaSetting*> GeodeSetting<ColorAlphaSetting>::parse(nlohmann::json const& json) {
 	auto res = new ColorAlphaSetting;
 	res->parseFields(json);
 	if (json.contains("value")) {
@@ -578,7 +578,7 @@ Result<ColorAlphaSetting*> LilacSetting<ColorAlphaSetting>::parse(nlohmann::json
 }
 
 template<>
-Result<PathSetting*> LilacSetting<PathSetting>::parse(nlohmann::json const& json) {
+Result<PathSetting*> GeodeSetting<PathSetting>::parse(nlohmann::json const& json) {
 	auto res = new PathSetting;
 	res->parseFields(json);
 	if (json.contains("value")) {
@@ -607,7 +607,7 @@ Result<PathSetting*> LilacSetting<PathSetting>::parse(nlohmann::json const& json
 }
 
 template<>
-Result<StringSelectSetting*> LilacSetting<StringSelectSetting>::parse(nlohmann::json const& json) {
+Result<StringSelectSetting*> GeodeSetting<StringSelectSetting>::parse(nlohmann::json const& json) {
 	auto res = new StringSelectSetting;
 	res->parseFields(json);
 	if (json.contains("value")) {
@@ -661,14 +661,14 @@ Result<Setting*> Setting::parseFromJSON(nlohmann::json const& json) {
 		if (json.contains("type")) {
 			if (json["type"].is_string()) {
 				switch (hash(string_utils::toLower(json["type"].get<std::string>()).c_str())) {
-					case hash("bool"): return LilacSetting<BoolSetting>::parse(json);
-					case hash("int"): return LilacSetting<IntSetting>::parse(json);
-					case hash("float"): return LilacSetting<FloatSetting>::parse(json);
-					case hash("string"): return LilacSetting<StringSetting>::parse(json);
-					case hash("color"): return LilacSetting<ColorSetting>::parse(json);
-					case hash("rgba"): return LilacSetting<ColorAlphaSetting>::parse(json);
-					case hash("file"): return LilacSetting<PathSetting>::parse(json);
-					case hash("string[]"): return LilacSetting<StringSelectSetting>::parse(json);
+					case hash("bool"): return GeodeSetting<BoolSetting>::parse(json);
+					case hash("int"): return GeodeSetting<IntSetting>::parse(json);
+					case hash("float"): return GeodeSetting<FloatSetting>::parse(json);
+					case hash("string"): return GeodeSetting<StringSetting>::parse(json);
+					case hash("color"): return GeodeSetting<ColorSetting>::parse(json);
+					case hash("rgba"): return GeodeSetting<ColorAlphaSetting>::parse(json);
+					case hash("file"): return GeodeSetting<PathSetting>::parse(json);
+					case hash("string[]"): return GeodeSetting<StringSelectSetting>::parse(json);
 				}
 				return Err<>("Setting has unrecognized type \"" + json["type"].get<std::string>() + "\"");
 			} else {

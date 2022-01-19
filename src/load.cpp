@@ -8,7 +8,7 @@
 #include <helpers/general.hpp>
 #include <helpers/string.hpp>
 
-USE_LILAC_NAMESPACE();
+USE_GEODE_NAMESPACE();
 
 #define JSON_ASSIGN_IF_CONTAINS_AND_TYPE_FROM(_name_, _from_, _type_)\
     if (json.contains(#_from_) && !json[#_from_].is_null()) {   \
@@ -109,15 +109,15 @@ Result<Mod*> Loader::loadModFromFile(std::string const& path) {
 
         // Check mod.json target version
         auto schema = 1;
-        if (json.contains("lilac") && json["lilac"].is_number_integer()) {
-            schema = json["lilac"];
+        if (json.contains("geode") && json["geode"].is_number_integer()) {
+            schema = json["geode"];
         }
         if (schema < Loader::s_supportedSchemaMin) {
             return Err<>(
                 "\"" + path + "\" has a lower target version (" + 
                 std::to_string(schema) + ") than this version of "
-                "lilac supports (" + std::to_string(Loader::s_supportedSchemaMin) +
-                "). You may need to downdate lilac in order to use "
+                "geode supports (" + std::to_string(Loader::s_supportedSchemaMin) +
+                "). You may need to downdate geode in order to use "
                 "this mod."
             );
         }
@@ -125,8 +125,8 @@ Result<Mod*> Loader::loadModFromFile(std::string const& path) {
             return Err<>(
                 "\"" + path + "\" has a higher target version (" + 
                 std::to_string(schema) + ") than this version of "
-                "lilac supports (" + std::to_string(Loader::s_supportedSchemaMax) +
-                "). You may need to update lilac in order to use "
+                "geode supports (" + std::to_string(Loader::s_supportedSchemaMax) +
+                "). You may need to update geode in order to use "
                 "this mod."
             );
         }
@@ -141,7 +141,7 @@ Result<Mod*> Loader::loadModFromFile(std::string const& path) {
         return Err<>(
             "\"" + path + "\" has a version schema (" +
             std::to_string(schema) + ") that isn't "
-            "supported by this version of lilac. "
+            "supported by this version of geode. "
             "This may be a bug, or the given version "
             "schema is invalid."
         );
@@ -212,26 +212,26 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
             if (bo.contains("auto") && bo["auto"].is_boolean()) {
                 autoEnd = bo["auto"];
             }
-            #if defined(LILAC_IS_WINDOWS)
+            #if defined(GEODE_IS_WINDOWS)
             if (bo.contains("windows") && bo["windows"].is_string()) {
                 info.m_binaryName = bo["windows"];
             }
-            #elif defined(LILAC_IS_MACOS)
+            #elif defined(GEODE_IS_MACOS)
             if (bo.contains("macos") && bo["macos"].is_string()) {
                 info.m_binaryName = bo["macos"];
             }
-            #elif defined(LILAC_IS_ANDROID)
+            #elif defined(GEODE_IS_ANDROID)
             if (bo.contains("android") && bo["android"].is_string()) {
                 info.m_binaryName = bo["android"];
             }
-            #elif defined(LILAC_IS_IOS)
+            #elif defined(GEODE_IS_IOS)
             if (bo.contains("ios") && bo["ios"].is_string()) {
                 info.m_binaryName = bo["ios"];
             }
             #endif
         } else goto skip_binary_check;
-        if (autoEnd && !string_utils::endsWith(info.m_binaryName, LILAC_PLATFORM_EXTENSION)) {
-            info.m_binaryName += LILAC_PLATFORM_EXTENSION;
+        if (autoEnd && !string_utils::endsWith(info.m_binaryName, GEODE_PLATFORM_EXTENSION)) {
+            info.m_binaryName += GEODE_PLATFORM_EXTENSION;
         }
     }
 skip_binary_check:

@@ -2,7 +2,7 @@
 
 #include "FileWatcher.hpp"
 
-#ifdef LILAC_IS_MACOS
+#ifdef GEODE_IS_MACOS
 
 class FileWatcherMac : public FileWatcherBase<FileWatcherMac> {
 protected:
