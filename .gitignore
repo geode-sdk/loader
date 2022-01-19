@@ -35,3 +35,14 @@ build
 
 # Macos be like
 **/.DS_Store
+
+# Cache files for Sublime Text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+
+# Workspace files are user-specific
+*.sublime-workspace
+
+# Ignore build folders
+**/build
