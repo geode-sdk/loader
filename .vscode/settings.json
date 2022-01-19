@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        ".gdmake": "json",
+        "xstring": "cpp"
+    }
+}
