@@ -7,7 +7,7 @@
 #include <Log.hpp>
 #include <Loader.hpp>
 #include <CLIManager.hpp>
-#include <Cacao>
+#include <Geode>
 
 #ifdef LILAC_LOADER
 #include <HotReloadLayer.hpp>

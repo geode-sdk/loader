@@ -53,30 +53,6 @@
 					"shell_cmd": "make -j4 fmt",
 				},
 				{
-					"name": "Cacao/Source/Cacao.o",
-					"shell_cmd": "make -j4 Cacao/Source/Cacao.o",
-				},
-				{
-					"name": "Cacao/Source/Cacao.i",
-					"shell_cmd": "make -j4 Cacao/Source/Cacao.i",
-				},
-				{
-					"name": "Cacao/Source/Cacao.s",
-					"shell_cmd": "make -j4 Cacao/Source/Cacao.s",
-				},
-				{
-					"name": "Cacao/Source/HandlerFixes.o",
-					"shell_cmd": "make -j4 Cacao/Source/HandlerFixes.o",
-				},
-				{
-					"name": "Cacao/Source/HandlerFixes.i",
-					"shell_cmd": "make -j4 Cacao/Source/HandlerFixes.i",
-				},
-				{
-					"name": "Cacao/Source/HandlerFixes.s",
-					"shell_cmd": "make -j4 Cacao/Source/HandlerFixes.s",
-				},
-				{
 					"name": "Gen/Source.o",
 					"shell_cmd": "make -j4 Gen/Source.o",
 				},
@@ -222,39 +198,63 @@
 				},
 				{
 					"name": "loader-core/internal/InternalMod.o",
-					"shell_cmd": "make -j4 loader-core/internal/InternalMod.o"
+					"shell_cmd": "make -j4 loader-core/internal/InternalMod.o",
 				},
 				{
 					"name": "loader-core/internal/InternalMod.i",
-					"shell_cmd": "make -j4 loader-core/internal/InternalMod.i"
+					"shell_cmd": "make -j4 loader-core/internal/InternalMod.i",
 				},
 				{
 					"name": "loader-core/internal/InternalMod.s",
-					"shell_cmd": "make -j4 loader-core/internal/InternalMod.s"
+					"shell_cmd": "make -j4 loader-core/internal/InternalMod.s",
 				},
 				{
 					"name": "loader-core/load.o",
-					"shell_cmd": "make -j4 loader-core/load.o"
+					"shell_cmd": "make -j4 loader-core/load.o",
 				},
 				{
 					"name": "loader-core/load.i",
-					"shell_cmd": "make -j4 loader-core/load.i"
+					"shell_cmd": "make -j4 loader-core/load.i",
 				},
 				{
 					"name": "loader-core/load.s",
-					"shell_cmd": "make -j4 loader-core/load.s"
+					"shell_cmd": "make -j4 loader-core/load.s",
 				},
 				{
 					"name": "main.o",
-					"shell_cmd": "make -j4 main.o"
+					"shell_cmd": "make -j4 main.o",
 				},
 				{
 					"name": "main.i",
-					"shell_cmd": "make -j4 main.i"
+					"shell_cmd": "make -j4 main.i",
 				},
 				{
 					"name": "main.s",
-					"shell_cmd": "make -j4 main.s"
+					"shell_cmd": "make -j4 main.s",
+				},
+				{
+					"name": "sdk/SDK/Source/Geode.o",
+					"shell_cmd": "make -j4 sdk/SDK/Source/Geode.o",
+				},
+				{
+					"name": "sdk/SDK/Source/Geode.i",
+					"shell_cmd": "make -j4 sdk/SDK/Source/Geode.i",
+				},
+				{
+					"name": "sdk/SDK/Source/Geode.s",
+					"shell_cmd": "make -j4 sdk/SDK/Source/Geode.s",
+				},
+				{
+					"name": "sdk/SDK/Source/HandlerFixes.o",
+					"shell_cmd": "make -j4 sdk/SDK/Source/HandlerFixes.o",
+				},
+				{
+					"name": "sdk/SDK/Source/HandlerFixes.i",
+					"shell_cmd": "make -j4 sdk/SDK/Source/HandlerFixes.i",
+				},
+				{
+					"name": "sdk/SDK/Source/HandlerFixes.s",
+					"shell_cmd": "make -j4 sdk/SDK/Source/HandlerFixes.s",
 				},
 			],
 			"working_dir": "${project_path}/build",
@@ -266,7 +266,7 @@
 			"path": ".",
 		},
 		{
-			"path": "CacaoSDK/SDK/Include/lilac/platform",
+			"path": "sdk/SDK",
 		},
 	],
 	"settings":
