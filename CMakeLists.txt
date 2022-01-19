@@ -6,7 +6,7 @@ file(GLOB CORE_SOURCES loader-core/*.cpp loader-core/internal/*.cpp)
 
 #set(CORE_SOURCES loader-core/Hook.cpp)
 set(SOURCE_FILES main.cpp ${CORE_SOURCES})
-include(Cacao/BuildFiles/cmake/CacaoRoot.cmake)
+include(CacaoSDK/SDK/BuildFiles/cmake/CacaoRoot.cmake)
 
 target_include_directories(LilacLoader PUBLIC 
 	loader-core/internal/
