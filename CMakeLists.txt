@@ -1,15 +1,16 @@
 cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 
-project(LilacLoader VERSION 0.1.0 LANGUAGES C CXX)
+project(GeodeLoader VERSION 0.1.0 LANGUAGES C CXX)
 
-file(GLOB CORE_SOURCES loader-core/*.cpp loader-core/internal/*.cpp)
+file(GLOB CORE_SOURCES src/*.cpp src/internal/*.cpp)
 
-#set(CORE_SOURCES loader-core/Hook.cpp)
 set(SOURCE_FILES main.cpp ${CORE_SOURCES})
-include(CacaoSDK/SDK/BuildFiles/cmake/CacaoRoot.cmake)
+include(sdk/SDK/BuildFiles/cmake/CacaoRoot.cmake)
 
-target_include_directories(LilacLoader PUBLIC 
-	loader-core/internal/
-	deps/utils/include/
-	deps/core/include/
+set_target_properties(GeodeLoader PROPERTIES PREFIX "" OUTPUT_NAME "geode")
+
+target_include_directories(GeodeLoader PUBLIC 
+	src/internal/
+	utils/include/
+	core/include/
 )

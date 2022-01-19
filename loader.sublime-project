@@ -41,8 +41,8 @@
 					"shell_cmd": "make -j4 InterfaceGen",
 				},
 				{
-					"name": "LilacLoader",
-					"shell_cmd": "make -j4 LilacLoader",
+					"name": "GeodeLoader",
+					"shell_cmd": "make -j4 GeodeLoader",
 				},
 				{
 					"name": "SourceGen",
