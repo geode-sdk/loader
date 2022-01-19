@@ -1,6 +1,6 @@
 #include <clilac.h>
-#include <interface/Mod.hpp>
-#include <interface/Log.hpp>
+#include <Mod.hpp>
+#include <Log.hpp>
 
 USE_LILAC_NAMESPACE();
 

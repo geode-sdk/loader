@@ -1,18 +1,19 @@
 #include "Internal.hpp"
-#include <Windows.h>
 #include <vector>
 #include <string>
 #include <sstream>
 #include <iostream>
 #include "InternalMod.hpp"
-#include <interface/Log.hpp>
-#include <interface/Loader.hpp>
-#include <interface/CLIManager.hpp>
-#include <interface/HotReloadLayer.hpp>
+#include <Log.hpp>
+#include <Loader.hpp>
+#include <CLIManager.hpp>
+#include <Cacao>
+
+#ifdef LILAC_LOADER
+#include <HotReloadLayer.hpp>
+#endif
 
 Lilac::Lilac() {
-    // init KeybindManager & load default keybinds
-    KeybindManager::get();
 
     #ifdef LILAC_PLATFORM_CONSOLE
     this->setupPlatformConsole();
@@ -45,22 +46,6 @@ bool Lilac::setup() {
     InternalMod::get()->log()
         << Severity::Debug << "Loaded hooks" << lilac::endl;
 
-    InternalMod::get()->addKeybindAction(TriggerableAction {
-        "Yeetus Feetus",
-        "lilac.yeetus",
-        KB_GLOBAL_CATEGORY,
-        [](auto node, bool down) -> bool {
-            if (down) {
-                auto count = Loader::get()->updateMods();
-                FLAlertLayer::create(
-                    nullptr, "yea", "OK", nullptr,
-                    "woo wee " + std::to_string(count)
-                )->show();
-            }
-            return false;
-        }
-    }, {{ KEY_G, Keybind::kmControl | Keybind::kmAlt }});
-
     return true;
 }
 
@@ -89,7 +74,9 @@ Result<> Lilac::enableHotReload(Mod* mod, ghc::filesystem::path const& path) {
         }
 
         this->queueInGDThread([file, mod]() -> void {
+            #ifdef LILAC_LOADER
             HotReloadLayer::scene(file.filename().string());
+            #endif
 
             auto unload = mod->unload();
             if (!unload) mod->throwError(unload.error(), Severity::Error);
@@ -100,7 +87,7 @@ Result<> Lilac::enableHotReload(Mod* mod, ghc::filesystem::path const& path) {
             auto load = mod->load();
             if (!load) mod->throwError(load.error(), Severity::Error);
 
-            CCDirector::sharedDirector()->replaceScene(MenuLayer::scene(false));
+            cocos2d::CCDirector::sharedDirector()->replaceScene(MenuLayer::scene(false));
         });
 
     }, [this, mod, reload](std::string const& err) -> void {

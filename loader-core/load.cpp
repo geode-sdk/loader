@@ -1,10 +1,12 @@
-#include <interface/Loader.hpp>
-#include <interface/Mod.hpp>
+#include <Loader.hpp>
+#include <Mod.hpp>
 #include <InternalMod.hpp>
-#include <interface/Log.hpp>
+#include <Log.hpp>
 #undef snprintf
 #include <json.hpp>
 #include <ZipUtils.h>
+#include <helpers/general.hpp>
+#include <helpers/string.hpp>
 
 USE_LILAC_NAMESPACE();
 
@@ -21,7 +23,7 @@ USE_LILAC_NAMESPACE();
             info.m_##_name_ = json[#_name_];                    \
         } else {                                                \
             InternalMod::get()->throwError(                     \
-                strfmt("\"%s\": \"" #_name_ "\" is not of expected type \"" #_type_ "\"", info.m_id),   \
+                strfmt("\"%s\": \"" #_name_ "\" is not of expected type \"" #_type_ "\"", info.m_id.c_str()),   \
                 Severity::Warning                                                                       \
             );                                                  \
         }                                                       \
@@ -78,7 +80,7 @@ template<> Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* 
 
 Result<Mod*> Loader::loadModFromFile(std::string const& path) {
     // Unzip file
-    auto unzip = ZipFile::ZipFile(path);
+    ZipFile unzip(path);
     if (!unzip.isLoaded()) {
         return Err<>("\"" + path + "\": Unable to unzip");
     }
@@ -210,19 +212,19 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
             if (bo.contains("auto") && bo["auto"].is_boolean()) {
                 autoEnd = bo["auto"];
             }
-            #ifdef LILAC_IS_WINDOWS
+            #if defined(LILAC_IS_WINDOWS)
             if (bo.contains("windows") && bo["windows"].is_string()) {
                 info.m_binaryName = bo["windows"];
             }
-            #elif LILAC_IS_MACOS
+            #elif defined(LILAC_IS_MACOS)
             if (bo.contains("macos") && bo["macos"].is_string()) {
                 info.m_binaryName = bo["macos"];
             }
-            #elif LILAC_IS_ANDROID
+            #elif defined(LILAC_IS_ANDROID)
             if (bo.contains("android") && bo["android"].is_string()) {
                 info.m_binaryName = bo["android"];
             }
-            #elif LILAC_IS_IOS
+            #elif defined(LILAC_IS_IOS)
             if (bo.contains("ios") && bo["ios"].is_string()) {
                 info.m_binaryName = bo["ios"];
             }
@@ -253,13 +255,13 @@ skip_binary_check:
                         info.m_dependencies.push_back(depobj);
                     } else {
                         InternalMod::get()->throwError(
-                            strfmt("\"%s\": Item #%d in \"dependencies\" array lacks ID", info.m_id, ix),
+                            strfmt("\"%s\": Item #%d in \"dependencies\" array lacks ID", info.m_id.c_str(), ix),
                             Severity::Warning
                         );
                     }
                 } else {
                     InternalMod::get()->throwError(
-                        strfmt("\"%s\": Item #%d in \"dependencies\" array is not an object", info.m_id, ix),
+                        strfmt("\"%s\": Item #%d in \"dependencies\" array is not an object", info.m_id.c_str(), ix),
                         Severity::Warning
                     );
                 }
@@ -267,7 +269,7 @@ skip_binary_check:
             }
         } else if (!deps.is_null()) {
             InternalMod::get()->throwError(
-                strfmt("\"%s\": \"dependencies\" is not an array", info.m_id),
+                strfmt("\"%s\": \"dependencies\" is not an array", info.m_id.c_str()),
                 Severity::Warning
             );
         }
@@ -290,7 +292,7 @@ skip_binary_check:
             }
         } else if (!settings.is_null()) {
             InternalMod::get()->throwError(
-                strfmt("\"%s\": \"settings\" is not an object", info.m_id),
+                strfmt("\"%s\": \"settings\" is not an object", info.m_id.c_str()),
                 Severity::Warning
             );
         }

@@ -1,10 +1,10 @@
-#include <interface/Hook.hpp>
+#include <Hook.hpp>
 #include <vector>
-#include <interface/Mod.hpp>
-#include <interface/Loader.hpp>
+#include <Mod.hpp>
+#include <Loader.hpp>
 #include <helpers/casts.hpp>
 #include <helpers/vector.hpp>
-#include <core/include/lilac/core/hook/hook.hpp>
+#include <core/hook.hpp>
 #include "Internal.hpp"
 
 USE_LILAC_NAMESPACE();

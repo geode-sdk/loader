@@ -1,4 +1,4 @@
-#include <interface/CLIManager.hpp>
+#include <CLIManager.hpp>
 
 USE_LILAC_NAMESPACE();
 

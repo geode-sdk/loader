@@ -1,9 +1,10 @@
 #include <Cacao>
-#include <interface/Log.hpp>
-#include <interface/Mod.hpp>
-#include <interface/Loader.hpp>
+#include <Log.hpp>
+#include <Mod.hpp>
+#include <Loader.hpp>
 #include <helpers/general.hpp>
 #include <helpers/stream.hpp>
+#include <helpers/casts.hpp>
 #include <Internal.hpp>
 
 USE_LILAC_NAMESPACE();

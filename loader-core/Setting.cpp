@@ -1,40 +1,12 @@
 #pragma warning(disable: 4067)
 
-#include <interface/Setting.hpp>
+#include <Setting.hpp>
 #include <InternalMod.hpp>
+#include <helpers/string.hpp>
+#include <helpers/general.hpp>
+#include <helpers/convert.hpp>
 
 USE_LILAC_NAMESPACE();
-
-Result<Setting*> Setting::parseFromJSON(nlohmann::json const& json) {
-	if (json.is_object()) {
-		if (json.contains("type")) {
-			if (json["type"].is_string()) {
-				switch (hash(string_utils::toLower(json["type"].get<std::string>()).c_str())) {
-					case hash("bool"): return LilacSetting<BoolSetting>::parse(json);
-					case hash("int"): return LilacSetting<IntSetting>::parse(json);
-					case hash("float"): return LilacSetting<FloatSetting>::parse(json);
-					case hash("string"): return LilacSetting<StringSetting>::parse(json);
-					case hash("color"): return LilacSetting<ColorSetting>::parse(json);
-					case hash("rgba"): return LilacSetting<ColorAlphaSetting>::parse(json);
-					case hash("file"): return LilacSetting<PathSetting>::parse(json);
-					case hash("string[]"): return LilacSetting<StringSelectSetting>::parse(json);
-				}
-				return Err<>("Setting has unrecognized type \"" + json["type"].get<std::string>() + "\"");
-			} else {
-				return Err<>("Setting has \"type\", but it's not a string");
-			}
-		} else {
-			return Err<>("Setting lacks required field \"type\"");
-		}
-	} else if (json.is_string()) {
-		if (json == "custom") {
-			return Ok<>(new CustomSettingPlaceHolder);
-		} else {
-			return Err<>("Setting is string, but its value is not \"custom\"");
-		}
-	}
-	return Err<>("Setting is neither a string nor an object");
-}
 
 bool StringSetting::replaceWithBuiltInFilter(std::string& filter) {
 	switch (hash(string_utils::toLower(filter).c_str())) {
@@ -130,7 +102,7 @@ Result<ccColor3B> ColorSetting::parseColor(nlohmann::json const& json) {
 				return Err<>("Color is a string that is not in the format \"r,g,b\" or a hex number");
 			}
 		} else {
-			if (str._Starts_with("#")) {
+			if (str[0] == '#') {
 				str = str.substr(1);
 			}
 			if (str.size() > 6) {
@@ -298,7 +270,7 @@ Result<ccColor4B> ColorAlphaSetting::parseColor(nlohmann::json const& json) {
 	return Err<>("Color is neither an array, a string nor an object");
 }
 
-template<>
+template <>
 Result<BoolSetting*> LilacSetting<BoolSetting>::parse(nlohmann::json const& json) {
 	auto res = new BoolSetting;
 	res->parseFields(json);
@@ -682,6 +654,37 @@ Result<StringSelectSetting*> LilacSetting<StringSelectSetting>::parse(nlohmann::
 		return Err<>("Setting lacks \"value\"");
 	}
 	return Ok<>(res);
+}
+
+Result<Setting*> Setting::parseFromJSON(nlohmann::json const& json) {
+	if (json.is_object()) {
+		if (json.contains("type")) {
+			if (json["type"].is_string()) {
+				switch (hash(string_utils::toLower(json["type"].get<std::string>()).c_str())) {
+					case hash("bool"): return LilacSetting<BoolSetting>::parse(json);
+					case hash("int"): return LilacSetting<IntSetting>::parse(json);
+					case hash("float"): return LilacSetting<FloatSetting>::parse(json);
+					case hash("string"): return LilacSetting<StringSetting>::parse(json);
+					case hash("color"): return LilacSetting<ColorSetting>::parse(json);
+					case hash("rgba"): return LilacSetting<ColorAlphaSetting>::parse(json);
+					case hash("file"): return LilacSetting<PathSetting>::parse(json);
+					case hash("string[]"): return LilacSetting<StringSelectSetting>::parse(json);
+				}
+				return Err<>("Setting has unrecognized type \"" + json["type"].get<std::string>() + "\"");
+			} else {
+				return Err<>("Setting has \"type\", but it's not a string");
+			}
+		} else {
+			return Err<>("Setting lacks required field \"type\"");
+		}
+	} else if (json.is_string()) {
+		if (json == "custom") {
+			return Ok<>(new CustomSettingPlaceHolder);
+		} else {
+			return Err<>("Setting is string, but its value is not \"custom\"");
+		}
+	}
+	return Err<>("Setting is neither a string nor an object");
 }
 
 void Setting::save(nlohmann::json& json) const {}

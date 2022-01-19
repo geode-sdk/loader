@@ -1,6 +1,8 @@
 #pragma once
 
-#include <interface/Mod.hpp>
+class InternalMod;
+
+#include <Mod.hpp>
 
 USE_LILAC_NAMESPACE();
 
@@ -11,6 +13,7 @@ class InternalMod : public Mod {
         friend class Lilac;
 
         InternalMod();
+        virtual ~InternalMod();
 
     public:
         static InternalMod* get();

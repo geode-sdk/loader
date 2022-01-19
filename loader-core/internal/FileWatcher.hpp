@@ -2,9 +2,9 @@
 
 #include <functional>
 #include <string>
-#include <helpers/fs/filesystem.hpp>
-#include <interface/Macros.hpp>
-#include <interface/Types.hpp>
+#include <fs/filesystem.hpp>
+#include <Macros.hpp>
+#include <Types.hpp>
 
 template<class Impl>
 class FileWatcherBase {
@@ -30,4 +30,7 @@ public:
 
 #ifdef LILAC_IS_WINDOWS
 #include "FileWatcherWin.hpp"
+#endif
+#ifdef LILAC_IS_MACOS
+#include "FileWatcherMac.hpp"
 #endif

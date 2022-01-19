@@ -1,9 +1,13 @@
-#include <interface/Hook.hpp>
-#include <interface/Mod.hpp>
-#include <interface/Log.hpp>
-#include <interface/Loader.hpp>
+#include <Hook.hpp>
+#include <Mod.hpp>
+#include <Log.hpp>
+#include <Loader.hpp>
 #include <Internal.hpp>
 #include <ZipUtils.h>
+#include <helpers/file.hpp>
+#include <helpers/vector.hpp>
+#include <helpers/map.hpp>
+#include <helpers/conststring.hpp>
 
 USE_LILAC_NAMESPACE();
 
@@ -20,7 +24,7 @@ Mod::~Mod() {
 }
 
 Result<> Mod::createTempDir() {
-    auto unzip = ZipFile::ZipFile(this->m_info.m_path);
+    ZipFile unzip(this->m_info.m_path);
 
     if (!unzip.isLoaded()) {
         return Err<>("Unable to unzip " + this->m_info.m_path);

@@ -1,9 +1,14 @@
-#include <interface/Hook.hpp>
-#include <interface/Mod.hpp>
-#include <interface/Log.hpp>
-#include <interface/Loader.hpp>
+#include <Hook.hpp>
+#include <Mod.hpp>
+#include <Log.hpp>
+#include <Loader.hpp>
 #include <Internal.hpp>
 #include <InternalMod.hpp>
+#include <helpers/file.hpp>
+#include <helpers/conststring.hpp>
+#include <helpers/vector.hpp>
+#include <helpers/map.hpp>
+#include <helpers/types.hpp>
 
 USE_LILAC_NAMESPACE();
 

@@ -1,7 +1,9 @@
 #pragma once
 
-#include <interface/Log.hpp>
+#include <Log.hpp>
 #include <vector>
+#include <unordered_map>
+#include <helpers/Result.hpp>
 #include "FileWatcher.hpp"
 
 USE_LILAC_NAMESPACE();
@@ -13,7 +15,7 @@ USE_LILAC_NAMESPACE();
 class Lilac {
 protected:
 	std::vector<LogMessage*> m_logQueue;
-	std::unordered_map<Mod*, FileWatcherBase*> m_hotReloads;
+	std::unordered_map<Mod*, FileWatcher*> m_hotReloads;
 	std::vector<std::function<void(void)>> m_gdThreadQueue;
 	bool m_platformConsoleReady = false;
 

@@ -77,90 +77,6 @@
 					"shell_cmd": "make -j4 Cacao/Source/HandlerFixes.s",
 				},
 				{
-					"name": "Cacao/Source/VersionInfo.o",
-					"shell_cmd": "make -j4 Cacao/Source/VersionInfo.o",
-				},
-				{
-					"name": "Cacao/Source/VersionInfo.i",
-					"shell_cmd": "make -j4 Cacao/Source/VersionInfo.i",
-				},
-				{
-					"name": "Cacao/Source/VersionInfo.s",
-					"shell_cmd": "make -j4 Cacao/Source/VersionInfo.s",
-				},
-				{
-					"name": "Cacao/Source/file.o",
-					"shell_cmd": "make -j4 Cacao/Source/file.o",
-				},
-				{
-					"name": "Cacao/Source/file.i",
-					"shell_cmd": "make -j4 Cacao/Source/file.i",
-				},
-				{
-					"name": "Cacao/Source/file.s",
-					"shell_cmd": "make -j4 Cacao/Source/file.s",
-				},
-				{
-					"name": "Cacao/Source/general.o",
-					"shell_cmd": "make -j4 Cacao/Source/general.o",
-				},
-				{
-					"name": "Cacao/Source/general.i",
-					"shell_cmd": "make -j4 Cacao/Source/general.i",
-				},
-				{
-					"name": "Cacao/Source/general.s",
-					"shell_cmd": "make -j4 Cacao/Source/general.s",
-				},
-				{
-					"name": "Cacao/Source/map.o",
-					"shell_cmd": "make -j4 Cacao/Source/map.o",
-				},
-				{
-					"name": "Cacao/Source/map.i",
-					"shell_cmd": "make -j4 Cacao/Source/map.i",
-				},
-				{
-					"name": "Cacao/Source/map.s",
-					"shell_cmd": "make -j4 Cacao/Source/map.s",
-				},
-				{
-					"name": "Cacao/Source/string.o",
-					"shell_cmd": "make -j4 Cacao/Source/string.o",
-				},
-				{
-					"name": "Cacao/Source/string.i",
-					"shell_cmd": "make -j4 Cacao/Source/string.i",
-				},
-				{
-					"name": "Cacao/Source/string.s",
-					"shell_cmd": "make -j4 Cacao/Source/string.s",
-				},
-				{
-					"name": "Cacao/Source/vector.o",
-					"shell_cmd": "make -j4 Cacao/Source/vector.o",
-				},
-				{
-					"name": "Cacao/Source/vector.i",
-					"shell_cmd": "make -j4 Cacao/Source/vector.i",
-				},
-				{
-					"name": "Cacao/Source/vector.s",
-					"shell_cmd": "make -j4 Cacao/Source/vector.s",
-				},
-				{
-					"name": "Cacao/Source/windows/platform.o",
-					"shell_cmd": "make -j4 Cacao/Source/windows/platform.o",
-				},
-				{
-					"name": "Cacao/Source/windows/platform.i",
-					"shell_cmd": "make -j4 Cacao/Source/windows/platform.i",
-				},
-				{
-					"name": "Cacao/Source/windows/platform.s",
-					"shell_cmd": "make -j4 Cacao/Source/windows/platform.s",
-				},
-				{
 					"name": "Gen/Source.o",
 					"shell_cmd": "make -j4 Gen/Source.o",
 				},
@@ -171,6 +87,18 @@
 				{
 					"name": "Gen/Source.s",
 					"shell_cmd": "make -j4 Gen/Source.s",
+				},
+				{
+					"name": "loader-core/CLIManager.o",
+					"shell_cmd": "make -j4 loader-core/CLIManager.o",
+				},
+				{
+					"name": "loader-core/CLIManager.i",
+					"shell_cmd": "make -j4 loader-core/CLIManager.i",
+				},
+				{
+					"name": "loader-core/CLIManager.s",
+					"shell_cmd": "make -j4 loader-core/CLIManager.s",
 				},
 				{
 					"name": "loader-core/Hook.o",
@@ -185,16 +113,148 @@
 					"shell_cmd": "make -j4 loader-core/Hook.s",
 				},
 				{
+					"name": "loader-core/Interface.o",
+					"shell_cmd": "make -j4 loader-core/Interface.o",
+				},
+				{
+					"name": "loader-core/Interface.i",
+					"shell_cmd": "make -j4 loader-core/Interface.i",
+				},
+				{
+					"name": "loader-core/Interface.s",
+					"shell_cmd": "make -j4 loader-core/Interface.s",
+				},
+				{
+					"name": "loader-core/Loader.o",
+					"shell_cmd": "make -j4 loader-core/Loader.o",
+				},
+				{
+					"name": "loader-core/Loader.i",
+					"shell_cmd": "make -j4 loader-core/Loader.i",
+				},
+				{
+					"name": "loader-core/Loader.s",
+					"shell_cmd": "make -j4 loader-core/Loader.s",
+				},
+				{
+					"name": "loader-core/Log.o",
+					"shell_cmd": "make -j4 loader-core/Log.o",
+				},
+				{
+					"name": "loader-core/Log.i",
+					"shell_cmd": "make -j4 loader-core/Log.i",
+				},
+				{
+					"name": "loader-core/Log.s",
+					"shell_cmd": "make -j4 loader-core/Log.s",
+				},
+				{
+					"name": "loader-core/Mod.o",
+					"shell_cmd": "make -j4 loader-core/Mod.o",
+				},
+				{
+					"name": "loader-core/Mod.i",
+					"shell_cmd": "make -j4 loader-core/Mod.i",
+				},
+				{
+					"name": "loader-core/Mod.s",
+					"shell_cmd": "make -j4 loader-core/Mod.s",
+				},
+				{
+					"name": "loader-core/Patch.o",
+					"shell_cmd": "make -j4 loader-core/Patch.o",
+				},
+				{
+					"name": "loader-core/Patch.i",
+					"shell_cmd": "make -j4 loader-core/Patch.i",
+				},
+				{
+					"name": "loader-core/Patch.s",
+					"shell_cmd": "make -j4 loader-core/Patch.s",
+				},
+				{
+					"name": "loader-core/Setting.o",
+					"shell_cmd": "make -j4 loader-core/Setting.o",
+				},
+				{
+					"name": "loader-core/Setting.i",
+					"shell_cmd": "make -j4 loader-core/Setting.i",
+				},
+				{
+					"name": "loader-core/Setting.s",
+					"shell_cmd": "make -j4 loader-core/Setting.s",
+				},
+				{
+					"name": "loader-core/clilac.o",
+					"shell_cmd": "make -j4 loader-core/clilac.o",
+				},
+				{
+					"name": "loader-core/clilac.i",
+					"shell_cmd": "make -j4 loader-core/clilac.i",
+				},
+				{
+					"name": "loader-core/clilac.s",
+					"shell_cmd": "make -j4 loader-core/clilac.s",
+				},
+				{
+					"name": "loader-core/internal/FileWatcherWin.o",
+					"shell_cmd": "make -j4 loader-core/internal/FileWatcherWin.o",
+				},
+				{
+					"name": "loader-core/internal/FileWatcherWin.i",
+					"shell_cmd": "make -j4 loader-core/internal/FileWatcherWin.i",
+				},
+				{
+					"name": "loader-core/internal/FileWatcherWin.s",
+					"shell_cmd": "make -j4 loader-core/internal/FileWatcherWin.s",
+				},
+				{
+					"name": "loader-core/internal/Internal.o",
+					"shell_cmd": "make -j4 loader-core/internal/Internal.o",
+				},
+				{
+					"name": "loader-core/internal/Internal.i",
+					"shell_cmd": "make -j4 loader-core/internal/Internal.i",
+				},
+				{
+					"name": "loader-core/internal/Internal.s",
+					"shell_cmd": "make -j4 loader-core/internal/Internal.s",
+				},
+				{
+					"name": "loader-core/internal/InternalMod.o",
+					"shell_cmd": "make -j4 loader-core/internal/InternalMod.o"
+				},
+				{
+					"name": "loader-core/internal/InternalMod.i",
+					"shell_cmd": "make -j4 loader-core/internal/InternalMod.i"
+				},
+				{
+					"name": "loader-core/internal/InternalMod.s",
+					"shell_cmd": "make -j4 loader-core/internal/InternalMod.s"
+				},
+				{
+					"name": "loader-core/load.o",
+					"shell_cmd": "make -j4 loader-core/load.o"
+				},
+				{
+					"name": "loader-core/load.i",
+					"shell_cmd": "make -j4 loader-core/load.i"
+				},
+				{
+					"name": "loader-core/load.s",
+					"shell_cmd": "make -j4 loader-core/load.s"
+				},
+				{
 					"name": "main.o",
-					"shell_cmd": "make -j4 main.o",
+					"shell_cmd": "make -j4 main.o"
 				},
 				{
 					"name": "main.i",
-					"shell_cmd": "make -j4 main.i",
+					"shell_cmd": "make -j4 main.i"
 				},
 				{
 					"name": "main.s",
-					"shell_cmd": "make -j4 main.s",
+					"shell_cmd": "make -j4 main.s"
 				},
 			],
 			"working_dir": "${project_path}/build",
@@ -204,7 +264,10 @@
 	[
 		{
 			"path": ".",
-		}
+		},
+		{
+			"path": "CacaoSDK/SDK/Include/lilac/platform",
+		},
 	],
 	"settings":
 	{

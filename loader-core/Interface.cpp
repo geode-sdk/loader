@@ -1,8 +1,8 @@
-#include <interface/Interface.hpp>
-#include <interface/Mod.hpp>
-#include <interface/Hook.hpp>
-#include <interface/Log.hpp>
-#include <interface/Loader.hpp>
+#include <Interface.hpp>
+#include <Mod.hpp>
+#include <Hook.hpp>
+#include <Log.hpp>
+#include <Loader.hpp>
 
 USE_LILAC_NAMESPACE();
 
