@@ -6,8 +6,8 @@ USE_GEODE_NAMESPACE();
 
 class DevSettingsLayer : public GJDropDownLayer {
 protected:
-	Mod* m_pMod;
-	CCTextInputNode* m_pInput;
+	Mod* m_mod;
+	CCTextInputNode* m_input;
 
 	bool init(Mod* mod);
 

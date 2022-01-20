@@ -1,7 +1,7 @@
 #include "ModSettingsListView.hpp"
 
 bool ModSettingsListView::init(Mod* mod, float width, float height) {
-	this->m_pMod = mod;
+	this->m_mod = mod;
 	this->m_pDelegate = nullptr;
 	this->m_bCutContent = true;
 	this->m_bDisableVertical = false;

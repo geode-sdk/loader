@@ -6,7 +6,7 @@
 bool ModInfoLayer::init(Mod* mod) {
     this->m_bNoElasticity = true;
 
-    this->m_pMod = mod;
+    this->m_mod = mod;
 
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 	CCSize size { 420.f, 280.f };
@@ -24,13 +24,13 @@ bool ModInfoLayer::init(Mod* mod) {
     this->m_pLayer->addChild(this->m_pButtonMenu);
 
     auto nameLabel = CCLabelBMFont::create(
-        this->m_pMod->getName().c_str(), "bigFont.fnt"
+        this->m_mod->getName().c_str(), "bigFont.fnt"
     );
     nameLabel->setPosition(winSize.width / 2, winSize.height / 2 + 110.f);
     nameLabel->setScale(.7f);
     this->m_pLayer->addChild(nameLabel, 2); 
 
-    auto creatorStr = "by " + this->m_pMod->getDeveloper();
+    auto creatorStr = "by " + this->m_mod->getDeveloper();
     auto creatorLabel = CCLabelBMFont::create(
         creatorStr.c_str(), "goldFont.fnt"
     );
@@ -46,8 +46,8 @@ bool ModInfoLayer::init(Mod* mod) {
     descBG->setColor(cc3x(0));
     this->m_pLayer->addChild(descBG);
 
-    auto desc = this->m_pMod->getDetails().size() ?
-        this->m_pMod->getDetails() :
+    auto desc = this->m_mod->getDetails().size() ?
+        this->m_mod->getDetails() :
         "[No Description Provided]";
 
     auto descLabel = TextArea::create(
@@ -65,8 +65,8 @@ bool ModInfoLayer::init(Mod* mod) {
     creditsBG->setColor(cc3x(0));
     this->m_pLayer->addChild(creditsBG);
 
-    auto credits = this->m_pMod->getCredits().size() ?
-        "Credits: " + this->m_pMod->getCredits() :
+    auto credits = this->m_mod->getCredits().size() ?
+        "Credits: " + this->m_mod->getCredits() :
         "[No Credits Provided]";
 
     auto creditsLabel = TextArea::create(
@@ -146,19 +146,19 @@ bool ModInfoLayer::init(Mod* mod) {
 }
 
 void ModInfoLayer::onDev(CCObject*) {
-    auto layer = DevSettingsLayer::create(this->m_pMod);
+    auto layer = DevSettingsLayer::create(this->m_mod);
     this->addChild(layer);
     layer->showLayer(false);
 }
 
 void ModInfoLayer::onHooks(CCObject*) {
-    auto layer = HookListLayer::create(this->m_pMod);
+    auto layer = HookListLayer::create(this->m_mod);
     this->addChild(layer);
     layer->showLayer(false);
 }
 
 void ModInfoLayer::onSettings(CCObject*) {
-    ModSettingsLayer::create(this->m_pMod)->show();
+    ModSettingsLayer::create(this->m_mod)->show();
 }
 
 void ModInfoLayer::keyDown(enumKeyCodes key) {

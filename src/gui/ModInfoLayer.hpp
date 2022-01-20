@@ -6,7 +6,7 @@ USE_GEODE_NAMESPACE();
 
 class ModInfoLayer : public FLAlertLayer {
     protected:
-        Mod* m_pMod;
+        Mod* m_mod;
 
         void onHooks(CCObject*);
         void onDev(CCObject*);

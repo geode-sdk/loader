@@ -10,7 +10,7 @@ void HookCell::draw() {
 void HookCell::onEnable(CCObject* pSender) {
     auto toggle = as<CCMenuItemToggler*>(pSender);
     if (!toggle->isToggled()) {
-        auto res = this->m_pMod->enableHook(this->m_pHook);
+        auto res = this->m_mod->enableHook(this->m_pHook);
         if (!res) {
             FLAlertLayer::create(
                 nullptr, "Error Enabling Hook",
@@ -20,7 +20,7 @@ void HookCell::onEnable(CCObject* pSender) {
             )->show();
         }
     } else {
-        auto res = this->m_pMod->disableHook(this->m_pHook);
+        auto res = this->m_mod->disableHook(this->m_pHook);
         if (!res) {
             FLAlertLayer::create(
                 nullptr, "Error Disabling Hook",
@@ -35,7 +35,7 @@ void HookCell::onEnable(CCObject* pSender) {
 
 void HookCell::loadFromHook(Hook* hook, Mod* Mod) {
     this->m_pHook = hook;
-    this->m_pMod = Mod;
+    this->m_mod = Mod;
 
     this->m_pLayer->setVisible(true);
     this->m_pBGLayer->setOpacity(255);
@@ -109,7 +109,7 @@ TableViewCell* HookListView::getListCell(const char* key) {
 void HookListView::loadCell(TableViewCell* cell, unsigned int index) {
     as<HookCell*>(cell)->loadFromHook(
         as<HookItem*>(this->m_pEntries->objectAtIndex(index))->m_pHook,
-        this->m_pMod
+        this->m_mod
     );
     as<StatsCell*>(cell)->updateBGColor(index);
 }
@@ -120,7 +120,7 @@ HookListView* HookListView::create(
 ) {
     auto pRet = new HookListView;
     if (pRet) {
-        pRet->m_pMod = Mod;
+        pRet->m_mod = Mod;
         if (pRet->init(hooks, kBoomListType_Hooks, width, height)) {
             pRet->autorelease();
             return pRet;

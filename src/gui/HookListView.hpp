@@ -17,7 +17,7 @@ struct HookItem : public CCObject {
 
 class HookCell : public TableViewCell {
     protected:
-        Mod* m_pMod;
+        Mod* m_mod;
         Hook* m_pHook;
 
 		HookCell(const char* name, CCSize size);
@@ -34,7 +34,7 @@ class HookCell : public TableViewCell {
 
 class HookListView : public CustomListView {
     protected:
-        Mod* m_pMod;
+        Mod* m_mod;
 
         void setupList() override;
         TableViewCell* getListCell(const char* key) override;

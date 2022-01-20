@@ -5,7 +5,7 @@ bool DevSettingsLayer::init(Mod* mod) {
     if (!GJDropDownLayer::init("Dev Settings", 220.f))
         return false;
 
-	this->m_pMod = mod;
+	this->m_mod = mod;
     
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
@@ -57,7 +57,7 @@ void DevSettingsLayer::onEnableHotReload(CCObject* pSender) {
 			)->show();
 			as<CCMenuItemToggler*>(pSender)->toggle(true);
 		} else {
-			auto res = Geode::get()->enableHotReload(this->m_pMod, path);
+			auto res = Geode::get()->enableHotReload(this->m_mod, path);
 			if (!res) {
 				FLAlertLayer::create(
 					nullptr,
@@ -68,7 +68,7 @@ void DevSettingsLayer::onEnableHotReload(CCObject* pSender) {
 			}
 		}
 	} else {
-		Geode::get()->disableHotReload(this->m_pMod);
+		Geode::get()->disableHotReload(this->m_mod);
 	}
 }
 

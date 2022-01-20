@@ -6,7 +6,7 @@ USE_GEODE_NAMESPACE();
 
 class ModSettingsLayer : public FLAlertLayer {
     protected:
-        Mod* m_pMod;
+        Mod* m_mod;
 
 		bool init(Mod* mod);
 

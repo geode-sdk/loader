@@ -4,7 +4,7 @@
 bool ModSettingsLayer::init(Mod* mod) {
     this->m_bNoElasticity = true;
 
-    this->m_pMod = mod;
+    this->m_mod = mod;
 
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 	CCSize size { 420.f, 280.f };
@@ -21,7 +21,7 @@ bool ModSettingsLayer::init(Mod* mod) {
     this->m_pButtonMenu = CCMenu::create();
     this->m_pLayer->addChild(this->m_pButtonMenu);
 
-	auto nameStr = this->m_pMod->getName() + " Settings";
+	auto nameStr = this->m_mod->getName() + " Settings";
     auto nameLabel = CCLabelBMFont::create(
         nameStr.c_str(), "bigFont.fnt"
     );

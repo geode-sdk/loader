@@ -9,31 +9,31 @@ void ModCell::draw() {
 }
 
 void ModCell::loadFromMod(ModObject* Mod) {
-    this->m_pMod = Mod->m_pMod;
+    this->m_mod = Mod->m_mod;
 
-    this->m_pLayer->setVisible(true);
-    this->m_pBGLayer->setOpacity(255);
+    this->m_mainLayer->setVisible(true);
+    this->m_BGLayer->setOpacity(255);
     
     auto menu = CCMenu::create();
-    menu->setPosition(this->m_fWidth - this->m_fHeight, this->m_fHeight / 2);
-    this->m_pLayer->addChild(menu);
+    menu->setPosition(this->m_width - this->m_height, this->m_height / 2);
+    this->m_mainLayer->addChild(menu);
 
     auto titleLabel = CCLabelBMFont::create(
-        this->m_pMod->getName().c_str(), "bigFont.fnt"
+        this->m_mod->getName().c_str(), "bigFont.fnt"
     );
     titleLabel->setAnchorPoint({ .0f, .5f });
     titleLabel->setScale(.5f);
-    titleLabel->setPosition(this->m_fHeight / 2, this->m_fHeight / 2 + 7.f);
-    this->m_pLayer->addChild(titleLabel);
+    titleLabel->setPosition(this->m_height / 2, this->m_height / 2 + 7.f);
+    this->m_mainLayer->addChild(titleLabel);
     
-    auto creatorStr = "by " + this->m_pMod->getDeveloper();
+    auto creatorStr = "by " + this->m_mod->getDeveloper();
     auto creatorLabel = CCLabelBMFont::create(
         creatorStr.c_str(), "goldFont.fnt"
     );
     creatorLabel->setAnchorPoint({ .0f, .5f });
     creatorLabel->setScale(.43f);
-    creatorLabel->setPosition(this->m_fHeight / 2, this->m_fHeight / 2 - 7.f);
-    this->m_pLayer->addChild(creatorLabel);
+    creatorLabel->setPosition(this->m_height / 2, this->m_height / 2 - 7.f);
+    this->m_mainLayer->addChild(creatorLabel);
 
     auto viewSpr = ButtonSprite::create(
         "View", 0, 0, "bigFont.fnt", "GJ_button_01.png", 0, .8f
@@ -64,12 +64,12 @@ void ModCell::loadFromMod(ModObject* Mod) {
 }
 
 void ModCell::onInfo(CCObject*) {
-    ModInfoLayer::create(this->m_pMod)->show();
+    ModInfoLayer::create(this->m_mod)->show();
 }
 
 void ModCell::onEnable(CCObject* pSender) {
     if (!as<CCMenuItemToggler*>(pSender)->isToggled()) {
-        auto res = this->m_pMod->enable();
+        auto res = this->m_mod->enable();
         if (!res) {
             FLAlertLayer::create(
                 nullptr,
@@ -79,7 +79,7 @@ void ModCell::onEnable(CCObject* pSender) {
             )->show();
         }
     } else {
-        auto res = this->m_pMod->disable();
+        auto res = this->m_mod->disable();
         if (!res) {
             FLAlertLayer::create(
                 nullptr,
@@ -94,7 +94,7 @@ void ModCell::onEnable(CCObject* pSender) {
 
 void ModCell::onUnresolvedInfo(CCObject* pSender) {
     std::string info = "This mod has the following <cr>unresolved dependencies</c>: ";
-    for (auto const& dep : this->m_pMod->getUnresolvedDependencies()) {
+    for (auto const& dep : this->m_mod->getUnresolvedDependencies()) {
         info += "<cg>" + dep.m_id + "</c> (<cy>" + dep.m_version.toString() + "</c>), ";
     }
     info.pop_back();
@@ -113,14 +113,14 @@ bool ModCell::init(ModListView* list) {
 }
 
 void ModCell::updateState(bool invert) {
-    this->m_pEnableToggle->toggle(this->m_pMod->isEnabled() ^ invert);
+    this->m_pEnableToggle->toggle(this->m_mod->isEnabled() ^ invert);
 
-    bool unresolved = this->m_pMod->hasUnresolvedDependencies();
+    bool unresolved = this->m_mod->hasUnresolvedDependencies();
     this->m_pEnableToggle->setEnabled(!unresolved);
-    this->m_pEnableToggle->m_pOffButton->setOpacity(unresolved ? 100 : 255);
-    this->m_pEnableToggle->m_pOffButton->setColor(unresolved ? cc3x(155) : cc3x(255));
-    this->m_pEnableToggle->m_pOnButton->setOpacity(unresolved ? 100 : 255);
-    this->m_pEnableToggle->m_pOnButton->setColor(unresolved ? cc3x(155) : cc3x(255));
+    this->m_pEnableToggle->m_offButton->setOpacity(unresolved ? 100 : 255);
+    this->m_pEnableToggle->m_offButton->setColor(unresolved ? cc3x(155) : cc3x(255));
+    this->m_pEnableToggle->m_onButton->setOpacity(unresolved ? 100 : 255);
+    this->m_pEnableToggle->m_onButton->setColor(unresolved ? cc3x(155) : cc3x(255));
 
     this->m_pUnresolvedExMark->setVisible(unresolved);
 }
@@ -155,7 +155,7 @@ void ModListView::setupList() {
 }
 
 TableViewCell* ModListView::getListCell(const char* key) {
-    return ModCell::create(this, key, { this->m_fWidth, this->m_fItemSeparation });
+    return ModCell::create(this, key, { this->m_width, this->m_fItemSeparation });
 }
 
 void ModListView::loadCell(TableViewCell* cell, unsigned int index) {

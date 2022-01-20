@@ -9,8 +9,8 @@ static constexpr const BoomListType kBoomListType_Mod
 
 // Wrapper so you can pass Mods in a CCArray
 struct ModObject : public CCObject {
-    Mod* m_pMod;
-    inline ModObject(Mod* mod) : m_pMod(mod) {
+    Mod* m_mod;
+    inline ModObject(Mod* mod) : m_mod(mod) {
         this->autorelease();
     };
 };
@@ -20,7 +20,7 @@ class ModListView;
 class ModCell : public TableViewCell {
     protected:
         ModListView* m_pList;
-        Mod* m_pMod;
+        Mod* m_mod;
         CCMenuItemToggler* m_pEnableToggle;
         CCMenuItemSpriteExtra* m_pUnresolvedExMark;
 
