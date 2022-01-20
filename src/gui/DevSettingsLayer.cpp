@@ -18,17 +18,17 @@ bool DevSettingsLayer::init(Mod* mod) {
 		{ winSize.width / 2 - 40.f, winSize.height / 2 + 40.f }, { 10, 0 }
 	);
 
-	this->m_pInput = CCTextInputNode::create(
+	this->m_input = CCTextInputNode::create(
 		"Path to .geode file", this, "chatFont.fnt",
 		200.f, 50.f
 	);
 	auto path = Geode::get()->getHotReloadPath(mod);
 	if (path.size()) {
-		this->m_pInput->setString(path.c_str());
+		this->m_input->setString(path.c_str());
 	}
-	this->m_pInput->setAllowedChars("0123456789.:-_/\\()[]abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ{|!}");
-	this->m_pInput->setPosition(winSize.width / 2, winSize.height / 2);
-	this->m_pLayer->addChild(this->m_pInput);
+	this->m_input->setAllowedChars("0123456789.:-_/\\()[]abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ{|!}");
+	this->m_input->setPosition(winSize.width / 2, winSize.height / 2);
+	this->m_mainLayer->addChild(this->m_input);
 
 	auto spr = ButtonSprite::create(
 		"Paste From Clipboard", 0, 0, "bigFont.fnt", "GJ_button_01.png", 0, .8f
@@ -40,13 +40,13 @@ bool DevSettingsLayer::init(Mod* mod) {
 	btn->setPosition(0, -40.f);
 	menu->addChild(btn);
 	
-	this->m_pLayer->addChild(menu);
+	this->m_mainLayer->addChild(menu);
 
     return true;
 }
 
 void DevSettingsLayer::onEnableHotReload(CCObject* pSender) {
-	std::string path = this->m_pInput->getString();
+	std::string path = this->m_input->getString();
 	if (!as<CCMenuItemToggler*>(pSender)->isToggled()) {
 		if (!path.size()) {
 			FLAlertLayer::create(
@@ -75,7 +75,7 @@ void DevSettingsLayer::onEnableHotReload(CCObject* pSender) {
 void DevSettingsLayer::onPastePathFromClipboard(CCObject*) {
 	auto data = clipboard::read();
 	if (data.size()) {
-		this->m_pInput->setString(data.c_str());
+		this->m_input->setString(data.c_str());
 	}
 }
 

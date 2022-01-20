@@ -8,9 +8,9 @@ static constexpr const BoomListType kBoomListType_Hooks
     = static_cast<BoomListType>(0x358);
 
 struct HookItem : public CCObject {
-    Hook* m_pHook;
+    Hook* m_hook;
 
-    HookItem(Hook* h) : m_pHook(h) {
+    HookItem(Hook* h) : m_hook(h) {
         this->autorelease();
     }
 };
@@ -18,7 +18,7 @@ struct HookItem : public CCObject {
 class HookCell : public TableViewCell {
     protected:
         Mod* m_mod;
-        Hook* m_pHook;
+        Hook* m_hook;
 
 		HookCell(const char* name, CCSize size);
 

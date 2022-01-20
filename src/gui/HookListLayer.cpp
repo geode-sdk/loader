@@ -9,8 +9,8 @@ bool HookListLayer::init(Mod* mod) {
     for (auto const& hook : mod->getHooks()) {
         hooks->addObject(new HookItem(hook));
     }
-    this->m_pListLayer->m_pListView = HookListView::create(hooks, mod, 356.f, 220.f);
-    this->m_pListLayer->addChild(this->m_pListLayer->m_pListView);
+    this->m_listLayer->m_listView = HookListView::create(hooks, mod, 356.f, 220.f);
+    this->m_listLayer->addChild(this->m_listLayer->m_listView);
 
     return true;
 }

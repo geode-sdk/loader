@@ -10,7 +10,7 @@ void HookCell::draw() {
 void HookCell::onEnable(CCObject* pSender) {
     auto toggle = as<CCMenuItemToggler*>(pSender);
     if (!toggle->isToggled()) {
-        auto res = this->m_mod->enableHook(this->m_pHook);
+        auto res = this->m_mod->enableHook(this->m_hook);
         if (!res) {
             FLAlertLayer::create(
                 nullptr, "Error Enabling Hook",
@@ -20,7 +20,7 @@ void HookCell::onEnable(CCObject* pSender) {
             )->show();
         }
     } else {
-        auto res = this->m_mod->disableHook(this->m_pHook);
+        auto res = this->m_mod->disableHook(this->m_hook);
         if (!res) {
             FLAlertLayer::create(
                 nullptr, "Error Disabling Hook",
@@ -30,19 +30,19 @@ void HookCell::onEnable(CCObject* pSender) {
             )->show();
         }
     }
-    toggle->toggle(!this->m_pHook->isEnabled());
+    toggle->toggle(!this->m_hook->isEnabled());
 }
 
 void HookCell::loadFromHook(Hook* hook, Mod* Mod) {
-    this->m_pHook = hook;
+    this->m_hook = hook;
     this->m_mod = Mod;
 
-    this->m_pLayer->setVisible(true);
-    this->m_pBGLayer->setOpacity(255);
+    this->m_mainLayer->setVisible(true);
+    this->m_BGLayer->setOpacity(255);
     
     auto menu = CCMenu::create();
-    menu->setPosition(this->m_fWidth - this->m_fHeight, this->m_fHeight / 2);
-    this->m_pLayer->addChild(menu);
+    menu->setPosition(this->m_width - this->m_height, this->m_height / 2);
+    this->m_mainLayer->addChild(menu);
 
     auto enableBtn = CCMenuItemToggler::createWithStandardSprites(
         this, menu_selector(HookCell::onEnable), .6f
@@ -73,10 +73,10 @@ void HookCell::loadFromHook(Hook* hook, Mod* Mod) {
 
     moduleName << "0x" << std::hex << addr;
     auto label = CCLabelBMFont::create(moduleName.str().c_str(), "bigFont.fnt");
-    label->setPosition(this->m_fHeight / 2, this->m_fHeight / 2);
+    label->setPosition(this->m_height / 2, this->m_height / 2);
     label->setScale(.4f);
     label->setAnchorPoint({ .0f, .5f });
-    this->m_pLayer->addChild(label);
+    this->m_mainLayer->addChild(label);
 }
 
 HookCell* HookCell::create(const char* key, CCSize size) {
@@ -103,12 +103,12 @@ void HookListView::setupList() {
 }
 
 TableViewCell* HookListView::getListCell(const char* key) {
-    return HookCell::create(key, { this->m_fWidth, this->m_fItemSeparation });
+    return HookCell::create(key, { this->m_width, this->m_fItemSeparation });
 }
 
 void HookListView::loadCell(TableViewCell* cell, unsigned int index) {
     as<HookCell*>(cell)->loadFromHook(
-        as<HookItem*>(this->m_pEntries->objectAtIndex(index))->m_pHook,
+        as<HookItem*>(this->m_pEntries->objectAtIndex(index))->m_hook,
         this->m_mod
     );
     as<StatsCell*>(cell)->updateBGColor(index);
