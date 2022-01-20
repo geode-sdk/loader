@@ -6,12 +6,8 @@
 #include "InternalMod.hpp"
 #include <Log.hpp>
 #include <Loader.hpp>
-#include <CLIManager.hpp>
 #include <Geode>
-
-#ifdef GEODE_LOADER
-#include <HotReloadLayer.hpp>
-#endif
+// #include <HotReloadLayer.hpp>
 
 Geode::Geode() {
 

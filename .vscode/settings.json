@@ -1,6 +1,8 @@
 {
     "files.associations": {
+        "*.lilac": "zip",
         ".gdmake": "json",
-        "xstring": "cpp"
+        "xstring": "cpp",
+        "geode": "cpp"
     }
 }

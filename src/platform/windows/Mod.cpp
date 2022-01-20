@@ -1,8 +1,12 @@
 #pragma once
 
-#include <geode.hpp>
+#include <Geode>
+
+#pragma message("hi")
 
 #ifdef GEODE_IS_WINDOWS
+
+#pragma message("geode is indeed windows")
 
 USE_GEODE_NAMESPACE();
 
