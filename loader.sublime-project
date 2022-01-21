@@ -33,6 +33,10 @@
 					"shell_cmd": "make -j4 SourceRun",
 				},
 				{
+					"name": "CCZipUtils",
+					"shell_cmd": "make -j4 CCZipUtils",
+				},
+				{
 					"name": "GeodeLoader",
 					"shell_cmd": "make -j4 GeodeLoader",
 				},
@@ -53,6 +57,10 @@
 					"shell_cmd": "make -j4 fmt",
 				},
 				{
+					"name": "geode_core_hook",
+					"shell_cmd": "make -j4 geode_core_hook",
+				},
+				{
 					"name": "Gen/Source.o",
 					"shell_cmd": "make -j4 Gen/Source.o",
 				},
@@ -63,18 +71,6 @@
 				{
 					"name": "Gen/Source.s",
 					"shell_cmd": "make -j4 Gen/Source.s",
-				},
-				{
-					"name": "main.o",
-					"shell_cmd": "make -j4 main.o",
-				},
-				{
-					"name": "main.i",
-					"shell_cmd": "make -j4 main.i",
-				},
-				{
-					"name": "main.s",
-					"shell_cmd": "make -j4 main.s",
 				},
 				{
 					"name": "sdk/SDK/Source/Geode.o",
@@ -99,18 +95,6 @@
 				{
 					"name": "sdk/SDK/Source/HandlerFixes.s",
 					"shell_cmd": "make -j4 sdk/SDK/Source/HandlerFixes.s",
-				},
-				{
-					"name": "src/CLIManager.o",
-					"shell_cmd": "make -j4 src/CLIManager.o",
-				},
-				{
-					"name": "src/CLIManager.i",
-					"shell_cmd": "make -j4 src/CLIManager.i",
-				},
-				{
-					"name": "src/CLIManager.s",
-					"shell_cmd": "make -j4 src/CLIManager.s",
 				},
 				{
 					"name": "src/Hook.o",
@@ -209,52 +193,256 @@
 					"shell_cmd": "make -j4 src/cgeode.s",
 				},
 				{
+					"name": "src/gui/DevSettingsLayer.o",
+					"shell_cmd": "make -j4 src/gui/DevSettingsLayer.o",
+				},
+				{
+					"name": "src/gui/DevSettingsLayer.i",
+					"shell_cmd": "make -j4 src/gui/DevSettingsLayer.i",
+				},
+				{
+					"name": "src/gui/DevSettingsLayer.s",
+					"shell_cmd": "make -j4 src/gui/DevSettingsLayer.s",
+				},
+				{
+					"name": "src/gui/HookListLayer.o",
+					"shell_cmd": "make -j4 src/gui/HookListLayer.o",
+				},
+				{
+					"name": "src/gui/HookListLayer.i",
+					"shell_cmd": "make -j4 src/gui/HookListLayer.i",
+				},
+				{
+					"name": "src/gui/HookListLayer.s",
+					"shell_cmd": "make -j4 src/gui/HookListLayer.s",
+				},
+				{
+					"name": "src/gui/HookListView.o",
+					"shell_cmd": "make -j4 src/gui/HookListView.o",
+				},
+				{
+					"name": "src/gui/HookListView.i",
+					"shell_cmd": "make -j4 src/gui/HookListView.i",
+				},
+				{
+					"name": "src/gui/HookListView.s",
+					"shell_cmd": "make -j4 src/gui/HookListView.s",
+				},
+				{
+					"name": "src/gui/HotReloadLayer.o",
+					"shell_cmd": "make -j4 src/gui/HotReloadLayer.o",
+				},
+				{
+					"name": "src/gui/HotReloadLayer.i",
+					"shell_cmd": "make -j4 src/gui/HotReloadLayer.i",
+				},
+				{
+					"name": "src/gui/HotReloadLayer.s",
+					"shell_cmd": "make -j4 src/gui/HotReloadLayer.s",
+				},
+				{
+					"name": "src/gui/ModInfoLayer.o",
+					"shell_cmd": "make -j4 src/gui/ModInfoLayer.o",
+				},
+				{
+					"name": "src/gui/ModInfoLayer.i",
+					"shell_cmd": "make -j4 src/gui/ModInfoLayer.i",
+				},
+				{
+					"name": "src/gui/ModInfoLayer.s",
+					"shell_cmd": "make -j4 src/gui/ModInfoLayer.s",
+				},
+				{
+					"name": "src/gui/ModListLayer.o",
+					"shell_cmd": "make -j4 src/gui/ModListLayer.o",
+				},
+				{
+					"name": "src/gui/ModListLayer.i",
+					"shell_cmd": "make -j4 src/gui/ModListLayer.i"
+				},
+				{
+					"name": "src/gui/ModListLayer.s",
+					"shell_cmd": "make -j4 src/gui/ModListLayer.s"
+				},
+				{
+					"name": "src/gui/ModListView.o",
+					"shell_cmd": "make -j4 src/gui/ModListView.o"
+				},
+				{
+					"name": "src/gui/ModListView.i",
+					"shell_cmd": "make -j4 src/gui/ModListView.i"
+				},
+				{
+					"name": "src/gui/ModListView.s",
+					"shell_cmd": "make -j4 src/gui/ModListView.s"
+				},
+				{
+					"name": "src/gui/ModSettingsLayer.o",
+					"shell_cmd": "make -j4 src/gui/ModSettingsLayer.o"
+				},
+				{
+					"name": "src/gui/ModSettingsLayer.i",
+					"shell_cmd": "make -j4 src/gui/ModSettingsLayer.i"
+				},
+				{
+					"name": "src/gui/ModSettingsLayer.s",
+					"shell_cmd": "make -j4 src/gui/ModSettingsLayer.s"
+				},
+				{
+					"name": "src/gui/ModSettingsListView.o",
+					"shell_cmd": "make -j4 src/gui/ModSettingsListView.o"
+				},
+				{
+					"name": "src/gui/ModSettingsListView.i",
+					"shell_cmd": "make -j4 src/gui/ModSettingsListView.i"
+				},
+				{
+					"name": "src/gui/ModSettingsListView.s",
+					"shell_cmd": "make -j4 src/gui/ModSettingsListView.s"
+				},
+				{
+					"name": "src/gui/SettingNode.o",
+					"shell_cmd": "make -j4 src/gui/SettingNode.o"
+				},
+				{
+					"name": "src/gui/SettingNode.i",
+					"shell_cmd": "make -j4 src/gui/SettingNode.i"
+				},
+				{
+					"name": "src/gui/SettingNode.s",
+					"shell_cmd": "make -j4 src/gui/SettingNode.s"
+				},
+				{
+					"name": "src/internal/FileWatcherMac.o",
+					"shell_cmd": "make -j4 src/internal/FileWatcherMac.o"
+				},
+				{
+					"name": "src/internal/FileWatcherMac.i",
+					"shell_cmd": "make -j4 src/internal/FileWatcherMac.i"
+				},
+				{
+					"name": "src/internal/FileWatcherMac.s",
+					"shell_cmd": "make -j4 src/internal/FileWatcherMac.s"
+				},
+				{
 					"name": "src/internal/FileWatcherWin.o",
-					"shell_cmd": "make -j4 src/internal/FileWatcherWin.o",
+					"shell_cmd": "make -j4 src/internal/FileWatcherWin.o"
 				},
 				{
 					"name": "src/internal/FileWatcherWin.i",
-					"shell_cmd": "make -j4 src/internal/FileWatcherWin.i",
+					"shell_cmd": "make -j4 src/internal/FileWatcherWin.i"
 				},
 				{
 					"name": "src/internal/FileWatcherWin.s",
-					"shell_cmd": "make -j4 src/internal/FileWatcherWin.s",
+					"shell_cmd": "make -j4 src/internal/FileWatcherWin.s"
 				},
 				{
 					"name": "src/internal/Internal.o",
-					"shell_cmd": "make -j4 src/internal/Internal.o",
+					"shell_cmd": "make -j4 src/internal/Internal.o"
 				},
 				{
 					"name": "src/internal/Internal.i",
-					"shell_cmd": "make -j4 src/internal/Internal.i",
+					"shell_cmd": "make -j4 src/internal/Internal.i"
 				},
 				{
 					"name": "src/internal/Internal.s",
-					"shell_cmd": "make -j4 src/internal/Internal.s",
+					"shell_cmd": "make -j4 src/internal/Internal.s"
 				},
 				{
 					"name": "src/internal/InternalMod.o",
-					"shell_cmd": "make -j4 src/internal/InternalMod.o",
+					"shell_cmd": "make -j4 src/internal/InternalMod.o"
 				},
 				{
 					"name": "src/internal/InternalMod.i",
-					"shell_cmd": "make -j4 src/internal/InternalMod.i",
+					"shell_cmd": "make -j4 src/internal/InternalMod.i"
 				},
 				{
 					"name": "src/internal/InternalMod.s",
-					"shell_cmd": "make -j4 src/internal/InternalMod.s",
+					"shell_cmd": "make -j4 src/internal/InternalMod.s"
 				},
 				{
 					"name": "src/load.o",
-					"shell_cmd": "make -j4 src/load.o",
+					"shell_cmd": "make -j4 src/load.o"
 				},
 				{
 					"name": "src/load.i",
-					"shell_cmd": "make -j4 src/load.i",
+					"shell_cmd": "make -j4 src/load.i"
 				},
 				{
 					"name": "src/load.s",
-					"shell_cmd": "make -j4 src/load.s",
+					"shell_cmd": "make -j4 src/load.s"
+				},
+				{
+					"name": "src/utils/VersionInfo.o",
+					"shell_cmd": "make -j4 src/utils/VersionInfo.o"
+				},
+				{
+					"name": "src/utils/VersionInfo.i",
+					"shell_cmd": "make -j4 src/utils/VersionInfo.i"
+				},
+				{
+					"name": "src/utils/VersionInfo.s",
+					"shell_cmd": "make -j4 src/utils/VersionInfo.s"
+				},
+				{
+					"name": "src/utils/file.o",
+					"shell_cmd": "make -j4 src/utils/file.o"
+				},
+				{
+					"name": "src/utils/file.i",
+					"shell_cmd": "make -j4 src/utils/file.i"
+				},
+				{
+					"name": "src/utils/file.s",
+					"shell_cmd": "make -j4 src/utils/file.s"
+				},
+				{
+					"name": "src/utils/general.o",
+					"shell_cmd": "make -j4 src/utils/general.o"
+				},
+				{
+					"name": "src/utils/general.i",
+					"shell_cmd": "make -j4 src/utils/general.i"
+				},
+				{
+					"name": "src/utils/general.s",
+					"shell_cmd": "make -j4 src/utils/general.s"
+				},
+				{
+					"name": "src/utils/map.o",
+					"shell_cmd": "make -j4 src/utils/map.o"
+				},
+				{
+					"name": "src/utils/map.i",
+					"shell_cmd": "make -j4 src/utils/map.i"
+				},
+				{
+					"name": "src/utils/map.s",
+					"shell_cmd": "make -j4 src/utils/map.s"
+				},
+				{
+					"name": "src/utils/string.o",
+					"shell_cmd": "make -j4 src/utils/string.o"
+				},
+				{
+					"name": "src/utils/string.i",
+					"shell_cmd": "make -j4 src/utils/string.i"
+				},
+				{
+					"name": "src/utils/string.s",
+					"shell_cmd": "make -j4 src/utils/string.s"
+				},
+				{
+					"name": "src/utils/vector.o",
+					"shell_cmd": "make -j4 src/utils/vector.o"
+				},
+				{
+					"name": "src/utils/vector.i",
+					"shell_cmd": "make -j4 src/utils/vector.i"
+				},
+				{
+					"name": "src/utils/vector.s",
+					"shell_cmd": "make -j4 src/utils/vector.s"
 				},
 			],
 			"working_dir": "${project_path}/build",
