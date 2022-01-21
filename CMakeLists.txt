@@ -8,6 +8,7 @@ add_subdirectory(core)
 
 set(SOURCE_FILES 
 	main.cpp 
+	src/internal/FileWatcherMac.mm 
 	${CORE_SOURCES}
 )
 set(INCLUDE_DIRECTORIES

@@ -1,4 +1,4 @@
-#include "FileWatcherMac.mm"
+#include "FileWatcherMac.hpp"
 #import <Cocoa/Cocoa.h>
 #include <iostream>
 
