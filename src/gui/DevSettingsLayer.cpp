@@ -10,18 +10,17 @@ bool DevSettingsLayer::init(Mod* mod) {
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
 	auto menu = CCMenu::create();
-	// GameToolbox::createToggleButton(
-	// 	menu_selector(DevSettingsLayer::onEnableHotReload),
-	// 	Geode::get()->isHotReloadEnabled(mod), menu,
-	// 	this, menu, .75f, .5f, 100.f, nullptr,
-	// 	false, 0, nullptr, "Enable Hot Reload",
-	// 	{ winSize.width / 2 - 40.f, winSize.height / 2 + 40.f }, { 10, 0 }
-	// );
+	GameToolbox::createToggleButton(
+		menu_selector(DevSettingsLayer::onEnableHotReload),
+		Geode::get()->isHotReloadEnabled(mod), menu,
+		this, menu, .75f, .5f, 100.f, nullptr,
+		false, 0, nullptr, "Enable Hot Reload",
+		{ winSize.width / 2 - 40.f, winSize.height / 2 + 40.f }, { 10, 0 }
+	);
 
-	// this->m_input = CCTextInputNode::create(
-	// 	"Path to .geode file", this, "chatFont.fnt",
-	// 	200.f, 50.f
-	// );
+	this->m_input = CCTextInputNode::create(
+		200.f, 50.f, "Path to .geode file", this, "chatFont.fnt"
+	);
 	auto path = Geode::get()->getHotReloadPath(mod);
 	if (path.size()) {
 		this->m_input->setString(path.c_str());
@@ -30,13 +29,14 @@ bool DevSettingsLayer::init(Mod* mod) {
 	this->m_input->setPosition(winSize.width / 2, winSize.height / 2);
 	this->m_mainLayer->addChild(this->m_input);
 
-	// auto spr = ButtonSprite::create(
-	// 	"Paste From Clipboard", 0, 0, "bigFont.fnt", "GJ_button_01.png", 0, .8f
-	// );
-	// spr->setScale(.45f);
-	// auto btn = CCMenuItemSpriteExtra::create(
-	// 	spr, this, menu_selector(DevSettingsLayer::onPastePathFromClipboard)
-	// );
+	auto spr = ButtonSprite::create(
+		"Paste From Clipboard"
+		// , 0, 0, 1.0f, "bigFont.fnt", "GJ_button_01.png", 0, .8f
+	);
+	spr->setScale(.45f);
+	auto btn = CCMenuItemSpriteExtra::create(
+		spr, nullptr, this, menu_selector(DevSettingsLayer::onPastePathFromClipboard)
+	);
 	btn->setPosition(0, -40.f);
 	menu->addChild(btn);
 	
@@ -52,19 +52,21 @@ void DevSettingsLayer::onEnableHotReload(CCObject* pSender) {
 			FLAlertLayer::create(
 				nullptr,
 				"Error",
-				"OK", nullptr,
-				"Set a .geode file path first"
+				"OK", 
+				"Set a .geode file path first",
+				nullptr
 			)->show();
 			as<CCMenuItemToggler*>(pSender)->toggle(true);
 		} else {
 			auto res = Geode::get()->enableHotReload(this->m_mod, path);
 			if (!res) {
-				// FLAlertLayer::create(
-				// 	nullptr,
-				// 	"Error",
-				// 	"OK", nullptr,
-				// 	res.error()
-				// )->show();
+				FLAlertLayer::create(
+					nullptr,
+					"Error",
+					"OK", 
+					res.error().c_str(),
+					nullptr
+				)->show();
 			}
 		}
 	} else {
