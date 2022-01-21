@@ -46,3 +46,6 @@ build
 
 # Ignore build folders
 **/build
+
+.vscode
+*.sublime-project
