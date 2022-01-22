@@ -1,13 +1,14 @@
 #include "FileWatcherMac.hpp"
 
-#ifdef GEODE_IS_MAC
+#ifdef GEODE_IS_MACOS
 
 #import <Cocoa/Cocoa.h>
+#include <fcntl.h>
 #include <iostream>
 
-static constexpr const auto notifyAttributes = FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_ATTRIBUTES | FILE_NOTIFY_CHANGE_SIZE;
+// static constexpr const auto notifyAttributes = FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_ATTRIBUTES | FILE_NOTIFY_CHANGE_SIZE;
 
-FileWatcherWin::FileWatcherMac(ghc::filesystem::path const& file, FileWatchCallback callback, ErrorCallback error) {
+FileWatcherMac::FileWatcherMac(ghc::filesystem::path const& file, FileWatchCallback callback, ErrorCallback error) {
 	this->m_filemode = ghc::filesystem::is_regular_file(file);
 
 	this->dispatch_source = NULL;
@@ -24,7 +25,7 @@ FileWatcherMac::~FileWatcherMac() {
 
 void FileWatcherMac::watch() {
 	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
-	int fildes = open(this->m_file.string(), O_EVTONLY);
+	int fildes = open(this->m_file.string().c_str(), O_EVTONLY);
 
 	__block dispatch_source_t source = dispatch_source_create(DISPATCH_SOURCE_TYPE_VNODE, fildes,
 	           DISPATCH_VNODE_DELETE | DISPATCH_VNODE_WRITE | DISPATCH_VNODE_EXTEND | 

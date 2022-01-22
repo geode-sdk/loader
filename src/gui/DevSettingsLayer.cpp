@@ -19,7 +19,7 @@ bool DevSettingsLayer::init(Mod* mod) {
 	);
 
 	this->m_input = CCTextInputNode::create(
-		200.f, 50.f, "Path to .geode file", this, "chatFont.fnt"
+		200.f, 50.f, "Path to .geode file", "chatFont.fnt"
 	);
 	auto path = Geode::get()->getHotReloadPath(mod);
 	if (path.size()) {
@@ -30,7 +30,7 @@ bool DevSettingsLayer::init(Mod* mod) {
 	this->m_mainLayer->addChild(this->m_input);
 
 	auto spr = ButtonSprite::create(
-		"Paste From Clipboard", 0, false, "bigFont.fnt", "GJ_button_01.png", 1.0f, .8f
+		"Paste From Clipboard", 0xff, 0, 1.0f, .8f, true, "bigFont.fnt", true
 	);
 	spr->setScale(.45f);
 	auto btn = CCMenuItemSpriteExtra::create(

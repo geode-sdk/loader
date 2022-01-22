@@ -10,6 +10,12 @@ void HookCell::draw() {
     reinterpret_cast<StatsCell*>(this)->StatsCell::draw();
 }
 
+void HookCell::updateBGColor(int index) {
+	if (index & 1) m_backgroundLayer->setColor(ccc3(0xc2, 0x72, 0x3e));
+    else m_backgroundLayer->setColor(ccc3(0xa1, 0x58, 0x2c));
+    m_backgroundLayer->setOpacity(0xff);
+}
+
 void HookCell::onEnable(CCObject* pSender) {
     auto toggle = as<CCMenuItemToggler*>(pSender);
     if (!toggle->isToggled()) {
@@ -41,7 +47,7 @@ void HookCell::loadFromHook(Hook* hook, Mod* Mod) {
     this->m_mod = Mod;
 
     this->m_mainLayer->setVisible(true);
-    this->m_BGLayer->setOpacity(255);
+    this->m_backgroundLayer->setOpacity(255);
     
     auto menu = CCMenu::create();
     menu->setPosition(this->m_width - this->m_height, this->m_height / 2);
@@ -116,7 +122,7 @@ void HookListView::loadCell(TableViewCell* cell, unsigned int index) {
         as<HookItem*>(this->m_entries->objectAtIndex(index))->m_hook,
         this->m_mod
     );
-    as<StatsCell*>(cell)->updateBGColor(index);
+    as<HookCell*>(cell)->updateBGColor(index);
 }
 
 HookListView* HookListView::create(
@@ -126,7 +132,7 @@ HookListView* HookListView::create(
     auto pRet = new HookListView;
     if (pRet) {
         pRet->m_mod = Mod;
-        if (pRet->init(hooks, kBoomListType_Hooks, width, height)) {
+        if (pRet->init(hooks, width, height, 0, kBoomListType_Hooks)) {
             pRet->autorelease();
             return pRet;
         }
@@ -134,5 +140,3 @@ HookListView* HookListView::create(
     CC_SAFE_DELETE(pRet);
     return nullptr;
 }
-
-

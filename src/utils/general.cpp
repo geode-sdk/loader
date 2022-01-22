@@ -3,7 +3,7 @@
 #ifdef GEODE_IS_WINDOWS
 #define GEODE_CTIME() ctime_s(buf, sizeof buf, &t);
 #else
-#define GEODE_CTIME() strcpy(buf, ctime_s(&t), 128);
+#define GEODE_CTIME() strcpy(buf, ctime(&t));
 #endif
 
 std::string geode::utils::timePointAsString(const std::chrono::system_clock::time_point& tp) {

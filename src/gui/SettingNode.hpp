@@ -5,6 +5,7 @@
 #include <Geode>
 
 USE_GEODE_NAMESPACE();
+namespace geode {
 
 template<class SettingClass>
 class GeodeSettingNode : public TableViewCell {
@@ -146,5 +147,7 @@ protected:
 public:
 	static CustomSettingPlaceHolderNode* create(CustomSettingPlaceHolder* setting, float width);
 };
+
+}
 
 #pragma warning(default: 4067)

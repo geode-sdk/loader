@@ -10,7 +10,8 @@ file(GLOB CORE_SOURCES
 	src/gui/*.cpp
 	src/platform/*.cpp
 	src/utils/*.cpp
-	src/utils/platform*.cpp
+	src/utils/platform/*.cpp
+	src/CCZipUtils/*.cpp
 )
 
 add_subdirectory(core)
