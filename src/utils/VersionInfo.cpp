@@ -95,6 +95,7 @@ bool VersionInfo::match(
         case VersionInfo::Exact: return (*this) == other;
         case VersionInfo::Lower: return (*this) <= other;
         case VersionInfo::Higher:return (*this) >= other;
+        default: break;
     }
     return false;
 }

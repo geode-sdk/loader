@@ -23,10 +23,12 @@ class HookCell : public TableViewCell {
 		HookCell(const char* name, CCSize size);
 
         void draw() override;
+        
 
         void onEnable(CCObject*);
 	
 	public:
+		void updateBGColor(int index);
         void loadFromHook(Hook*, Mod*);
 
 		static HookCell* create(const char* key, CCSize size);

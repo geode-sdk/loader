@@ -11,7 +11,7 @@ protected:
 	CCLabelBMFont* m_pListLabel;
 	CCMenu* m_pMenu;
 
-	bool init();
+	bool init() override;
 
 	void onExit(CCObject*);
 	void onReload(CCObject*);

@@ -11,6 +11,7 @@ file(GLOB CORE_SOURCES
 	src/platform/*.cpp
 	src/utils/*.cpp
 	src/utils/windows*.cpp
+	src/CCZipUtils/*.cpp
 )
 
 add_subdirectory(core)

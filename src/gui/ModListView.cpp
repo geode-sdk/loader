@@ -13,7 +13,7 @@ void ModCell::loadFromMod(ModObject* Mod) {
     this->m_mod = Mod->m_mod;
 
     this->m_mainLayer->setVisible(true);
-    this->m_BGLayer->setOpacity(255);
+    this->m_backgroundLayer->setOpacity(255);
     
     auto menu = CCMenu::create();
     menu->setPosition(this->m_width - this->m_height, this->m_height / 2);
@@ -66,6 +66,12 @@ void ModCell::loadFromMod(ModObject* Mod) {
 
 void ModCell::onInfo(CCObject*) {
     ModInfoLayer::create(this->m_mod)->show();
+}
+
+void ModCell::updateBGColor(int index) {
+	if (index & 1) m_backgroundLayer->setColor(ccc3(0xc2, 0x72, 0x3e));
+    else m_backgroundLayer->setColor(ccc3(0xa1, 0x58, 0x2c));
+    m_backgroundLayer->setOpacity(0xff);
 }
 
 void ModCell::onEnable(CCObject* pSender) {
@@ -164,7 +170,7 @@ void ModListView::loadCell(TableViewCell* cell, unsigned int index) {
     as<ModCell*>(cell)->loadFromMod(
         as<ModObject*>(this->m_entries->objectAtIndex(index))
     );
-    as<StatsCell*>(cell)->updateBGColor(index);
+    as<ModCell*>(cell)->updateBGColor(index);
 }
 
 ModListView* ModListView::create(
@@ -172,7 +178,7 @@ ModListView* ModListView::create(
 ) {
     auto pRet = new ModListView;
     if (pRet) {
-        if (pRet->init(actions, kBoomListType_Mod, 356.f, 220.f)) {
+        if (pRet->init(actions, 356.f, 220.f, 0, kBoomListType_Mod)) {
             pRet->autorelease();
             return pRet;
         }

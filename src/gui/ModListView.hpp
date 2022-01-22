@@ -34,6 +34,8 @@ class ModCell : public TableViewCell {
         bool init(ModListView* list);
 
 	public:
+		void updateBGColor(int index);
+		
         void loadFromMod(ModObject*);
 
         void updateState(bool invert = false);
