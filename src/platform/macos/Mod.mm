@@ -9,18 +9,18 @@ USE_GEODE_NAMESPACE();
 Result<> Mod::loadPlatformBinary() {
 	void* dylib = dlopen((this->m_tempDirName / this->m_info.m_binaryName).string().c_str(), RTLD_NOW);
     if (dylib) {
-        this->m_loadFunc   = reinterpret_cast<geode_load>(  GetProcAddress(load, "geode_load"));
-        this->m_unloadFunc = reinterpret_cast<geode_unload>(GetProcAddress(load, "geode_unload"));
+        this->m_loadFunc   = reinterpret_cast<geode_load>(  dlsym(load, "geode_load"));
+        this->m_unloadFunc = reinterpret_cast<geode_unload>(dlsym(load, "geode_unload"));
 
         if (
             !this->m_loadFunc &&
-            !(this->m_loadFunc = reinterpret_cast<geode_load>(  GetProcAddress(load, "_geode_load@4")))
+            !(this->m_loadFunc = reinterpret_cast<geode_load>(  dlsym(load, "_geode_load@4")))
         ) {
             return Err<>("Unable to find mod entry point");
         }
         if (
             !this->m_unloadFunc &&
-            !(this->m_unloadFunc = reinterpret_cast<geode_unload>(  GetProcAddress(load, "_geode_unload@0")))
+            !(this->m_unloadFunc = reinterpret_cast<geode_unload>(  dlsym(load, "_geode_unload@0")))
         ) {
             return Err<>("Unable to find mod unload function");
         }
