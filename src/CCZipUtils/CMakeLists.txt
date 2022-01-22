@@ -8,6 +8,7 @@ add_library(CCZipUtils ${SOURCES})
 
 if("${GEODE_TARGET_PLATFORM}" STREQUAL "MacOS")
 	target_include_directories(CCZipUtils PUBLIC
+		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/SDK/Include/c++stl"
 		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/SDK/Include/cocos/cocos2dx/kazmath/include"
 	    "${CMAKE_CURRENT_LIST_DIR}/../../sdk/SDK/Include/cocos/cocos2dx/support/zip_support"
 	    "${CMAKE_CURRENT_LIST_DIR}/../../sdk/SDK/Include/cocos/cocos2dx"

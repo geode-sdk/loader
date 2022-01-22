@@ -13,11 +13,8 @@ file(GLOB CORE_SOURCES
 	src/platform/macos/*.mm
 	src/platform/ios/*.mm
 	src/utils/*.cpp
-	src/utils/platform/*.cpp
+	src/utils/platform/*
 )
-
-add_subdirectory(core)
-
 
 set(SOURCE_FILES 
 	${CORE_SOURCES}
@@ -34,7 +31,10 @@ set(LINK_DIRECTORIES
 )
 set(LINK_LIBRARIES
 	geode_core_hook
+	CCZipUtils
+	z
 )
+
 if (APPLE) 
 	set (LINK_LIBRARIES ${LINK_LIBRARIES} "-framework Cocoa")
 endif()
@@ -45,6 +45,6 @@ include(sdk/SDK/BuildFiles/cmake/Root.cmake)
 # target_compile_definitions(GeodeLoader PUBLIC "/w") // what is this
 set_target_properties(GeodeLoader PROPERTIES PREFIX "" OUTPUT_NAME "geode")
 
+add_subdirectory(core)
 add_subdirectory(src/CCZipUtils)
-target_link_libraries(GeodeLoader CCZipUtils z)
 
