@@ -17,6 +17,9 @@ ModInfo getInternalModInfo() {
 InternalMod::InternalMod() : Mod(getInternalModInfo()) {
 }
 
+InternalMod::~InternalMod() {
+}
+
 InternalMod* InternalMod::get() {
     static auto g_mod = new InternalMod;
     return g_mod;

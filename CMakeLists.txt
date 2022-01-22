@@ -11,9 +11,9 @@ file(GLOB CORE_SOURCES
 	src/platform/*.cpp
 	src/platform/windows/*.cpp
 	src/platform/macos/*.mm
+	src/platform/ios/*.mm
 	src/utils/*.cpp
 	src/utils/platform/*.cpp
-	src/CCZipUtils/*.cpp
 )
 
 add_subdirectory(core)
@@ -35,6 +35,9 @@ set(LINK_DIRECTORIES
 set(LINK_LIBRARIES
 	geode_core_hook
 )
+if (APPLE) 
+	set (LINK_LIBRARIES ${LINK_LIBRARIES} "-framework Cocoa")
+endif()
 
 add_definitions(-DGEODE_EXPORTING)
 
