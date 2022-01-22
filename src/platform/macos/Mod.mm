@@ -1,14 +1,14 @@
 #include <Geode>
 
-#ifdef GEODE_IS_WINDOWS
+#ifdef GEODE_IS_MACOS
 
-#pragma message("geode is indeed windows")
+#include <dlfcn.h>
 
 USE_GEODE_NAMESPACE();
 
 Result<> Mod::loadPlatformBinary() {
-    auto load = LoadLibraryW((this->m_tempDirName / this->m_info.m_binaryName).wstring().c_str());
-    if (load) {
+	void* dylib = dlopen((this->m_tempDirName / this->m_info.m_binaryName).string().c_str(), RTLD_NOW);
+    if (dylib) {
         this->m_loadFunc   = reinterpret_cast<geode_load>(  GetProcAddress(load, "geode_load"));
         this->m_unloadFunc = reinterpret_cast<geode_unload>(GetProcAddress(load, "geode_unload"));
 

@@ -29,8 +29,8 @@ public:
 };
 
 #ifdef GEODE_IS_WINDOWS
-#include "FileWatcherWin.hpp"
+#include <windows/FileWatcherWin.hpp>
 #endif
 #ifdef GEODE_IS_MACOS
-#include "FileWatcherMac.hpp"
+#include <macos/FileWatcherMac.hpp>
 #endif
