@@ -46,5 +46,5 @@ include(sdk/SDK/BuildFiles/cmake/Root.cmake)
 set_target_properties(GeodeLoader PROPERTIES PREFIX "" OUTPUT_NAME "geode")
 
 add_subdirectory(src/CCZipUtils)
-target_link_libraries(GeodeLoader CCZipUtils)
+target_link_libraries(GeodeLoader CCZipUtils z)
 
