@@ -12,7 +12,7 @@ file(GLOB CORE_SOURCES
 	src/platform/windows/*.cpp
 	src/platform/macos/*.mm
 	src/utils/*.cpp
-	src/utils/platform/*.cpp
+	src/utils/platform/*
 	src/CCZipUtils/*.cpp
 )
 
@@ -43,5 +43,9 @@ include(sdk/SDK/BuildFiles/cmake/Root.cmake)
 set_target_properties(GeodeLoader PROPERTIES PREFIX "" OUTPUT_NAME "geode")
 
 add_subdirectory(src/CCZipUtils)
-target_link_libraries(GeodeLoader CCZipUtils)
+target_link_libraries(GeodeLoader CCZipUtils z)
+
+if (APPLE)
+	target_link_libraries(GeodeLoader "-framework Cocoa")
+endif()
 
