@@ -6,7 +6,7 @@
 
 
 
-#if defined(CC_TARGET_OS_IPHONE) || defined(CC_TARGET_OS_MAC)
+#if defined(GEODE_IS_IOS) || defined(GEODE_IS_MACOS)
 namespace geode::fixes {
 
 #define HandlerFixFor(CCUtility)                                                                        \
