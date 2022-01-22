@@ -19,7 +19,7 @@ class $modify(CCKeyboardDispatcher) {
 class $modify(CCScheduler) {
     void update(float dt) {
         KeybindManager::get()->handleRepeats(dt);
-        Lilac::get()->executeGDThreadQueue();
+        Geode::get()->executeGDThreadQueue();
         return $CCScheduler::update(dt);
     }
 };
