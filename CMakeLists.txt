@@ -12,7 +12,7 @@ file(GLOB CORE_SOURCES
 	src/platform/windows/*.cpp
 	src/platform/macos/*.mm
 	src/utils/*.cpp
-	src/utils/windows*.cpp
+	src/utils/platform/*.cpp
 	src/CCZipUtils/*.cpp
 )
 
