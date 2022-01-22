@@ -14,7 +14,6 @@ file(GLOB CORE_SOURCES
 	src/platform/ios/*.mm
 	src/utils/*.cpp
 	src/utils/platform/*
-	src/CCZipUtils/*.cpp
 )
 
 add_subdirectory(core)
