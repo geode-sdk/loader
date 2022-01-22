@@ -19,7 +19,11 @@ struct hook_info {
 // a normal static global. the vector just 
 // gets cleared for no reason somewhere 
 // between `addHook` and `loadHooks`
-static std::vector<hook_info>* g_hooks = nullptr;
+
+inline std::vector<hook_info>& getInternalHooks() {
+	static std::vector<hook_info> ret;
+	return ret;
+}
 static bool g_readyToHook = false;
 
 Result<Hook*> Mod::addHookBase(void* addr, void* detour, Hook* hook) {
@@ -92,8 +96,7 @@ Result<Hook*> Mod::addHook(void* addr, void* detour) {
         auto hook = new Hook();
         hook->m_address = addr;
         hook->m_detour = detour;
-        if (!g_hooks) g_hooks = new std::vector<hook_info>;
-        g_hooks->push_back({ hook, this });
+        getInternalHooks().push_back({ hook, this });
         return Ok<Hook*>(hook);
     }
 }
@@ -106,7 +109,7 @@ Result<Hook*> Mod::addHook(void* addr, void* detour, void** trampoline) {
 bool Geode::loadHooks() {
     g_readyToHook = true;
     auto thereWereErrors = false;
-    for (auto const& hook : *g_hooks) {
+    for (auto const& hook : getInternalHooks()) {
         auto res = hook.mod->addHookBase(hook.hook);
         if (!res) {
             hook.mod->throwError(
@@ -117,8 +120,6 @@ bool Geode::loadHooks() {
         }
     }
     // free up memory
-    g_hooks->clear();
-    delete g_hooks;
-    g_hooks = nullptr;
+    getInternalHooks().clear();
     return !thereWereErrors;
 }

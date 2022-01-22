@@ -226,8 +226,10 @@ void Geode::closePlatformConsole() {
 }
 
 #elif defined(GEODE_IS_MACOS)
+#include <iostream>
 
 void Geode::platformMessageBox(const char* title, const char* info) {
+	std::cout << title << ": " << info << std::endl;
 }
 
 void Geode::setupPlatformConsole() {
