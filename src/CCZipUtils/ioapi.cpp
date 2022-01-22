@@ -148,6 +148,11 @@ static long ZCALLBACK ftell_file_func (voidpf opaque, voidpf stream)
 }
 
 
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+    #define ftello(a) ftell(a)
+    #define fseeko(a, b, c) fseek(a, b, c)
+#endif
+
 static ZPOS64_T ZCALLBACK ftell64_file_func (voidpf opaque, voidpf stream)
 {
     ZPOS64_T ret;

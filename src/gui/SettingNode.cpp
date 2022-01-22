@@ -33,13 +33,13 @@ bool BoolSettingNode::init(BoolSetting* setting) {
 	);
 	toggle->setPosition(0, 0);
 	toggle->toggle(setting->m_value);
-	m_pMenu->addChild(toggle);
+	m_buttonMenu->addChild(toggle);
 
 	return true;
 }
 
 void BoolSettingNode::onToggle(CCObject* pSender) {
-	this->m_pSetting->m_value = !as<CCMenuItemToggler*>(pSender)->isToggled();
+	this->m_setting->m_value = !as<CCMenuItemToggler*>(pSender)->isToggled();
 }
 
 // int
@@ -48,10 +48,10 @@ bool IntSettingNode::init(IntSetting* setting) {
 	if (!GeodeSettingNode<IntSetting>::init(setting))
 		return false;
 	
-	m_pValueLabel = CCLabelBMFont::create("", "bigFont.fnt");
-	m_pValueLabel->setPosition(-20, 0);
-	m_pValueLabel->setScale(.5f);
-	m_pMenu->addChild(m_pValueLabel);
+	m_valueLabel = CCLabelBMFont::create("", "bigFont.fnt");
+	m_valueLabel->setPosition(-20, 0);
+	m_valueLabel->setScale(.5f);
+	m_buttonMenu->addChild(m_valueLabel);
 
 	if (setting->m_arrows) {
 		auto decSpr = CCSprite::createWithSpriteFrameName("navArrowBtn_001.png");
@@ -63,7 +63,7 @@ bool IntSettingNode::init(IntSetting* setting) {
 		);
 		decBtn->setTag(-1);
 		decBtn->setPosition(-40.f, 0);
-		m_pMenu->addChild(decBtn);
+		m_buttonMenu->addChild(decBtn);
 
 		auto incSpr = CCSprite::createWithSpriteFrameName("navArrowBtn_001.png");
 		incSpr->setScale(.6f);
@@ -73,7 +73,7 @@ bool IntSettingNode::init(IntSetting* setting) {
 		);
 		incBtn->setTag(1);
 		incBtn->setPosition(0.f, 0);
-		m_pMenu->addChild(incBtn);
+		m_buttonMenu->addChild(incBtn);
 	}
 
 	this->updateValue();
@@ -82,18 +82,18 @@ bool IntSettingNode::init(IntSetting* setting) {
 }
 
 void IntSettingNode::onArrow(CCObject* pSender) {
-	m_pSetting->m_value += pSender->getTag();
-	if (m_pSetting->m_value < m_pSetting->m_min) {
-		m_pSetting->m_value = m_pSetting->m_min;
+	m_setting->m_value += pSender->getTag();
+	if (m_setting->m_value < m_setting->m_min) {
+		m_setting->m_value = m_setting->m_min;
 	}
-	if (m_pSetting->m_value > m_pSetting->m_max) {
-		m_pSetting->m_value = m_pSetting->m_max;
+	if (m_setting->m_value > m_setting->m_max) {
+		m_setting->m_value = m_setting->m_max;
 	}
 	this->updateValue();
 }
 
 void IntSettingNode::updateValue() {
-	m_pValueLabel->setString(std::to_string(m_pSetting->m_value).c_str());
+	m_valueLabel->setString(std::to_string(m_setting->m_value).c_str());
 }
 
 // float
@@ -102,10 +102,10 @@ bool FloatSettingNode::init(FloatSetting* setting) {
 	if (!GeodeSettingNode<FloatSetting>::init(setting))
 		return false;
 	
-	m_pValueLabel = CCLabelBMFont::create("", "bigFont.fnt");
-	m_pValueLabel->setPosition(-20, 0);
-	m_pValueLabel->setScale(.5f);
-	m_pMenu->addChild(m_pValueLabel);
+	m_valueLabel = CCLabelBMFont::create("", "bigFont.fnt");
+	m_valueLabel->setPosition(-20, 0);
+	m_valueLabel->setScale(.5f);
+	m_buttonMenu->addChild(m_valueLabel);
 
 	if (setting->m_arrows) {
 		auto decSpr = CCSprite::createWithSpriteFrameName("navArrowBtn_001.png");
@@ -117,7 +117,7 @@ bool FloatSettingNode::init(FloatSetting* setting) {
 		);
 		decBtn->setTag(-1);
 		decBtn->setPosition(-40.f, 0);
-		m_pMenu->addChild(decBtn);
+		m_buttonMenu->addChild(decBtn);
 
 		auto incSpr = CCSprite::createWithSpriteFrameName("navArrowBtn_001.png");
 		incSpr->setScale(.6f);
@@ -127,7 +127,7 @@ bool FloatSettingNode::init(FloatSetting* setting) {
 		);
 		incBtn->setTag(1);
 		incBtn->setPosition(0.f, 0);
-		m_pMenu->addChild(incBtn);
+		m_buttonMenu->addChild(incBtn);
 	}
 
 	this->updateValue();
@@ -136,18 +136,18 @@ bool FloatSettingNode::init(FloatSetting* setting) {
 }
 
 void FloatSettingNode::onArrow(CCObject* pSender) {
-	m_pSetting->m_value += pSender->getTag();
-	if (m_pSetting->m_value < m_pSetting->m_min) {
-		m_pSetting->m_value = m_pSetting->m_min;
+	m_setting->m_value += pSender->getTag();
+	if (m_setting->m_value < m_setting->m_min) {
+		m_setting->m_value = m_setting->m_min;
 	}
-	if (m_pSetting->m_value > m_pSetting->m_max) {
-		m_pSetting->m_value = m_pSetting->m_max;
+	if (m_setting->m_value > m_setting->m_max) {
+		m_setting->m_value = m_setting->m_max;
 	}
 	this->updateValue();
 }
 
 void FloatSettingNode::updateValue() {
-	m_pValueLabel->setString(std::to_string(m_pSetting->m_value).c_str());
+	m_valueLabel->setString(std::to_string(m_setting->m_value).c_str());
 }
 
 // string
@@ -201,13 +201,13 @@ bool CustomSettingPlaceHolderNode::init(CustomSettingPlaceHolder* setting) {
 	if (!CCNode::init())
 		return false;
 
-	this->setContentSize({ m_fWidth, m_fHeight });
+	this->setContentSize({ m_width, m_height });
 
 	auto text = "This setting (" + setting->getKey() + ") is a custom setting\n which has "
 		"no registered setting node.";
 	auto label = CCLabelBMFont::create(text.c_str(), "bigFont.fnt");
 	label->setAnchorPoint({ .0f, .5f });
-	label->setPosition(m_fHeight / 2, m_fHeight / 2);
+	label->setPosition(m_height / 2, m_height / 2);
 	label->setScale(.4f);
 	this->addChild(label);
 

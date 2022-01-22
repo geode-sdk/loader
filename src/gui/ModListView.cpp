@@ -1,5 +1,6 @@
 #include "ModListView.hpp"
 #include "ModInfoLayer.hpp"
+#include <WackyGeodeMacros>
 
 ModCell::ModCell(const char* name, CCSize size) :
     TableViewCell(name, size.width, size.height) {}
@@ -74,8 +75,8 @@ void ModCell::onEnable(CCObject* pSender) {
             FLAlertLayer::create(
                 nullptr,
                 "Error Enabling Mod",
-                "OK", nullptr,
-                res.error()
+                res.error(),
+                "OK", nullptr
             )->show();
         }
     } else {
@@ -84,8 +85,8 @@ void ModCell::onEnable(CCObject* pSender) {
             FLAlertLayer::create(
                 nullptr,
                 "Error Disabling Mod",
-                "OK", nullptr,
-                res.error()
+                res.error(),
+                "OK", nullptr
             )->show();
         }
     }
@@ -102,8 +103,9 @@ void ModCell::onUnresolvedInfo(CCObject* pSender) {
     FLAlertLayer::create(
         nullptr,
         "Unresolved Dependencies",
+        info,
         "OK", nullptr,
-        400.f, info
+        400.f 
     )->show();
 }
 
@@ -136,31 +138,31 @@ ModCell* ModCell::create(ModListView* list, const char* key, CCSize size) {
 
 
 void ModListView::updateAllStates(ModCell* toggled) {
-    CCARRAY_FOREACH_B_TYPE(this->m_pTableView->m_pCellArray, cell, ModCell) {
+    CCARRAY_FOREACH_B_TYPE(this->m_tableView->m_cellArray, cell, ModCell) {
         cell->updateState(toggled == cell);
     }
 }
 
 void ModListView::setupList() {
-    this->m_fItemSeparation = 40.0f;
+    this->m_itemSeparation = 40.0f;
 
-    if (!this->m_pEntries->count()) return;
+    if (!this->m_entries->count()) return;
 
-    this->m_pTableView->reloadData();
+    this->m_tableView->reloadData();
 
-    if (this->m_pEntries->count() == 1)
-        this->m_pTableView->moveToTopWithOffset(this->m_fItemSeparation);
+    if (this->m_entries->count() == 1)
+        this->m_tableView->moveToTopWithOffset(this->m_itemSeparation);
     
-    this->m_pTableView->moveToTop();
+    this->m_tableView->moveToTop();
 }
 
 TableViewCell* ModListView::getListCell(const char* key) {
-    return ModCell::create(this, key, { this->m_width, this->m_fItemSeparation });
+    return ModCell::create(this, key, { this->m_width, this->m_itemSeparation });
 }
 
 void ModListView::loadCell(TableViewCell* cell, unsigned int index) {
     as<ModCell*>(cell)->loadFromMod(
-        as<ModObject*>(this->m_pEntries->objectAtIndex(index))
+        as<ModObject*>(this->m_entries->objectAtIndex(index))
     );
     as<StatsCell*>(cell)->updateBGColor(index);
 }

@@ -2,36 +2,35 @@
 
 #pragma warning(disable: 4067)
 
-#include <Setting.hpp>
-#include <utils.hpp>
+#include <Geode>
 
 USE_GEODE_NAMESPACE();
 
 template<class SettingClass>
 class GeodeSettingNode : public TableViewCell {
 protected:
-	SettingClass* m_pSetting;
-	CCMenu* m_pMenu;
-	CCLabelBMFont* m_pNameLabel;
+	SettingClass* m_setting;
+	CCMenu* m_buttonMenu;
+	CCLabelBMFont* m_nameLabel;
 
 	bool init(SettingClass* setting) {
 		if (!CCNode::init())
 			return false;
 		
-		m_pSetting = setting;
+		m_setting = setting;
 
-		this->setContentSize({ m_fWidth, m_fHeight });
+		this->setContentSize({ m_width, m_height });
 
 		auto text = setting->getName().size() ? setting->getName() : setting->getKey();
-		m_pNameLabel = CCLabelBMFont::create(text.c_str(), "bigFont.fnt");
-		m_pNameLabel->setAnchorPoint({ .0f, .5f });
-		m_pNameLabel->setPosition(m_fHeight / 2, m_fHeight / 2);
-		m_pNameLabel->setScale(.5f);
-		this->addChild(m_pNameLabel);
+		m_nameLabel = CCLabelBMFont::create(text.c_str(), "bigFont.fnt");
+		m_nameLabel->setAnchorPoint({ .0f, .5f });
+		m_nameLabel->setPosition(m_height / 2, m_height / 2);
+		m_nameLabel->setScale(.5f);
+		this->addChild(m_nameLabel);
 
-		m_pMenu = CCMenu::create();
-		m_pMenu->setPosition(m_fWidth - m_fHeight / 2, m_fHeight / 2);
-		this->addChild(m_pMenu);
+		m_buttonMenu = CCMenu::create();
+		m_buttonMenu->setPosition(m_width - m_height / 2, m_height / 2);
+		this->addChild(m_buttonMenu);
 
 		CCDirector::sharedDirector()->getTouchDispatcher()->incrementForcePrio(2);
 		this->registerWithTouchDispatcher();
@@ -60,7 +59,7 @@ public:
 
 class IntSettingNode : public GeodeSettingNode<IntSetting> {
 protected:
-	CCLabelBMFont* m_pValueLabel;
+	CCLabelBMFont* m_valueLabel;
 
 	bool init(IntSetting* setting);
 
@@ -75,7 +74,7 @@ public:
 
 class FloatSettingNode : public GeodeSettingNode<FloatSetting> {
 protected:
-	CCLabelBMFont* m_pValueLabel;
+	CCLabelBMFont* m_valueLabel;
 
 	bool init(FloatSetting* setting);
 

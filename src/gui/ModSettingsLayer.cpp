@@ -2,7 +2,7 @@
 #include "ModSettingsListView.hpp"
 
 bool ModSettingsLayer::init(Mod* mod) {
-    this->m_bNoElasticity = true;
+    this->m_noElasticity = true;
 
     this->m_mod = mod;
 
@@ -10,16 +10,16 @@ bool ModSettingsLayer::init(Mod* mod) {
 	CCSize size { 420.f, 280.f };
 
     if (!this->initWithColor({ 0, 0, 0, 105 })) return false;
-    this->m_pLayer = CCLayer::create();
-    this->addChild(this->m_pLayer);
+    this->m_mainLayer = CCLayer::create();
+    this->addChild(this->m_mainLayer);
 
     auto bg = CCScale9Sprite::create("GJ_square02.png", { 0.0f, 0.0f, 80.0f, 80.0f });
     bg->setContentSize(size);
     bg->setPosition(winSize.width / 2, winSize.height / 2);
-    this->m_pLayer->addChild(bg);
+    this->m_mainLayer->addChild(bg);
 
-    this->m_pButtonMenu = CCMenu::create();
-    this->m_pLayer->addChild(this->m_pButtonMenu);
+    this->m_buttonMenu = CCMenu::create();
+    this->m_mainLayer->addChild(this->m_buttonMenu);
 
 	auto nameStr = this->m_mod->getName() + " Settings";
     auto nameLabel = CCLabelBMFont::create(
@@ -27,11 +27,11 @@ bool ModSettingsLayer::init(Mod* mod) {
     );
     nameLabel->setPosition(winSize.width / 2, winSize.height / 2 + 110.f);
     nameLabel->setScale(.7f);
-    this->m_pLayer->addChild(nameLabel, 2); 
+    this->m_mainLayer->addChild(nameLabel, 2); 
 
 	auto settings = ModSettingsListView::create(mod, 300.f, 200.f);
 	settings->setPosition(winSize.width / 2 - 150.f, winSize.height / 2 - 100.f);
-	this->m_pLayer->addChild(settings);
+	this->m_mainLayer->addChild(settings);
 
     CCDirector::sharedDirector()->getTouchDispatcher()->incrementForcePrio(2);
     this->registerWithTouchDispatcher();
@@ -46,7 +46,7 @@ bool ModSettingsLayer::init(Mod* mod) {
     );
     closeBtn->setUserData(reinterpret_cast<void*>(this));
 
-    this->m_pButtonMenu->addChild(closeBtn);
+    this->m_buttonMenu->addChild(closeBtn);
 
     closeBtn->setPosition( - size.width / 2, size.height / 2 );
 
