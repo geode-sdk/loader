@@ -1,7 +1,5 @@
 #pragma once
 
-#include "FileWatcher.hpp"
-
 #ifdef GEODE_IS_MACOS
 
 class FileWatcherMac : public FileWatcherBase<FileWatcherMac> {

@@ -1,4 +1,4 @@
-#include "FileWatcherMac.hpp"
+#include <FileWatcher.hpp>
 
 #ifdef GEODE_IS_MACOS
 

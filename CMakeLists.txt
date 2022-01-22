@@ -9,6 +9,8 @@ file(GLOB CORE_SOURCES
 	src/internal/*.cpp
 	src/gui/*.cpp
 	src/platform/*.cpp
+	src/platform/windows/*.cpp
+	src/platform/macos/*.mm
 	src/utils/*.cpp
 	src/utils/windows*.cpp
 	src/CCZipUtils/*.cpp
@@ -18,11 +20,11 @@ add_subdirectory(core)
 
 
 set(SOURCE_FILES 
-	src/internal/FileWatcherMac.mm 
 	${CORE_SOURCES}
 )
 set(INCLUDE_DIRECTORIES
 	src/internal/
+	src/platform/
 	src/gui/
 	core/include/
 	core/include/geode/core
