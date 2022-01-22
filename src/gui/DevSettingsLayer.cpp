@@ -19,8 +19,7 @@ bool DevSettingsLayer::init(Mod* mod) {
 	);
 
 	this->m_input = CCTextInputNode::create(
-		"Path to .geode file", this, "chatFont.fnt",
-		200.f, 50.f
+		200.f, 50.f, "Path to .geode file", this, "chatFont.fnt"
 	);
 	auto path = Geode::get()->getHotReloadPath(mod);
 	if (path.size()) {
@@ -31,11 +30,12 @@ bool DevSettingsLayer::init(Mod* mod) {
 	this->m_mainLayer->addChild(this->m_input);
 
 	auto spr = ButtonSprite::create(
-		"Paste From Clipboard", 0, 0, "bigFont.fnt", "GJ_button_01.png", 0, .8f
+		"Paste From Clipboard"
+		// , 0, 0, 1.0f, "bigFont.fnt", "GJ_button_01.png", 0, .8f
 	);
 	spr->setScale(.45f);
 	auto btn = CCMenuItemSpriteExtra::create(
-		spr, this, menu_selector(DevSettingsLayer::onPastePathFromClipboard)
+		spr, nullptr, this, menu_selector(DevSettingsLayer::onPastePathFromClipboard)
 	);
 	btn->setPosition(0, -40.f);
 	menu->addChild(btn);
@@ -52,8 +52,9 @@ void DevSettingsLayer::onEnableHotReload(CCObject* pSender) {
 			FLAlertLayer::create(
 				nullptr,
 				"Error",
-				"OK", nullptr,
-				"Set a .geode file path first"
+				"OK", 
+				"Set a .geode file path first",
+				nullptr
 			)->show();
 			as<CCMenuItemToggler*>(pSender)->toggle(true);
 		} else {
@@ -62,8 +63,9 @@ void DevSettingsLayer::onEnableHotReload(CCObject* pSender) {
 				FLAlertLayer::create(
 					nullptr,
 					"Error",
-					"OK", nullptr,
-					res.error()
+					"OK", 
+					res.error().c_str(),
+					nullptr
 				)->show();
 			}
 		}

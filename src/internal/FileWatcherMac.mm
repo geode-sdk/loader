@@ -1,8 +1,9 @@
-#include "FileWatcherMac.mm"
+#include "FileWatcherMac.hpp"
+
+#ifdef GEODE_IS_MAC
+
 #import <Cocoa/Cocoa.h>
 #include <iostream>
-
-#ifdef GEODE_IS_WINDOWS
 
 static constexpr const auto notifyAttributes = FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_ATTRIBUTES | FILE_NOTIFY_CHANGE_SIZE;
 

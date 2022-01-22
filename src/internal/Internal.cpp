@@ -116,8 +116,6 @@ std::string Geode::getHotReloadPath(Mod* mod) const {
     return this->m_hotReloads.at(mod)->path().string();
 }
 
-#ifdef GEODE_IS_WINDOWS
-
 void Geode::queueConsoleMessage(LogMessage* msg) {
     this->m_logQueue.push_back(msg);
 }
@@ -125,6 +123,8 @@ void Geode::queueConsoleMessage(LogMessage* msg) {
 bool Geode::platformConsoleReady() const {
     return m_platformConsoleReady;
 }
+
+#if defined(GEODE_IS_WINDOWS)
 
 void Geode::platformMessageBox(const char* title, const char* info) {
     MessageBoxA(nullptr, title, info, MB_OK);
@@ -223,6 +223,20 @@ void Geode::closePlatformConsole() {
     fclose(stdin);
     fclose(stdout);
     FreeConsole();
+}
+
+#elif defined(GEODE_IS_MACOS)
+
+void Geode::platformMessageBox(const char* title, const char* info) {
+}
+
+void Geode::setupPlatformConsole() {
+}
+
+void Geode::awaitPlatformConsole() {
+}
+
+void Geode::closePlatformConsole() {
 }
 
 #endif

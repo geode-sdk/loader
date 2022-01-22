@@ -14,9 +14,10 @@ file(GLOB CORE_SOURCES
 )
 
 add_subdirectory(core)
-add_subdirectory(src/CCZipUtils)
 
-set(SOURCE_FILES
+
+set(SOURCE_FILES 
+	src/internal/FileWatcherMac.mm 
 	${CORE_SOURCES}
 )
 set(INCLUDE_DIRECTORIES
@@ -35,8 +36,9 @@ set(LINK_LIBRARIES
 add_definitions(-DGEODE_EXPORTING)
 
 include(sdk/SDK/BuildFiles/cmake/Root.cmake)
-target_compile_definitions(GeodeLoader PUBLIC "/w")
+# target_compile_definitions(GeodeLoader PUBLIC "/w") // what is this
 set_target_properties(GeodeLoader PROPERTIES PREFIX "" OUTPUT_NAME "geode")
 
+add_subdirectory(src/CCZipUtils)
 target_link_libraries(GeodeLoader CCZipUtils)
 
