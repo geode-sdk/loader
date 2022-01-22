@@ -13,7 +13,6 @@ file(GLOB CORE_SOURCES
 	src/platform/macos/*.mm
 	src/utils/*.cpp
 	src/utils/platform/*.cpp
-	src/CCZipUtils/*.cpp
 )
 
 add_subdirectory(core)
