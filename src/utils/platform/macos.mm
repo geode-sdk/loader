@@ -16,7 +16,7 @@ bool utils::clipboard::write(std::string const& data) {
 }
 
 std::string utils::clipboard::read() {
-	return [[NSPasteboard generalPasteboard] stringForType: NSPasteboardTypeString];
+	return std::string([[[NSPasteboard generalPasteboard] stringForType: NSPasteboardTypeString] UTF8String]);
 }
 
 #endif
