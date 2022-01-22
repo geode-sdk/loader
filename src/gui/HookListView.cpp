@@ -1,4 +1,7 @@
 #include "HookListView.hpp"
+#ifdef GEODE_IS_WINDOWS
+#include <filesystem>
+#endif
 
 HookCell::HookCell(const char* name, CCSize size) :
     TableViewCell(name, size.width, size.height) {}
@@ -54,6 +57,7 @@ void HookCell::loadFromHook(Hook* hook, Mod* Mod) {
     std::stringstream moduleName;
     auto addr = hook->getAddress();
 
+    #ifdef GEODE_IS_WINDOWS // add other platforms?
     HMODULE module;
     if (GetModuleHandleExA(
         GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
@@ -70,6 +74,7 @@ void HookCell::loadFromHook(Hook* hook, Mod* Mod) {
             moduleName << fileName.string() << " + ";
         }
     }
+    #endif
 
     moduleName << "0x" << std::hex << addr;
     auto label = CCLabelBMFont::create(moduleName.str().c_str(), "bigFont.fnt");
@@ -90,7 +95,7 @@ HookCell* HookCell::create(const char* key, CCSize size) {
 
 
 void HookListView::setupList() {
-    this->m_fItemSeparation = 30.0f;
+    this->m_itemSeparation = 30.0f;
 
     if (!this->m_pEntries->count()) return;
 
