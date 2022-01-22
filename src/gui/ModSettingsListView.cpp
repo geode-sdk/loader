@@ -2,21 +2,21 @@
 
 bool ModSettingsListView::init(Mod* mod, float width, float height) {
 	this->m_mod = mod;
-	this->m_pDelegate = nullptr;
-	this->m_bCutContent = true;
-	this->m_bDisableVertical = false;
+	this->m_delegate = nullptr;
+	this->m_cutContent = true;
+	this->m_disableVertical = false;
 
 	float offset = 0.f;
 	for (auto const& sett : mod->getSettings()) {
 		auto node = sett->generate(width);
 		if (node) {
 			node->setPosition(0.f, offset);
-			this->m_pContentLayer->addChild(node);
-			offset += node->m_fHeight;
+			this->m_contentLayer->addChild(node);
+			offset += node->m_height;
 		}
 	}
 
-	this->m_pContentLayer->setContentSize({ width, offset });
+	this->m_contentLayer->setContentSize({ width, offset });
 
 	this->moveToTop();
 

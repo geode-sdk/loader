@@ -4,7 +4,7 @@
 #include "ModSettingsLayer.hpp"
 
 bool ModInfoLayer::init(Mod* mod) {
-    this->m_bNoElasticity = true;
+    this->m_noElasticity = true;
 
     this->m_mod = mod;
 
@@ -12,23 +12,23 @@ bool ModInfoLayer::init(Mod* mod) {
 	CCSize size { 420.f, 280.f };
 
     if (!this->initWithColor({ 0, 0, 0, 105 })) return false;
-    this->m_pLayer = CCLayer::create();
-    this->addChild(this->m_pLayer);
+    this->m_mainLayer = CCLayer::create();
+    this->addChild(this->m_mainLayer);
 
     auto bg = CCScale9Sprite::create("GJ_square01.png", { 0.0f, 0.0f, 80.0f, 80.0f });
     bg->setContentSize(size);
     bg->setPosition(winSize.width / 2, winSize.height / 2);
-    this->m_pLayer->addChild(bg);
+    this->m_mainLayer->addChild(bg);
 
-    this->m_pButtonMenu = CCMenu::create();
-    this->m_pLayer->addChild(this->m_pButtonMenu);
+    this->m_buttonMenu = CCMenu::create();
+    this->m_mainLayer->addChild(this->m_buttonMenu);
 
     auto nameLabel = CCLabelBMFont::create(
         this->m_mod->getName().c_str(), "bigFont.fnt"
     );
     nameLabel->setPosition(winSize.width / 2, winSize.height / 2 + 110.f);
     nameLabel->setScale(.7f);
-    this->m_pLayer->addChild(nameLabel, 2); 
+    this->m_mainLayer->addChild(nameLabel, 2); 
 
     auto creatorStr = "by " + this->m_mod->getDeveloper();
     auto creatorLabel = CCLabelBMFont::create(
@@ -36,7 +36,7 @@ bool ModInfoLayer::init(Mod* mod) {
     );
     creatorLabel->setPosition(winSize.width / 2, winSize.height / 2 + 85.f);
     creatorLabel->setScale(.8f);
-    this->m_pLayer->addChild(creatorLabel);
+    this->m_mainLayer->addChild(creatorLabel);
 
     auto descBG = CCScale9Sprite::create("square02b_001.png");
     descBG->setPosition(winSize.width / 2, winSize.height / 2 + 30.f);
@@ -44,7 +44,7 @@ bool ModInfoLayer::init(Mod* mod) {
     descBG->setScale(.5f);
     descBG->setOpacity(100);
     descBG->setColor(cc3x(0));
-    this->m_pLayer->addChild(descBG);
+    this->m_mainLayer->addChild(descBG);
 
     auto desc = this->m_mod->getDetails().size() ?
         this->m_mod->getDetails() :
@@ -55,7 +55,7 @@ bool ModInfoLayer::init(Mod* mod) {
         1.0f, 330.f, 50.f, { .5f, .5f } 
     );
     descLabel->setPosition({ winSize.width / 2, winSize.height / 2 + 30.f });
-    this->m_pLayer->addChild(descLabel, 2);
+    this->m_mainLayer->addChild(descLabel, 2);
 
     auto creditsBG = CCScale9Sprite::create("square02b_001.png");
     creditsBG->setPosition(winSize.width / 2, winSize.height / 2 - 50.f);
@@ -63,7 +63,7 @@ bool ModInfoLayer::init(Mod* mod) {
     creditsBG->setScale(.5f);
     creditsBG->setOpacity(100);
     creditsBG->setColor(cc3x(0));
-    this->m_pLayer->addChild(creditsBG);
+    this->m_mainLayer->addChild(creditsBG);
 
     auto credits = this->m_mod->getCredits().size() ?
         "Credits: " + this->m_mod->getCredits() :
@@ -74,7 +74,7 @@ bool ModInfoLayer::init(Mod* mod) {
         1.0f, 300.f, 50.f, { .5f, .5f } 
     );
     creditsLabel->setPosition({ winSize.width / 2, winSize.height / 2 - 50.f });
-    this->m_pLayer->addChild(creditsLabel, 2);
+    this->m_mainLayer->addChild(creditsLabel, 2);
 
 
     auto hooksSpr = ButtonSprite::create(
@@ -89,7 +89,7 @@ bool ModInfoLayer::init(Mod* mod) {
         -size.width / 2 + 45.f,
         -size.height / 2 + 25.f
     );
-    this->m_pButtonMenu->addChild(hooksBtn);
+    this->m_buttonMenu->addChild(hooksBtn);
 
 
     auto settingsSpr = ButtonSprite::create(
@@ -104,7 +104,7 @@ bool ModInfoLayer::init(Mod* mod) {
         0.f,
         -size.height / 2 + 25.f
     );
-    this->m_pButtonMenu->addChild(settingsBtn);
+    this->m_buttonMenu->addChild(settingsBtn);
 
 
     auto devSpr = ButtonSprite::create(
@@ -119,7 +119,7 @@ bool ModInfoLayer::init(Mod* mod) {
         size.width / 2 - 65.f,
         -size.height / 2 + 25.f
     );
-    this->m_pButtonMenu->addChild(devBtn);
+    this->m_buttonMenu->addChild(devBtn);
 
 
     CCDirector::sharedDirector()->getTouchDispatcher()->incrementForcePrio(2);
@@ -135,7 +135,7 @@ bool ModInfoLayer::init(Mod* mod) {
     );
     closeBtn->setUserData(reinterpret_cast<void*>(this));
 
-    this->m_pButtonMenu->addChild(closeBtn);
+    this->m_buttonMenu->addChild(closeBtn);
 
     closeBtn->setPosition( - size.width / 2, size.height / 2 );
 

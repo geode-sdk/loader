@@ -17,9 +17,9 @@ void HookCell::onEnable(CCObject* pSender) {
         if (!res) {
             FLAlertLayer::create(
                 nullptr, "Error Enabling Hook",
+                std::string(res.error()),
                 "OK", nullptr,
-                280.f,
-                std::string(res.error())
+                280.f
             )->show();
         }
     } else {
@@ -27,9 +27,9 @@ void HookCell::onEnable(CCObject* pSender) {
         if (!res) {
             FLAlertLayer::create(
                 nullptr, "Error Disabling Hook",
+                std::string(res.error()),
                 "OK", nullptr,
-                280.f,
-                std::string(res.error())
+                280.f
             )->show();
         }
     }
@@ -97,23 +97,23 @@ HookCell* HookCell::create(const char* key, CCSize size) {
 void HookListView::setupList() {
     this->m_itemSeparation = 30.0f;
 
-    if (!this->m_pEntries->count()) return;
+    if (!this->m_entries->count()) return;
 
-    this->m_pTableView->reloadData();
+    this->m_tableView->reloadData();
 
-    if (this->m_pEntries->count() == 1)
-        this->m_pTableView->moveToTopWithOffset(this->m_fItemSeparation);
+    if (this->m_entries->count() == 1)
+        this->m_tableView->moveToTopWithOffset(this->m_itemSeparation);
     
-    this->m_pTableView->moveToTop();
+    this->m_tableView->moveToTop();
 }
 
 TableViewCell* HookListView::getListCell(const char* key) {
-    return HookCell::create(key, { this->m_width, this->m_fItemSeparation });
+    return HookCell::create(key, CCSize { this->m_width, this->m_itemSeparation });
 }
 
 void HookListView::loadCell(TableViewCell* cell, unsigned int index) {
     as<HookCell*>(cell)->loadFromHook(
-        as<HookItem*>(this->m_pEntries->objectAtIndex(index))->m_hook,
+        as<HookItem*>(this->m_entries->objectAtIndex(index))->m_hook,
         this->m_mod
     );
     as<StatsCell*>(cell)->updateBGColor(index);
