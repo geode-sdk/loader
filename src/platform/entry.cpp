@@ -2,23 +2,41 @@
 
 int geodeEntry(void* platformData) {
     // setup internals
-    std::cout << "111" << std::endl;
-    auto a = geode::core::hook::initialize();
+
+    if (!Geode::get()) {
+        Geode::platformMessageBox(
+            "Unable to Load Geode!",
+            "There was an unknown fatal error setting up "
+            "internal tools and Geode can not be loaded. "
+            "(Geode::get returned nullptr)"
+        );
+    }
+
+    if (!geode::core::hook::initialize()) {
+        Geode::platformMessageBox(
+            "Unable to load Geode!",
+            "There was an unknown fatal error setting up "
+            "internal tools and Geode can not be loaded. "
+            "(Unable to set up hook manager)"
+        );
+    }
+
     Interface::get()->init(InternalMod::get());
+
     if (!Geode::get()->setup()) {
         // if we've made it here, Geode will 
         // be gettable (otherwise the call to 
         // setup would've immediately crashed)
 
-        Geode::get()->platformMessageBox(
+        Geode::platformMessageBox(
             "Unable to Load Geode!",
             "There was an unknown fatal error setting up "
-            "internal tools and Geode can not be loaded."
+            "internal tools and Geode can not be loaded. "
+            "(Geode::setup) returned false"
         );
         return 1;
     }
 
-    std::cout << "222" << std::endl;
     InternalMod::get()->log()
         << Severity::Debug
         << "Loaded internal Geode class"
@@ -35,7 +53,6 @@ int geodeEntry(void* platformData) {
         return 1;
     }
 
-    std::cout << "333" << std::endl;
     InternalMod::get()->log()
         << Severity::Debug
         << "Set up loader"

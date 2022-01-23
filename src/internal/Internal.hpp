@@ -42,5 +42,5 @@ public:
 	void setupPlatformConsole();
 	void awaitPlatformConsole();
 	void closePlatformConsole();
-	void platformMessageBox(const char* title, const char* info);
+	static void platformMessageBox(const char* title, const char* info);
 };
