@@ -2,6 +2,7 @@
 
 int geodeEntry(void* platformData) {
     // setup internals
+    Interface::get()->init(InternalMod::get());
     if (!Geode::get()->setup()) {
         // if we've made it here, Geode will 
         // be gettable (otherwise the call to 
