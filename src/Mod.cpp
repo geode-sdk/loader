@@ -264,10 +264,10 @@ void Mod::throwError(
     );
     Loader::get()->log(log);
     #ifdef GEODE_PLATFORM_CONSOLE
-    if (geode::get()->platformConsoleReady()) {
+    if (Geode::get()->platformConsoleReady()) {
         std::cout << log->toString(true) << "\n";
     } else {
-        geode::get()->queueConsoleMessage(log);
+        Geode::get()->queueConsoleMessage(log);
     }
     #endif
 }

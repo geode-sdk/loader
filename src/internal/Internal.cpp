@@ -233,6 +233,7 @@ void Geode::platformMessageBox(const char* title, const char* info) {
 }
 
 void Geode::setupPlatformConsole() {
+    m_platformConsoleReady = true;
 }
 
 void Geode::awaitPlatformConsole() {

@@ -107,7 +107,7 @@ void LogStream::log() {
     Loader::get()->log(this->m_log);
 
     #ifdef GEODE_PLATFORM_CONSOLE
-    if (geode::get()->platformConsoleReady()) {
+    if (Geode::get()->platformConsoleReady()) {
         std::cout << this->m_log->toString(true);
     }
     #endif
@@ -117,10 +117,10 @@ void LogStream::finish() {
     this->log();
 
     #ifdef GEODE_PLATFORM_CONSOLE
-    if (geode::get()->platformConsoleReady()) {
+    if (Geode::get()->platformConsoleReady()) {
         std::cout << "\n";
     } else {
-        geode::get()->queueConsoleMessage(this->m_log);
+        Geode::get()->queueConsoleMessage(this->m_log);
     }
     #endif
 
