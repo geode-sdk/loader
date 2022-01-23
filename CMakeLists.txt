@@ -35,7 +35,6 @@ set(LINK_DIRECTORIES
 set(LINK_LIBRARIES
 	geode_core_hook
 	CCZipUtils
-	z
 )
 
 if (APPLE) 
