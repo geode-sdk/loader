@@ -6,6 +6,7 @@ int geodeEntry(void* platformData) {
         // if we've made it here, Geode will 
         // be gettable (otherwise the call to 
         // setup would've immediately crashed)
+
         Geode::get()->platformMessageBox(
             "Unable to Load Geode!",
             "There was an unknown fatal error setting up "
