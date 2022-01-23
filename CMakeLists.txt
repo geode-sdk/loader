@@ -15,8 +15,8 @@ file(GLOB CORE_SOURCES
 	src/platform/ios/*.mm
 	src/utils/*.cpp
 	src/utils/platform/*
-	src/hooks/*.cpp
-	src/keybinds/*.cpp
+	# src/hooks/*.cpp
+	# src/keybinds/*.cpp
 )
 
 set(SOURCE_FILES 
