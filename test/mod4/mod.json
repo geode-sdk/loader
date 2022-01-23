@@ -1,0 +1,12 @@
+{
+    "geode":        1,
+	"version":      "v1.0.0",
+	"id":           "com.geode.test_four",
+    "name":         "Geode Test 4",
+    "developer":    "Geode Team",
+    "description":  "Test Mod #4",
+    "details":      "Test Mod #4 for making sure scene handlers work.",
+    "credits":      null,
+	"dependencies": null,
+    "binary":       "TestMod4"
+}

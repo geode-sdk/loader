@@ -56,3 +56,6 @@ set_target_properties(GeodeLoader PROPERTIES PREFIX "" OUTPUT_NAME "Geode")
 add_subdirectory(core)
 add_subdirectory(src/CCZipUtils)
 
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+	add_subdirectory(test)
+endif()
