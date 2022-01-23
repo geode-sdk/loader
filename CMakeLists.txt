@@ -12,6 +12,7 @@ file(GLOB CORE_SOURCES
 	src/platform/*.cpp
 	src/platform/windows/*.cpp
 	src/platform/macos/*.mm
+	src/platform/macos/*.cpp
 	src/platform/ios/*.mm
 	src/utils/*.cpp
 	src/utils/platform/*

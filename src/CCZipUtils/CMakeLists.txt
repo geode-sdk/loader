@@ -15,6 +15,9 @@ if("${GEODE_TARGET_PLATFORM}" STREQUAL "MacOS")
 	    "${CMAKE_CURRENT_LIST_DIR}/../../sdk/SDK/Include/cocos/cocos2dx/include"
 	    "${CMAKE_CURRENT_LIST_DIR}/../../sdk/SDK/Include/cocos/cocos2dx/platform/mac"
 	)
+	target_link_libraries(CCZipUtils PUBLIC 
+	    z
+	)
 elseif("${GEODE_TARGET_PLATFORM}" STREQUAL "Win32")
 	target_include_directories(CCZipUtils PUBLIC
 		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/SDK/Include/cocos/cocos2dx/kazmath/include"

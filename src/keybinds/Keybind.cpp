@@ -59,9 +59,9 @@ std::string Keybind::toString() const {
 }
 
 void Keybind::save(DS_Dictionary* dict) const {
-    dict->setIntegerForKey("key", this->key);
-    dict->setIntegerForKey("modifiers", this->modifiers);
-    dict->setIntegerForKey("click", this->mouse);
+    // dict->setIntegerForKey("key", this->key);
+    // dict->setIntegerForKey("modifiers", this->modifiers);
+    // dict->setIntegerForKey("click", this->mouse);
 }
 
 Keybind::Keybind() {
@@ -136,12 +136,12 @@ Keybind::Keybind(MouseButton btn, int mods) {
 }
 
 Keybind::Keybind(DS_Dictionary* dict, int version) {
-    this->key = static_cast<enumKeyCodes>(dict->getIntegerForKey("key"));
-    this->modifiers = dict->getIntegerForKey("modifiers");
-    if (version > 1)
-        this->mouse = static_cast<decltype(this->mouse)>(
-            dict->getIntegerForKey("click")
-        );
+    // this->key = static_cast<enumKeyCodes>(dict->getIntegerForKey("key"));
+    // this->modifiers = dict->getIntegerForKey("modifiers");
+    // if (version > 1)
+    //     this->mouse = static_cast<decltype(this->mouse)>(
+    //         dict->getIntegerForKey("click")
+    //     );
 }
 
 std::ostream& geode::operator<<(std::ostream& stream, Keybind const& bind) {

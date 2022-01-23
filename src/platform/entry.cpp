@@ -2,6 +2,8 @@
 
 int geodeEntry(void* platformData) {
     // setup internals
+    std::cout << "111" << std::endl;
+    auto a = geode::core::hook::initialize();
     Interface::get()->init(InternalMod::get());
     if (!Geode::get()->setup()) {
         // if we've made it here, Geode will 
@@ -16,6 +18,7 @@ int geodeEntry(void* platformData) {
         return 1;
     }
 
+    std::cout << "222" << std::endl;
     InternalMod::get()->log()
         << Severity::Debug
         << "Loaded internal Geode class"
@@ -32,6 +35,7 @@ int geodeEntry(void* platformData) {
         return 1;
     }
 
+    std::cout << "333" << std::endl;
     InternalMod::get()->log()
         << Severity::Debug
         << "Set up loader"
@@ -55,6 +59,6 @@ int geodeEntry(void* platformData) {
 
     delete Geode::get();
     #endif
-
+    std::cout << "444" << std::endl;
     return 0;
 }
