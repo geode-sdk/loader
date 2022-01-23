@@ -2,6 +2,7 @@
 #include <Mod.hpp>
 #include <Log.hpp>
 #include <Loader.hpp>
+#include <Interface.hpp>
 #include <Internal.hpp>
 #include <InternalMod.hpp>
 #include <helpers/file.hpp>
@@ -123,6 +124,8 @@ bool Loader::setup() {
 
     this->createDirectories();
     this->updateMods();
+
+    Interface::get()->init(InternalMod::get());
 
     this->m_isSetup = true;
 
