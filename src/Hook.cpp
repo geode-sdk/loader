@@ -20,11 +20,9 @@ struct hook_info {
 // gets cleared for no reason somewhere 
 // between `addHook` and `loadHooks`
 
-inline std::vector<hook_info>& getInternalHooks() {
-	static std::vector<hook_info> ret;
-	return ret;
-}
-static bool g_readyToHook = false;
+
+GEODE_STATIC_VAR(std::vector<hook_info>, internalHooks);
+GEODE_STATIC_VAR(bool, readyToHook);
 
 Result<Hook*> Mod::addHookBase(void* addr, void* detour, Hook* hook) {
     if (!hook) {
@@ -90,13 +88,13 @@ Result<> Mod::removeHook(Hook* hook) {
 }
 
 Result<Hook*> Mod::addHook(void* addr, void* detour) {
-    if (g_readyToHook) {
+    if (readyToHook()) {
         return this->addHookBase(addr, detour);
     } else {
         auto hook = new Hook();
         hook->m_address = addr;
         hook->m_detour = detour;
-        getInternalHooks().push_back({ hook, this });
+        internalHooks().push_back({ hook, this });
         return Ok<Hook*>(hook);
     }
 }
@@ -107,9 +105,9 @@ Result<Hook*> Mod::addHook(void* addr, void* detour, void** trampoline) {
 }
 
 bool Geode::loadHooks() {
-    g_readyToHook = true;
+    readyToHook() = true;
     auto thereWereErrors = false;
-    for (auto const& hook : getInternalHooks()) {
+    for (auto const& hook : internalHooks()) {
         auto res = hook.mod->addHookBase(hook.hook);
         if (!res) {
             hook.mod->throwError(
@@ -120,6 +118,6 @@ bool Geode::loadHooks() {
         }
     }
     // free up memory
-    getInternalHooks().clear();
+    internalHooks().clear();
     return !thereWereErrors;
 }

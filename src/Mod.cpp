@@ -299,3 +299,22 @@ Result<> Mod::setCustomSetting(
 std::vector<Setting*> Mod::getSettings() const {
     return map_utils::getValues(this->m_info.m_settings);
 }
+
+// template <typename T, typename = std::enable_if_t<std::is_base_of_v<ModInterface, T>> >
+// T Mod::with() {
+// 	return T(this);
+// }
+
+// KeybindInterface::KeybindInterface(Mod* mod) {
+// 	m_mod = mod;
+// }
+
+// void KeybindInterface::addKeybind(int key) {
+// 	/* i love girls sdkfghfgsdjfghsdf */
+// }
+
+// void idk() {
+// 	Mod* mod;
+// 	mod->with<KeybindInterface>().addKeybind(5);
+// }
+
