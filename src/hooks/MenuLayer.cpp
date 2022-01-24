@@ -3,11 +3,7 @@
 
 class $modify(MenuLayer) {
 	void onMoreGames(CCObject*) {
-		FLAlertLayer::create(
-			nullptr, "Title",
-			"Description", "Btn1", "Btn2"
-		)->show();
-		// ModListLayer::scene();
+		ModListLayer::scene();
 	}
 };
 
