@@ -154,6 +154,11 @@ void ModListView::setupList() {
 
     if (!this->m_entries->count()) return;
 
+    std::cout << "ModListView: " << this << "\n";
+    std::cout << "m_entries: " << this->m_entries << "\n";
+    std::cout << "m_tableView: " << this->m_tableView << "\n";
+    std::cout << "m_dataSource: " << this->m_tableView->m_dataSource << "\n";
+
     this->m_tableView->reloadData();
 
     if (this->m_entries->count() == 1)
@@ -178,7 +183,7 @@ ModListView* ModListView::create(
 ) {
     auto pRet = new ModListView;
     if (pRet) {
-        if (pRet->init(actions, 356.f, 220.f, 0, kBoomListType_Mod)) {
+        if (pRet->init(actions, kBoomListType_Mod, 56.f, 220.f)) {
             pRet->autorelease();
             return pRet;
         }
