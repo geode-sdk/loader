@@ -318,3 +318,16 @@ std::vector<Setting*> Mod::getSettings() const {
 // 	mod->with<KeybindInterface>().addKeybind(5);
 // }
 
+bool Mod::addKeybindAction(
+    KeybindAction     const& action,
+    KeybindList       const& defaults,
+    keybind_action_id const& insertAfter
+) {
+    return KeybindManager::get()->addKeybindAction(
+        this, action, defaults, insertAfter
+    );
+}
+
+bool Mod::removeKeybindAction(keybind_action_id const& id) {
+    return KeybindManager::get()->removeKeybindAction(this, id);
+}
