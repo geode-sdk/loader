@@ -14,13 +14,13 @@ class $modify(GJGarageLayer) {
 
 	    auto label = CCLabelBMFont::create("Google En Passant", "bigFont.fnt");
 	    label->setPosition(100, 100);
-	    label->setScale(0.4);
+	    label->setScale(.4f);
 	    label->setZOrder(99999);
 	    addChild(label);
 
 	    auto label2 = CCLabelBMFont::create("Holy Hell", "bigFont.fnt");
 	    label2->setPosition(100, 90);
-	    label2->setScale(0.4);
+	    label2->setScale(.4f);
 	    label2->setZOrder(99999);
 	    addChild(label2);
 	    

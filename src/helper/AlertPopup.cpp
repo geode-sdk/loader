@@ -1,5 +1,7 @@
 #include <HeaderBase.hpp>
 #include <helper/AlertPopup.hpp>
+#undef max
+#undef min
 
 /**
  * 			IDK man

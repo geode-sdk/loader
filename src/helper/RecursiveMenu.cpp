@@ -50,10 +50,10 @@ CCMenuItem* RecursiveMenu::itemForTouch(CCTouch* touch) {
 
 CCMenuItem* RecursiveMenu::itemForTouch(CCTouch* touch, CCNode* child) {
 	CCPoint touchLocation = touch->getLocation();
-	if (child->getChildren() and child->getChildren()->count() > 0) {
+	if (child->getChildren() && child->getChildren()->count() > 0) {
         for (auto& node : cocos::ccArrayToVector<CCNode*>(child->getChildren())) {
             CCMenuItem* child = dynamic_cast<CCMenuItem*>(node);
-            if (child and child->isVisible() and child->isEnabled()) {
+            if (child && child->isVisible() && child->isEnabled()) {
                 CCPoint local = child->convertToNodeSpace(touchLocation);
                 CCRect r = child->rect();
                 r.origin = CCPointZero;
