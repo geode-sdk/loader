@@ -1,0 +1,12 @@
+{
+    "geode":        1,
+	"version":      "v1.0.0",
+	"id":           "com.geode.test_three",
+    "name":         "Geode Test 3",
+    "developer":    "Geode Team",
+    "description":  "Test Mod #3",
+    "details":      "Test Mod #3 for making sure the C API works.",
+    "credits":      null,
+	"dependencies": null,
+    "binary":       "TestMod3"
+}

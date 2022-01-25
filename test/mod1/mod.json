@@ -1,0 +1,26 @@
+{
+    "geode":        1,
+	"version":      "v1.0.0",
+	"id":           "com.geode.test_one",
+    "name":         "Geode Test 1",
+    "developer":    "Geode Team",
+    "description":  "Test Mod #1",
+    "details":      "Test Mod #1 for making sure hooking, loading and sharing interfaces works.",
+    "credits":      null,
+	"dependencies": null,
+    "binary": "TestMod1",
+    "settings": {
+        "awesome-setting": {
+            "type": "int",
+            "default": 4,
+            "name": "Awesome Setting",
+            "description": null,
+            "control": "slider"
+        },
+        "other-setting": {
+            "type": "string",
+            "default": ""
+        },
+        "custom-setting": "custom"
+    }
+}

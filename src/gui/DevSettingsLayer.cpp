@@ -52,8 +52,8 @@ void DevSettingsLayer::onEnableHotReload(CCObject* pSender) {
 				nullptr,
 				"Error",
 				"OK", 
-				"Set a .geode file path first",
-				nullptr
+				nullptr,
+				"Set a .geode file path first"
 			)->show();
 			as<CCMenuItemToggler*>(pSender)->toggle(true);
 		} else {
@@ -63,8 +63,8 @@ void DevSettingsLayer::onEnableHotReload(CCObject* pSender) {
 					nullptr,
 					"Error",
 					"OK", 
-					res.error().c_str(),
-					nullptr
+					nullptr,
+					res.error().c_str()
 				)->show();
 			}
 		}

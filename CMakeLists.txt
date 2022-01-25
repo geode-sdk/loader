@@ -43,12 +43,20 @@ if (APPLE)
 	set (LINK_LIBRARIES ${LINK_LIBRARIES} "-framework Cocoa")
 endif()
 
+if (WIN32)
+	add_subdirectory(src/inject/windows)
+endif()
+
 add_definitions(-DGEODE_EXPORTING)
+add_compile_definitions(GEODE_PLATFORM_CONSOLE)
 
 include(sdk/SDK/BuildFiles/cmake/Root.cmake)
 # target_compile_definitions(GeodeLoader PUBLIC "/w") // what is this
-set_target_properties(GeodeLoader PROPERTIES PREFIX "" OUTPUT_NAME "geode")
+set_target_properties(GeodeLoader PROPERTIES PREFIX "" OUTPUT_NAME "Geode")
 
 add_subdirectory(core)
 add_subdirectory(src/CCZipUtils)
 
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+	add_subdirectory(test)
+endif()

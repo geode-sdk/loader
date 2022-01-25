@@ -38,7 +38,7 @@ elseif("${GEODE_TARGET_PLATFORM}" STREQUAL "Win32")
 	    "${CMAKE_CURRENT_LIST_DIR}/zlib.lib"
 	)
 
-	add_definitions(-D_USRDLL)
+	add_definitions(-DGEODE_EXPORTING)
 elseif("${GEODE_TARGET_PLATFORM}" STREQUAL "iOS")
 elseif("${GEODE_TARGET_PLATFORM}" STREQUAL "Android")
 else()
