@@ -110,7 +110,7 @@ bool Geode::loadHooks() {
     for (auto const& hook : internalHooks()) {
         auto res = hook.mod->addHookBase(hook.hook);
         if (!res) {
-            hook.mod->throwError(
+            hook.mod->logInfo(
                 res.error(),
                 Severity::Error
             );

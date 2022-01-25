@@ -16,7 +16,7 @@ void Interface::init(Mod* mod) {
 		this->m_scheduledHooks.clear();
 
 		for (auto const& log : this->m_scheduledLogs) {
-			// Loader::get()->log(log);
+			this->m_mod->logInfo(log.m_info, log.m_severity);
 		}
 		this->m_scheduledLogs.clear();
 	}
@@ -30,17 +30,12 @@ Result<Hook*> Interface::addHook(void* address, void* detour) {
 	return Ok<Hook*>(nullptr);
 }
 
-void Interface::throwError(
+void Interface::logInfo(
 	std::string const& info,
 	Severity severity
 ) {
 	if (this->m_mod) {
-		return this->m_mod->throwError(info, severity);
+		return this->m_mod->logInfo(info, severity);
 	}
-    auto log = new LogMessage(
-        std::string(info),
-        severity,
-        this->m_mod
-    );
-	this->m_scheduledLogs.push_back(log);
+	this->m_scheduledLogs.push_back({ info, severity });
 }

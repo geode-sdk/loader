@@ -287,7 +287,7 @@ Result<BoolSetting*> GeodeSetting<BoolSetting>::parse(nlohmann::json const& json
 					return Err<>("Setting has \"value.default\" but it is not a boolean");
 				}
 			} else {
-				InternalMod::get()->throwError(
+				InternalMod::get()->logInfo(
 					"Boolean setting has \"value\", but no \"value.default\"",
 					Severity::Warning
 				);
@@ -299,7 +299,7 @@ Result<BoolSetting*> GeodeSetting<BoolSetting>::parse(nlohmann::json const& json
 	}
 	if (json.contains("default")) {
 		if (foundDefaultValue) {
-			InternalMod::get()->throwError(
+			InternalMod::get()->logInfo(
 				"Boolean setting has both \"value.default\" and \"default\"; "
 				"using \"value.default\"",
 				Severity::Warning

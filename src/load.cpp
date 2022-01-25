@@ -22,7 +22,7 @@ USE_GEODE_NAMESPACE();
         if (json[#_name_].is_##_type_()) {                      \
             info.m_##_name_ = json[#_name_];                    \
         } else {                                                \
-            InternalMod::get()->throwError(                     \
+            InternalMod::get()->logInfo(                     \
                 strfmt("\"%s\": \"" #_name_ "\" is not of expected type \"" #_type_ "\"", info.m_id.c_str()),   \
                 Severity::Warning                                                                       \
             );                                                  \
@@ -254,13 +254,13 @@ skip_binary_check:
                         depobj.m_mod = this->getLoadedMod(depobj.m_id);
                         info.m_dependencies.push_back(depobj);
                     } else {
-                        InternalMod::get()->throwError(
+                        InternalMod::get()->logInfo(
                             strfmt("\"%s\": Item #%d in \"dependencies\" array lacks ID", info.m_id.c_str(), ix),
                             Severity::Warning
                         );
                     }
                 } else {
-                    InternalMod::get()->throwError(
+                    InternalMod::get()->logInfo(
                         strfmt("\"%s\": Item #%d in \"dependencies\" array is not an object", info.m_id.c_str(), ix),
                         Severity::Warning
                     );
@@ -268,7 +268,7 @@ skip_binary_check:
                 ix++;
             }
         } else if (!deps.is_null()) {
-            InternalMod::get()->throwError(
+            InternalMod::get()->logInfo(
                 strfmt("\"%s\": \"dependencies\" is not an array", info.m_id.c_str()),
                 Severity::Warning
             );
@@ -284,14 +284,14 @@ skip_binary_check:
                     res.value()->m_key = key;
                     info.m_settings.insert({ key, res.value() });
                 } else {
-                    InternalMod::get()->throwError(
+                    InternalMod::get()->logInfo(
                         "Error parsing setting \"" + key + "\": " + res.error(),
                         Severity::Warning
                     );
                 }
             }
         } else if (!settings.is_null()) {
-            InternalMod::get()->throwError(
+            InternalMod::get()->logInfo(
                 strfmt("\"%s\": \"settings\" is not an object", info.m_id.c_str()),
                 Severity::Warning
             );

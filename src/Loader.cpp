@@ -62,7 +62,7 @@ size_t Loader::updateMods() {
                             << res.value() << " has unresolved dependencies" << geode::endl;
                     }
                 } else {
-                    InternalMod::get()->throwError(res.error(), Severity::Error);
+                    InternalMod::get()->logInfo(res.error(), Severity::Error);
                 }
             }
         }

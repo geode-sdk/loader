@@ -81,10 +81,10 @@ Result<> Geode::enableHotReload(Mod* mod, ghc::filesystem::path const& path) {
     FileWatcher* reload = new FileWatcher(path, [this, mod](ghc::filesystem::path const& file) -> void {
         try {
             if (!ghc::filesystem::copy_file(file, mod->m_info.m_path, ghc::filesystem::copy_options::overwrite_existing)) {
-                mod->throwError("Unable to copy compiled .geode file!", Severity::Error);
+                mod->logInfo("Unable to copy compiled .geode file!", Severity::Error);
             }
         } catch(std::exception const& e) {
-            mod->throwError(e.what(), Severity::Error);
+            mod->logInfo(e.what(), Severity::Error);
         }
 
         this->queueInGDThread([file, mod]() -> void {
@@ -93,19 +93,19 @@ Result<> Geode::enableHotReload(Mod* mod, ghc::filesystem::path const& path) {
             #endif
 
             auto unload = mod->unload();
-            if (!unload) mod->throwError(unload.error(), Severity::Error);
+            if (!unload) mod->logInfo(unload.error(), Severity::Error);
 
             auto temp = mod->createTempDir();
-            if (!temp) mod->throwError(temp.error(), Severity::Error);
+            if (!temp) mod->logInfo(temp.error(), Severity::Error);
 
             auto load = mod->load();
-            if (!load) mod->throwError(load.error(), Severity::Error);
+            if (!load) mod->logInfo(load.error(), Severity::Error);
 
             cocos2d::CCDirector::sharedDirector()->replaceScene(MenuLayer::scene(false));
         });
 
     }, [this, mod, reload](std::string const& err) -> void {
-        mod->throwError(err, Severity::Error);
+        mod->logInfo(err, Severity::Error);
         this->disableHotReload(mod);
     });
     if (!reload->watching()) {

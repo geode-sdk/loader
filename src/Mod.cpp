@@ -159,7 +159,7 @@ bool Mod::updateDependencyStates() {
                     auto r = this->load();
                     if (!r) {
                         dep.m_state = ModResolveState::Unloaded;
-                        this->throwError(r.error(), Severity::Error);
+                        this->logInfo(r.error(), Severity::Error);
                     }
 				} else {
 					if (dep.m_mod->isEnabled()) {
@@ -181,7 +181,7 @@ bool Mod::updateDependencyStates() {
     if (!hasUnresolved && !this->m_resolved) {
         this->m_resolved = true;
         auto r = this->load();
-        if (!r) this->throwError(r.error(), Severity::Error);
+        if (!r) this->logInfo(r.error(), Severity::Error);
     }
     return hasUnresolved;
 }
@@ -253,7 +253,7 @@ LogStream& Mod::log() {
     return Loader::get()->logStream() << this;
 }
 
-void Mod::throwError(
+void Mod::logInfo(
     std::string const& info,
     Severity severity
 ) {

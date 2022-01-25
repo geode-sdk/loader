@@ -6,6 +6,7 @@
 #include <utils/stream.hpp>
 #include <utils/casts.hpp>
 #include <Internal.hpp>
+#include <iomanip>
 
 USE_GEODE_NAMESPACE();
 
@@ -238,6 +239,16 @@ LogStream& LogStream::operator<<(geode::endl_type) {
 
 LogStream& LogStream::operator<<(geode::continue_type) {
     this->log();
+    return *this;
+}
+
+LogStream& LogStream::operator<<(geode::decimal_type) {
+    this->m_stream << std::setbase(10);
+    return *this;
+}
+
+LogStream& LogStream::operator<<(geode::hexadecimal_type) {
+    this->m_stream << std::setbase(16);
     return *this;
 }
 

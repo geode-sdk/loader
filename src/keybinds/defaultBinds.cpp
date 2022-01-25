@@ -58,10 +58,12 @@ void KeybindManager::loadDefaultKeybinds() {
             if (category == KB_EDITOR_CATEGORY) {
                 layer = as<EditorUI*>(context)->m_editorLayer;
             }
-            if (push) {
-                layer->pushButton(0, true);
-            } else {
-                layer->releaseButton(0, true);
+            if (layer) {
+                if (push) {
+                    layer->pushButton(0, false);
+                } else {
+                    layer->releaseButton(0, false);
+                }
             }
             return false;
         },

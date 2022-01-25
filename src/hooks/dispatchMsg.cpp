@@ -1,28 +1,28 @@
 #include "hook.hpp"
 #include <Internal.hpp>
 
-class $modify(CCKeyboardDispatcher) {
-    bool dispatchKeyboardMSG(enumKeyCodes key, bool down) {
-        KeybindManager::get()->registerKeyPress(key, down);
-        if (!KeybindManager::keyIsModifier(key)) {
-            if (KeybindManager::get()->handleKeyEvent(
-                KB_GLOBAL_CATEGORY,
-                Keybind(key),
-                CCDirector::sharedDirector()->getRunningScene(),
-                down
-            )) return true;
-        }
-        return $CCKeyboardDispatcher::dispatchKeyboardMSG(key, down);
-    }
-};
+// class $modify(CCKeyboardDispatcher) {
+//     bool dispatchKeyboardMSG(enumKeyCodes key, bool down) {
+//         KeybindManager::get()->registerKeyPress(key, down);
+//         if (!KeybindManager::keyIsModifier(key)) {
+//             if (KeybindManager::get()->handleKeyEvent(
+//                 KB_GLOBAL_CATEGORY,
+//                 Keybind(key),
+//                 CCDirector::sharedDirector()->getRunningScene(),
+//                 down
+//             )) return true;
+//         }
+//         return $CCKeyboardDispatcher::dispatchKeyboardMSG(key, down);
+//     }
+// };
 
-class $modify(CCScheduler) {
-    void update(float dt) {
-        KeybindManager::get()->handleRepeats(dt);
-        Geode::get()->executeGDThreadQueue();
-        return $CCScheduler::update(dt);
-    }
-};
+// class $modify(CCScheduler) {
+//     void update(float dt) {
+//         KeybindManager::get()->handleRepeats(dt);
+//         Geode::get()->executeGDThreadQueue();
+//         return $CCScheduler::update(dt);
+//     }
+// };
 
 #ifdef GEODE_IS_WINDOWS
 class $modify(CCEGLView) {
