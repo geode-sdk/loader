@@ -7,6 +7,7 @@ set(GEODE_NO_GEODE_FILE On)
 file(GLOB CORE_SOURCES
 	src/*.cpp
 	src/fixes/*.cpp
+	src/helper/*.cpp
 	src/internal/*.cpp
 	src/gui/*.cpp
 	src/platform/*.cpp

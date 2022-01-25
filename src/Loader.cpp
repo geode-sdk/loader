@@ -4,11 +4,11 @@
 #include <Loader.hpp>
 #include <Internal.hpp>
 #include <InternalMod.hpp>
-#include <helpers/file.hpp>
-#include <helpers/conststring.hpp>
-#include <helpers/vector.hpp>
-#include <helpers/map.hpp>
-#include <helpers/types.hpp>
+#include <utils/file.hpp>
+#include <utils/conststring.hpp>
+#include <utils/vector.hpp>
+#include <utils/map.hpp>
+#include <utils/types.hpp>
 
 USE_GEODE_NAMESPACE();
 

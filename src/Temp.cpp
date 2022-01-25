@@ -1,6 +1,10 @@
 #include <Geode>
+#include <helper/AlertPopup.hpp>
+
+USE_GEODE_NAMESPACE();
+
 class $modify(MenuLayer) {
-	void onMoreGames(CCObject* ob) {
-		FLAlertLayer::create("Geode", "Hello from loader", "OK")->show();
+	void onQuit(CCObject* ob) {
+		AlertPopup::create("Geode", "Hello from AlertPopup", "OK", "B")->show();
 	} 
 };

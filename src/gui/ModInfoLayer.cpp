@@ -51,8 +51,8 @@ bool ModInfoLayer::init(Mod* mod) {
         "[No Description Provided]";
 
     auto descLabel = TextArea::create(
-        "chatFont.fnt", false, desc,
-        1.0f, 330.f, 50.f, { .5f, .5f } 
+        desc, "chatFont.fnt", 
+        1.0f, 330.f, { .5f, .5f }, 50.f, false
     );
     descLabel->setPosition({ winSize.width / 2, winSize.height / 2 + 30.f });
     this->m_mainLayer->addChild(descLabel, 2);
@@ -70,8 +70,8 @@ bool ModInfoLayer::init(Mod* mod) {
         "[No Credits Provided]";
 
     auto creditsLabel = TextArea::create(
-        "chatFont.fnt", false, credits,
-        1.0f, 300.f, 50.f, { .5f, .5f } 
+        credits, "chatFont.fnt",  
+        1.0f, 300.f, { .5f, .5f }, 50.f, false
     );
     creditsLabel->setPosition({ winSize.width / 2, winSize.height / 2 - 50.f });
     this->m_mainLayer->addChild(creditsLabel, 2);

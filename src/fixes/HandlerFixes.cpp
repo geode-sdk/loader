@@ -8,6 +8,7 @@
 
 #if defined(GEODE_IS_IOS) || defined(GEODE_IS_MACOS)
 namespace geode::fixes {
+	using namespace geode::cast;
 
 #define HandlerFixFor(CCUtility)                                                                        \
 class $modify(CCUtility##HandlerTypeinfoFix, CCUtility##Handler) {                                      \

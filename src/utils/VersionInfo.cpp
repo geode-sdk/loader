@@ -1,8 +1,8 @@
 #define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES 1
 
-#include <helpers/VersionInfo.hpp>
-#include <helpers/ext.hpp>
-#include <helpers/general.hpp>
+#include <utils/VersionInfo.hpp>
+#include <utils/ext.hpp>
+#include <utils/general.hpp>
 
 USE_GEODE_NAMESPACE();
 

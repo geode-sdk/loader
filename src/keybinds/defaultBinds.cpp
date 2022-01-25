@@ -6,7 +6,7 @@ using namespace std::literals::string_literals;
 
 #define CLICKED(...) if (down) { __VA_ARGS__ }
 #define UI(...) auto ui = as<EditorUI*>(context); __VA_ARGS__
-#define NO_PLAY(...) if (ui->m_editorLayer->m_playbackMode != kPlaybackModePlaying) { __VA_ARGS__ }
+#define NO_PLAY(...) if (ui->m_editorLayer->m_playbackMode != PlaybackMode::Playing) { __VA_ARGS__ }
 #define ACTION(...) __VA_ARGS__
 #define EDIT_ACTION(...) CLICKED( UI( NO_PLAY( __VA_ARGS__ ) ) )
 #define BINDS(...) { __VA_ARGS__ }
@@ -193,7 +193,7 @@ void KeybindManager::loadDefaultKeybinds() {
         "gd.edit.rotate_ccw",
         KB_SUBCATEGORY_MODIFY,
         EDIT_ACTION(
-            ui->transformObjectCall(kEditCommandRotateCCW);
+            ui->transformObjectCall(EditCommand::RotateCCW);
         ),
         "Rotate Object Counter-Clockwise",
         BIND( KEY_Q, 0 )
@@ -203,7 +203,7 @@ void KeybindManager::loadDefaultKeybinds() {
         "gd.edit.rotate_cw",
         KB_SUBCATEGORY_MODIFY,
         EDIT_ACTION(
-            ui->transformObjectCall(kEditCommandRotateCW);
+            ui->transformObjectCall(EditCommand::RotateCW);
         ),
         "Rotate Object Clockwise",
         BIND( KEY_E, 0 )
@@ -213,7 +213,7 @@ void KeybindManager::loadDefaultKeybinds() {
         "gd.edit.flip_x",
         KB_SUBCATEGORY_MODIFY,
         EDIT_ACTION(
-            ui->transformObjectCall(kEditCommandFlipX);
+            ui->transformObjectCall(EditCommand::FlipX);
         ),
         "Flip Object Along the X-axis",
         KBS(Alt, Q)
@@ -223,7 +223,7 @@ void KeybindManager::loadDefaultKeybinds() {
         "gd.edit.flip_y",
         KB_SUBCATEGORY_MODIFY,
         EDIT_ACTION(
-            ui->transformObjectCall(kEditCommandFlipY);
+            ui->transformObjectCall(EditCommand::FlipY);
         ),
         "Flip Object Along the Y-axis",
         KBS(Alt, E)
@@ -343,7 +343,7 @@ void KeybindManager::loadDefaultKeybinds() {
         "gd.edit.playtest",
         KB_SUBCATEGORY_MODIFY,
         CLICKED(UI(
-            if (ui->m_editorLayer->m_playbackMode == kPlaybackModePlaying) {
+            if (ui->m_editorLayer->m_playbackMode == PlaybackMode::Playing) {
                 ui->onStopPlaytest(nullptr);
             } else {
                 ui->onPlaytest(nullptr);
@@ -357,7 +357,7 @@ void KeybindManager::loadDefaultKeybinds() {
         "gd.edit.playback_music",
         KB_SUBCATEGORY_MODIFY,
         CLICKED(UI(
-            if (ui->m_editorLayer->m_playbackMode == kPlaybackModePlaying) {
+            if (ui->m_editorLayer->m_playbackMode == PlaybackMode::Playing) {
                 ui->onPlayback(nullptr);
             }
         )),
@@ -455,7 +455,7 @@ void KeybindManager::loadDefaultKeybinds() {
         "gd.edit.move_obj_left",
         KB_SUBCATEGORY_MOVE,
         EDIT_ACTION(
-            ui->moveObjectCall(kEditCommandLeft);
+            ui->moveObjectCall(EditCommand::Left);
         ),
         "Move Object Left 1 Block (30 Units)",
         BIND( KEY_A, 0 )
@@ -465,7 +465,7 @@ void KeybindManager::loadDefaultKeybinds() {
         "gd.edit.move_obj_right",
         KB_SUBCATEGORY_MOVE,
         EDIT_ACTION(
-            ui->moveObjectCall(kEditCommandRight);
+            ui->moveObjectCall(EditCommand::Right);
         ),
         "Move Object Right 1 Block (30 Units)",
         BIND( KEY_D, 0 )
@@ -475,7 +475,7 @@ void KeybindManager::loadDefaultKeybinds() {
         "gd.edit.move_obj_up",
         KB_SUBCATEGORY_MOVE,
         EDIT_ACTION(
-            ui->moveObjectCall(kEditCommandUp);
+            ui->moveObjectCall(EditCommand::Up);
         ),
         "Move Object Up 1 Block (30 Units)",
         BIND( KEY_W, 0 )
@@ -485,7 +485,7 @@ void KeybindManager::loadDefaultKeybinds() {
         "gd.edit.move_obj_down",
         KB_SUBCATEGORY_MOVE,
         EDIT_ACTION(
-            ui->moveObjectCall(kEditCommandDown);
+            ui->moveObjectCall(EditCommand::Down);
         ),
         "Move Object Down 1 Block (30 Units)",
         BIND( KEY_S, 0 )
@@ -495,7 +495,7 @@ void KeybindManager::loadDefaultKeybinds() {
         "gd.edit.move_obj_left_small",
         KB_SUBCATEGORY_MOVE,
         EDIT_ACTION(
-            ui->moveObjectCall(kEditCommandSmallLeft);
+            ui->moveObjectCall(EditCommand::SmallLeft);
         ),
         "Move Object Left 2 Units",
         BIND( KEY_A, Keybind::kmShift )
@@ -505,7 +505,7 @@ void KeybindManager::loadDefaultKeybinds() {
         "gd.edit.move_obj_right_small",
         KB_SUBCATEGORY_MOVE,
         EDIT_ACTION(
-            ui->moveObjectCall(kEditCommandSmallRight);
+            ui->moveObjectCall(EditCommand::SmallRight);
         ),
         "Move Object Right 2 Units",
         BIND( KEY_D, Keybind::kmShift )
@@ -515,7 +515,7 @@ void KeybindManager::loadDefaultKeybinds() {
         "gd.edit.move_obj_up_small",
         KB_SUBCATEGORY_MOVE,
         EDIT_ACTION(
-            ui->moveObjectCall(kEditCommandSmallUp);
+            ui->moveObjectCall(EditCommand::SmallUp);
         ),
         "Move Object Up 2 Units",
         BIND( KEY_W, Keybind::kmShift )
@@ -525,7 +525,7 @@ void KeybindManager::loadDefaultKeybinds() {
         "gd.edit.move_obj_down_small",
         KB_SUBCATEGORY_MOVE,
         EDIT_ACTION(
-            ui->moveObjectCall(kEditCommandSmallDown);
+            ui->moveObjectCall(EditCommand::SmallDown);
         ),
         "Move Object Down 2 Units",
         BIND( KEY_S, Keybind::kmShift )

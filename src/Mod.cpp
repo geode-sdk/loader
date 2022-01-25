@@ -4,10 +4,10 @@
 #include <Loader.hpp>
 #include <Internal.hpp>
 #include <ZipUtils.h>
-#include <helpers/file.hpp>
-#include <helpers/vector.hpp>
-#include <helpers/map.hpp>
-#include <helpers/conststring.hpp>
+#include <utils/file.hpp>
+#include <utils/vector.hpp>
+#include <utils/map.hpp>
+#include <utils/conststring.hpp>
 
 USE_GEODE_NAMESPACE();
 

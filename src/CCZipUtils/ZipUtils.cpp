@@ -29,6 +29,7 @@
 #include <zlib.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <gdstdlib.hpp>
 
 #include <ZipUtils.h>
 #include "ccMacros.h"

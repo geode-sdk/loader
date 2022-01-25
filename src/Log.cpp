@@ -2,9 +2,9 @@
 #include <Log.hpp>
 #include <Mod.hpp>
 #include <Loader.hpp>
-#include <helpers/general.hpp>
-#include <helpers/stream.hpp>
-#include <helpers/casts.hpp>
+#include <utils/general.hpp>
+#include <utils/stream.hpp>
+#include <utils/casts.hpp>
 #include <Internal.hpp>
 
 USE_GEODE_NAMESPACE();

@@ -3,7 +3,7 @@
 #include <Log.hpp>
 #include <vector>
 #include <unordered_map>
-#include <helpers/Result.hpp>
+#include <utils/Result.hpp>
 #include "FileWatcher.hpp"
 
 USE_GEODE_NAMESPACE();

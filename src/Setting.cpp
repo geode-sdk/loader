@@ -2,9 +2,9 @@
 
 #include <Setting.hpp>
 #include <InternalMod.hpp>
-#include <helpers/string.hpp>
-#include <helpers/general.hpp>
-#include <helpers/convert.hpp>
+#include <utils/string.hpp>
+#include <utils/general.hpp>
+#include <utils/convert.hpp>
 
 USE_GEODE_NAMESPACE();
 

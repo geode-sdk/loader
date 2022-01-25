@@ -3,10 +3,10 @@
 #include <InternalMod.hpp>
 #include <Log.hpp>
 #undef snprintf
-#include <json.hpp>
+#include <utils/json.hpp>
 #include <ZipUtils.h>
-#include <helpers/general.hpp>
-#include <helpers/string.hpp>
+#include <utils/general.hpp>
+#include <utils/string.hpp>
 
 USE_GEODE_NAMESPACE();
 

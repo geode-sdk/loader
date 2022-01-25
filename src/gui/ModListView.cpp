@@ -1,6 +1,6 @@
 #include "ModListView.hpp"
 #include "ModInfoLayer.hpp"
-#include <WackyGeodeMacros>
+#include <utils/WackyGeodeMacros>
 
 ModCell::ModCell(const char* name, CCSize size) :
     TableViewCell(name, size.width, size.height) {}
