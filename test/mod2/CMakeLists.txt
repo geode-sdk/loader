@@ -8,6 +8,9 @@ project(${PROJECT_NAME} VERSION 1.0.0)
 
 add_library(${PROJECT_NAME} SHARED mod2.cpp)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xlinker --no-demangle")
+
+
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" )
 
 target_link_libraries(
@@ -17,4 +20,5 @@ target_link_libraries(
 )
 
 create_geode_file(${PROJECT_NAME})
+
 

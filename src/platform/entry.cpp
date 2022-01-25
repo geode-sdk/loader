@@ -76,6 +76,10 @@ int geodeEntry(void* platformData) {
 
     //delete Geode::get();
     #endif
-    std::cout << "444" << std::endl;
+
+    InternalMod::get()->log()
+        << Severity::Debug
+        << "Entry done."
+        << geode::endl;
     return 0;
 }
