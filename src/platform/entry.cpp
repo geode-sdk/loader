@@ -74,7 +74,7 @@ int geodeEntry(void* platformData) {
         << "Cleaning up..."
         << geode::endl;
 
-    delete Geode::get();
+    //delete Geode::get();
     #endif
     std::cout << "444" << std::endl;
     return 0;

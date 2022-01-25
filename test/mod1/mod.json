@@ -21,11 +21,6 @@
             "type": "string",
             "default": ""
         },
-        "array-setting": {
-            "type": "array",
-            "array": [ "some", "another option", "third" ],
-            "default": 0
-        },
         "custom-setting": "custom"
     }
 }
