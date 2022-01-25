@@ -10,7 +10,6 @@ add_library(${PROJECT_NAME} SHARED mod2.cpp)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xlinker --no-demangle")
 
-
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" )
 
 target_link_libraries(

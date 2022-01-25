@@ -12,6 +12,9 @@
 
 #ifdef _MSC_VER
 #pragma warning(disable: 4251)
+#define THE_FOPEN(file, name, mode) fopen_s(&file, name, mode);
+#else
+#define THE_FOPEN(file, name, mode) file = fopen(name, mode);
 #endif
 
 #include <ioapi.h>
@@ -96,7 +99,7 @@ static voidpf ZCALLBACK fopen_file_func (voidpf opaque, const char* filename, in
         mode_fopen = "wb";
 
     if ((filename!=NULL) && (mode_fopen != NULL))
-        file = fopen(filename, mode_fopen);
+        THE_FOPEN(file, filename, mode_fopen);
     return file;
 }
 
@@ -118,7 +121,7 @@ static voidpf ZCALLBACK fopen64_file_func (voidpf opaque, const void* filename, 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_MARMALADE || CC_TARGET_PLATFORM == CC_PLATFORM_BADA || CC_TARGET_PLATFORM == CC_PLATFORM_NACL || CC_TARGET_PLATFORM == CC_PLATFORM_EMSCRIPTEN)
         file = NULL;
 #else
-        file = fopen((const char*)filename, mode_fopen);
+        THE_FOPEN(file, (const char*)filename, mode_fopen);
 #endif
     }
 
@@ -206,8 +209,13 @@ static long ZCALLBACK fseek64_file_func (voidpf  opaque, voidpf stream, ZPOS64_T
         break;
     default: return -1;
     }
-    if(fseeko((FILE *)stream, offset, fseek_origin) != 0)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+    if(_fseeki64((FILE *)stream, offset, fseek_origin) != 0)
         return -1;
+#else
+    if(fseeko64((FILE *)stream, offset, fseek_origin) != 0)
+        return -1;
+#endif
     return 0;
 #endif
 }
