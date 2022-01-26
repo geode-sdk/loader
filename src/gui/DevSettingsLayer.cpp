@@ -30,7 +30,7 @@ bool DevSettingsLayer::init(Mod* mod) {
 	this->m_mainLayer->addChild(this->m_input);
 
 	auto spr = ButtonSprite::create(
-		"Paste From Clipboard", 0xff, 0, 1.0f, .8f, true, "bigFont.fnt", true
+		"Paste From Clipboard"
 	);
 	spr->setScale(.45f);
 	auto btn = CCMenuItemSpriteExtra::create(

@@ -12,6 +12,11 @@ void ModCell::draw() {
 void ModCell::loadFromMod(ModObject* Mod) {
     this->m_mod = Mod->m_mod;
 
+    std::cout << this << "\n";
+    std::cout << this->m_mainLayer << "\n";
+    std::cout << typeid(*this->m_mainLayer).name() << "\n";
+    std::cout << this->m_backgroundLayer << "\n";
+
     this->m_mainLayer->setVisible(true);
     this->m_backgroundLayer->setOpacity(255);
     
@@ -46,20 +51,20 @@ void ModCell::loadFromMod(ModObject* Mod) {
     );
     menu->addChild(viewBtn);
 
-    this->m_pEnableToggle = CCMenuItemToggler::createWithStandardSprites(
+    this->m_enableToggle = CCMenuItemToggler::createWithStandardSprites(
         this, menu_selector(ModCell::onEnable), .7f
     );
-    this->m_pEnableToggle->setPosition(-50.f, 0.f);
-    menu->addChild(this->m_pEnableToggle);
+    this->m_enableToggle->setPosition(-50.f, 0.f);
+    menu->addChild(this->m_enableToggle);
 
     auto exMark = CCSprite::createWithSpriteFrameName("exMark_001.png");
     exMark->setScale(.5f);
 
-    this->m_pUnresolvedExMark = CCMenuItemSpriteExtra::create(
+    this->m_unresolvedExMark = CCMenuItemSpriteExtra::create(
         exMark, this, menu_selector(ModCell::onUnresolvedInfo)
     );
-    this->m_pUnresolvedExMark->setPosition(-80.f, 0.f);
-    menu->addChild(this->m_pUnresolvedExMark);
+    this->m_unresolvedExMark->setPosition(-80.f, 0.f);
+    menu->addChild(this->m_unresolvedExMark);
 
     this->updateState();
 }
@@ -96,7 +101,7 @@ void ModCell::onEnable(CCObject* pSender) {
             )->show();
         }
     }
-    this->m_pList->updateAllStates(this);
+    this->m_list->updateAllStates(this);
 }
 
 void ModCell::onUnresolvedInfo(CCObject* pSender) {
@@ -116,21 +121,31 @@ void ModCell::onUnresolvedInfo(CCObject* pSender) {
 }
 
 bool ModCell::init(ModListView* list) {
-    this->m_pList = list;
+    this->m_list = list;
     return true;
 }
 
 void ModCell::updateState(bool invert) {
-    this->m_pEnableToggle->toggle(this->m_mod->isEnabled() ^ invert);
+    this->m_enableToggle->toggle(this->m_mod->isEnabled() ^ invert);
 
     bool unresolved = this->m_mod->hasUnresolvedDependencies();
-    this->m_pEnableToggle->setEnabled(!unresolved);
-    this->m_pEnableToggle->m_offButton->setOpacity(unresolved ? 100 : 255);
-    this->m_pEnableToggle->m_offButton->setColor(unresolved ? cc3x(155) : cc3x(255));
-    this->m_pEnableToggle->m_onButton->setOpacity(unresolved ? 100 : 255);
-    this->m_pEnableToggle->m_onButton->setColor(unresolved ? cc3x(155) : cc3x(255));
+    std::cout << "this->m_enableToggle 0x" << std::hex << this->m_enableToggle << "\n";
+    std::cout << "this->m_enableToggle->m_offButton 0x" << this->m_enableToggle->m_offButton << "\n";
+    std::cout << "this->m_enableToggle->m_offButton off 0x" << offsetof(CCMenuItemToggler, m_offButton) << "\n";
+    std::cout << "this->m_enableToggle->m_onButton 0x" << this->m_enableToggle->m_onButton << "\n";
+    std::cout << "this->m_enableToggle->m_onButton off 0x" << offsetof(CCMenuItemToggler, m_onButton) << "\n";
+    std::cout << "sizeof CCObject 0x" << sizeof CCObject << "\n";
+    std::cout << "sizeof CCNode 0x" << sizeof CCNode << "\n";
+    std::cout << "sizeof CCNodeRGBA 0x" << sizeof CCNodeRGBA << "\n";
+    std::cout << "sizeof CCMenuItem 0x" << sizeof CCMenuItem << "\n";
+    std::cout << "sizeof CCMenuItemToggler 0x" << sizeof CCMenuItemToggler << "\n";
+    this->m_enableToggle->setEnabled(!unresolved);
+    this->m_enableToggle->m_offButton->setOpacity(unresolved ? 100 : 255);
+    this->m_enableToggle->m_offButton->setColor(unresolved ? cc3x(155) : cc3x(255));
+    this->m_enableToggle->m_onButton->setOpacity(unresolved ? 100 : 255);
+    this->m_enableToggle->m_onButton->setColor(unresolved ? cc3x(155) : cc3x(255));
 
-    this->m_pUnresolvedExMark->setVisible(unresolved);
+    this->m_unresolvedExMark->setVisible(unresolved);
 }
 
 ModCell* ModCell::create(ModListView* list, const char* key, CCSize size) {
@@ -154,10 +169,12 @@ void ModListView::setupList() {
 
     if (!this->m_entries->count()) return;
 
-    std::cout << "ModListView: " << this << "\n";
-    std::cout << "m_entries: " << this->m_entries << "\n";
-    std::cout << "m_tableView: " << this->m_tableView << "\n";
-    std::cout << "m_dataSource: " << this->m_tableView->m_dataSource << "\n";
+    std::cout << "offset: 0x" << std::hex << offsetof(ModListView, m_tableView) << "\n";
+    std::cout << "m_tableView: 0x" << this->m_tableView << "\n";
+    std::cout << "m_tableView->m_tableDelegate: 0x" << this->m_tableView->m_tableDelegate << "\n";
+    std::cout << "m_tableView->m_dataSource: 0x" << this->m_tableView->m_dataSource << "\n";
+    std::cout << "this: 0x" << this << "\n";
+    std::cout << "this->m_entries: 0x" << this->m_entries << "\n";
 
     this->m_tableView->reloadData();
 

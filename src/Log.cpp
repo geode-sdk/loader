@@ -74,7 +74,13 @@ std::string LogMessage::toString(bool logTime) const {
 
     if (logTime) {
         const auto t = std::chrono::system_clock::to_time_t(this->m_time);
-        res << '[' << std::put_time(std::localtime(&t), "%H:%M:%S") << "] ";
+        tm obj;
+        #ifdef _MSC_VER
+        localtime_s(&obj, &t);
+        #else
+        obj = *std::localtime(&t);
+        #endif
+        res << '[' << std::put_time(&obj, "%H:%M:%S") << "] ";
     }
     res << '[';
     if (this->m_sender) {

@@ -19,10 +19,10 @@ class ModListView;
 
 class ModCell : public TableViewCell {
     protected:
-        ModListView* m_pList;
+        ModListView* m_list;
         Mod* m_mod;
-        CCMenuItemToggler* m_pEnableToggle;
-        CCMenuItemSpriteExtra* m_pUnresolvedExMark;
+        CCMenuItemToggler* m_enableToggle;
+        CCMenuItemSpriteExtra* m_unresolvedExMark;
 
 		ModCell(const char* name, CCSize size);
 
