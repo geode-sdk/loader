@@ -138,7 +138,18 @@ void ModCell::updateState(bool invert) {
     std::cout << "sizeof CCNode 0x" << sizeof CCNode << "\n";
     std::cout << "sizeof CCNodeRGBA 0x" << sizeof CCNodeRGBA << "\n";
     std::cout << "sizeof CCMenuItem 0x" << sizeof CCMenuItem << "\n";
+    std::cout << "sizeof SEL_MenuHandler 0x" << sizeof SEL_MenuHandler << "\n";
+    std::cout << "sizeof SEL_CallFunc 0x" << sizeof SEL_CallFunc << "\n";
+    std::cout << "sizeof CCCallFunc 0x" << sizeof CCCallFunc << "\n";
+    std::cout << "sizeof CCObject* 0x" << sizeof(CCObject*) << "\n";
+    std::cout << "sizeof int 0x" << sizeof(int) << "\n";
     std::cout << "sizeof CCMenuItemToggler 0x" << sizeof CCMenuItemToggler << "\n";
+    std::cout << "sizeof Wannabe_MenuHandler 0x" << sizeof Wannabe_MenuHandler << "\n";
+    std::cout << "offsetof m_bSelected 0x" << offsetof(CCMenuItem, m_bSelected) << "\n";
+    std::cout << "offsetof m_bEnabled 0x" << offsetof(CCMenuItem, m_bEnabled) << "\n";
+    std::cout << "offsetof m_pListener 0x" << offsetof(CCMenuItem, m_pListener) << "\n";
+    std::cout << "offsetof m_pfnSelector 0x" << offsetof(CCMenuItem, m_pfnSelector) << "\n";
+    std::cout << "offsetof m_nScriptTapHandler 0x" << offsetof(CCMenuItem, m_nScriptTapHandler) << "\n";
     this->m_enableToggle->setEnabled(!unresolved);
     this->m_enableToggle->m_offButton->setOpacity(unresolved ? 100 : 255);
     this->m_enableToggle->m_offButton->setColor(unresolved ? cc3x(155) : cc3x(255));
