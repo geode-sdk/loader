@@ -51,3 +51,8 @@ build
 *.sublime-project
 
 fods-catgirl-hideout.txt
+
+# ignore visual studio cringe folders
+.vs/
+out/
+bin/
