@@ -23,10 +23,14 @@ void Interface::init(Mod* mod) {
 }
 
 Result<Hook*> Interface::addHook(void* address, void* detour) {
+	return this->addHook("", address, detour);
+}
+
+Result<Hook*> Interface::addHook(std::string_view displayName, void* address, void* detour) {
 	if (this->m_mod) {
 		return this->m_mod->addHook(address, detour);
 	}
-	this->m_scheduledHooks.push_back({ address, detour });
+	this->m_scheduledHooks.push_back({ displayName, address, detour });
 	return Ok<Hook*>(nullptr);
 }
 
