@@ -2,6 +2,7 @@
 #include <helper/AlertPopup.hpp>
 #undef max
 #undef min
+#include <algorithm>
 
 /**
  * 			IDK man
