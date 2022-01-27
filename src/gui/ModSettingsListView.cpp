@@ -10,14 +10,15 @@ bool ModSettingsListView::init(Mod* mod, float width, float height) {
 	for (auto const& sett : mod->getSettings()) {
 		auto node = sett->generate(width);
 		if (node) {
+			// otherwise causes crashes idk
+			node->m_tableView = nullptr;
+			
 			node->setPosition(0.f, offset);
 			this->m_contentLayer->addChild(node);
 			offset += node->m_height;
 		}
 	}
-
 	this->m_contentLayer->setContentSize({ width, offset });
-
 	this->moveToTop();
 
 	CCDirector::sharedDirector()->getTouchDispatcher()->incrementForcePrio(2);

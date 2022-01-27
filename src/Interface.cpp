@@ -22,23 +22,16 @@ void Interface::init(Mod* mod) {
 	}
 }
 
-<<<<<<< HEAD
-=======
 Result<Hook*> Interface::addHook(void* address, void* detour) {
 	return this->addHook("", address, detour);
 }
 
->>>>>>> bf4d91e8a1f602ea35b68f0a584134b87237bfdd
 Result<Hook*> Interface::addHook(std::string_view displayName, void* address, void* detour) {
 	if (this->m_mod) {
 		return this->m_mod->addHook(displayName, address, detour);
 	}
 	this->m_scheduledHooks.push_back({ displayName, address, detour });
 	return Ok<Hook*>(nullptr);
-}
-
-Result<Hook*> Interface::addHook(void* address, void* detour) {
-	return Interface::addHook("", address, detour);
 }
 
 void Interface::logInfo(
