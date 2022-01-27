@@ -34,6 +34,7 @@ Result<> Mod::loadPlatformBinary() {
 Result<> Mod::unloadPlatformBinary() {
     auto dylib = this->m_platformInfo->m_dylib;
     delete this->m_platformInfo;
+    this->m_platformInfo = nullptr;
     if (dlclose(dylib) == 0) {
         this->m_unloadFunc = nullptr;
         this->m_loadFunc = nullptr;
