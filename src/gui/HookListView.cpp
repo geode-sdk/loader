@@ -61,28 +61,30 @@ void HookCell::loadFromHook(Hook* hook, Mod* Mod) {
     menu->addChild(enableBtn);
 
     std::stringstream moduleName;
-    auto addr = hook->getAddress();
+    
 
-    #ifdef GEODE_IS_WINDOWS // add other platforms?
-    HMODULE module;
-    if (GetModuleHandleExA(
-        GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
-        GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-        as<LPCSTR>(hook->getAddress()),
-        &module
-    )) {
-        addr -= as<uintptr_t>(module);
-        char name[MAX_PATH];
-        if (GetModuleFileNameA(
-            module, name, sizeof name
-        )) {
-            auto fileName = std::filesystem::path(name).stem();
-            moduleName << fileName.string() << " + ";
-        }
-    }
-    #endif
-
-    moduleName << "0x" << std::hex << addr;
+    // #ifdef GEODE_IS_WINDOWS // add other platforms?
+    // HMODULE module;
+    // if (GetModuleHandleExA(
+    //     GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
+    //     GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+    //     as<LPCSTR>(hook->getAddress()),
+    //     &module
+    // )) {
+    //     addr -= as<uintptr_t>(module);
+    //     char name[MAX_PATH];
+    //     if (GetModuleFileNameA(
+    //         module, name, sizeof name
+    //     )) {
+    //         auto fileName = std::filesystem::path(name).stem();
+    //         moduleName << fileName.string() << " + ";
+    //     }
+    // }
+    // #endif
+    if (hook->getDisplayName() != "")
+    	moduleName << hook->getDisplayName();
+    else 
+    	moduleName << "0x" << std::hex << hook->getAddress();    
     auto label = CCLabelBMFont::create(moduleName.str().c_str(), "bigFont.fnt");
     label->setPosition(this->m_height / 2, this->m_height / 2);
     label->setScale(.4f);
