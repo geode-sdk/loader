@@ -1,4 +1,5 @@
 #include "ModListLayer.hpp"
+#include <InternalMod.hpp>
 
 bool ModListLayer::init() {
 	if (!CCLayer::init())
@@ -74,6 +75,7 @@ void ModListLayer::reloadList() {
         m_pListLabel->setVisible(false);
 
 		auto arr = CCArray::create();
+		arr->addObject(new ModObject(InternalMod::get()));
 		for (auto const& mod : mods) {
 			arr->addObject(new ModObject(mod));
 		}

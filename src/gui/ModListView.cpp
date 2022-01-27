@@ -46,11 +46,13 @@ void ModCell::loadFromMod(ModObject* Mod) {
     );
     menu->addChild(viewBtn);
 
-    this->m_enableToggle = CCMenuItemToggler::createWithStandardSprites(
-        this, menu_selector(ModCell::onEnable), .7f
-    );
-    this->m_enableToggle->setPosition(-50.f, 0.f);
-    menu->addChild(this->m_enableToggle);
+    if (this->m_mod->supportsDisabling()) {
+        this->m_enableToggle = CCMenuItemToggler::createWithStandardSprites(
+            this, menu_selector(ModCell::onEnable), .7f
+        );
+        this->m_enableToggle->setPosition(-50.f, 0.f);
+        menu->addChild(this->m_enableToggle);
+    }
 
     auto exMark = CCSprite::createWithSpriteFrameName("exMark_001.png");
     exMark->setScale(.5f);
@@ -121,14 +123,15 @@ bool ModCell::init(ModListView* list) {
 }
 
 void ModCell::updateState(bool invert) {
-    this->m_enableToggle->toggle(this->m_mod->isEnabled() ^ invert);
-
     bool unresolved = this->m_mod->hasUnresolvedDependencies();
-    this->m_enableToggle->setEnabled(!unresolved);
-    this->m_enableToggle->m_offButton->setOpacity(unresolved ? 100 : 255);
-    this->m_enableToggle->m_offButton->setColor(unresolved ? cc3x(155) : cc3x(255));
-    this->m_enableToggle->m_onButton->setOpacity(unresolved ? 100 : 255);
-    this->m_enableToggle->m_onButton->setColor(unresolved ? cc3x(155) : cc3x(255));
+    if (this->m_enableToggle) {
+        this->m_enableToggle->toggle(this->m_mod->isEnabled() ^ invert);
+        this->m_enableToggle->setEnabled(!unresolved);
+        this->m_enableToggle->m_offButton->setOpacity(unresolved ? 100 : 255);
+        this->m_enableToggle->m_offButton->setColor(unresolved ? cc3x(155) : cc3x(255));
+        this->m_enableToggle->m_onButton->setOpacity(unresolved ? 100 : 255);
+        this->m_enableToggle->m_onButton->setColor(unresolved ? cc3x(155) : cc3x(255));
+    }
 
     this->m_unresolvedExMark->setVisible(unresolved);
 }
@@ -174,11 +177,11 @@ void ModListView::loadCell(TableViewCell* cell, unsigned int index) {
 }
 
 ModListView* ModListView::create(
-    CCArray* actions
+    CCArray* mods
 ) {
     auto pRet = new ModListView;
     if (pRet) {
-        if (pRet->init(actions, kBoomListType_Mod, 356.f, 220.f)) {
+        if (pRet->init(mods, kBoomListType_Mod, 356.f, 220.f)) {
             pRet->autorelease();
             return pRet;
         }

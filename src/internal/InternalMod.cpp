@@ -15,6 +15,7 @@ ModInfo getInternalModInfo() {
 }
 
 InternalMod::InternalMod() : Mod(getInternalModInfo()) {
+    this->m_supportsDisabling = false;
 }
 
 InternalMod::~InternalMod() {
