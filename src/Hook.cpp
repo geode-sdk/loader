@@ -24,9 +24,13 @@ struct hook_info {
 GEODE_STATIC_VAR(std::vector<hook_info>, internalHooks);
 GEODE_STATIC_VAR(bool, readyToHook);
 
-Result<Hook*> Mod::addHookBase(std::string_view displayName, void* addr, void* detour, Hook* hook) {
+Result<Hook*> Mod::addHookBase(
+    std::string_view displayName,
+    void* addr, void* detour, Hook* hook
+) {
     if (!hook) {
         hook = new Hook();
+        hook->m_displayName = displayName;
         hook->m_address = addr;
         hook->m_displayName = displayName;
     }

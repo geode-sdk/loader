@@ -72,17 +72,25 @@ std::string LogCCObject::toString() const {
 std::string LogMessage::toString(bool logTime) const {
     std::stringstream res;
 
+    if (logTime) {
+        const auto t = std::chrono::system_clock::to_time_t(this->m_time);
+        tm obj;
+        #ifdef _MSC_VER
+        localtime_s(&obj, &t);
+        #else
+        obj = *std::localtime(&t);
+        #endif
+        res << '[' << std::put_time(&obj, "%H:%M:%S") << "] ";
+    }
+    res << '[';
     if (this->m_sender) {
         res << this->m_sender->getName();
     } else {
-        res << "[ null ]";
+        res << '?';
     }
-    if (logTime) {
-        res << " at " << timePointAsString(this->m_time);
-    }
-    res << ":";
+    res << "]:";
     for (auto const& log : this->m_data) {
-        res << " " << log->toString();
+        res << ' ' << log->toString();
     }
 
     return res.str();

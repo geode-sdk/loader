@@ -46,20 +46,20 @@ void ModCell::loadFromMod(ModObject* Mod) {
     );
     menu->addChild(viewBtn);
 
-    this->m_pEnableToggle = CCMenuItemToggler::createWithStandardSprites(
+    this->m_enableToggle = CCMenuItemToggler::createWithStandardSprites(
         this, menu_selector(ModCell::onEnable), .7f
     );
-    this->m_pEnableToggle->setPosition(-50.f, 0.f);
-    menu->addChild(this->m_pEnableToggle);
+    this->m_enableToggle->setPosition(-50.f, 0.f);
+    menu->addChild(this->m_enableToggle);
 
     auto exMark = CCSprite::createWithSpriteFrameName("exMark_001.png");
     exMark->setScale(.5f);
 
-    this->m_pUnresolvedExMark = CCMenuItemSpriteExtra::create(
+    this->m_unresolvedExMark = CCMenuItemSpriteExtra::create(
         exMark, this, menu_selector(ModCell::onUnresolvedInfo)
     );
-    this->m_pUnresolvedExMark->setPosition(-80.f, 0.f);
-    menu->addChild(this->m_pUnresolvedExMark);
+    this->m_unresolvedExMark->setPosition(-80.f, 0.f);
+    menu->addChild(this->m_unresolvedExMark);
 
     this->updateState();
 }
@@ -96,7 +96,7 @@ void ModCell::onEnable(CCObject* pSender) {
             )->show();
         }
     }
-    this->m_pList->updateAllStates(this);
+    this->m_list->updateAllStates(this);
 }
 
 void ModCell::onUnresolvedInfo(CCObject* pSender) {
@@ -116,21 +116,21 @@ void ModCell::onUnresolvedInfo(CCObject* pSender) {
 }
 
 bool ModCell::init(ModListView* list) {
-    this->m_pList = list;
+    this->m_list = list;
     return true;
 }
 
 void ModCell::updateState(bool invert) {
-    this->m_pEnableToggle->toggle(this->m_mod->isEnabled() ^ invert);
+    this->m_enableToggle->toggle(this->m_mod->isEnabled() ^ invert);
 
     bool unresolved = this->m_mod->hasUnresolvedDependencies();
-    this->m_pEnableToggle->setEnabled(!unresolved);
-    this->m_pEnableToggle->m_offButton->setOpacity(unresolved ? 100 : 255);
-    this->m_pEnableToggle->m_offButton->setColor(unresolved ? cc3x(155) : cc3x(255));
-    this->m_pEnableToggle->m_onButton->setOpacity(unresolved ? 100 : 255);
-    this->m_pEnableToggle->m_onButton->setColor(unresolved ? cc3x(155) : cc3x(255));
+    this->m_enableToggle->setEnabled(!unresolved);
+    this->m_enableToggle->m_offButton->setOpacity(unresolved ? 100 : 255);
+    this->m_enableToggle->m_offButton->setColor(unresolved ? cc3x(155) : cc3x(255));
+    this->m_enableToggle->m_onButton->setOpacity(unresolved ? 100 : 255);
+    this->m_enableToggle->m_onButton->setColor(unresolved ? cc3x(155) : cc3x(255));
 
-    this->m_pUnresolvedExMark->setVisible(unresolved);
+    this->m_unresolvedExMark->setVisible(unresolved);
 }
 
 ModCell* ModCell::create(ModListView* list, const char* key, CCSize size) {
@@ -153,11 +153,6 @@ void ModListView::setupList() {
     this->m_itemSeparation = 40.0f;
 
     if (!this->m_entries->count()) return;
-
-    std::cout << "ModListView: " << this << "\n";
-    std::cout << "m_entries: " << this->m_entries << "\n";
-    std::cout << "m_tableView: " << this->m_tableView << "\n";
-    std::cout << "m_dataSource: " << this->m_tableView->m_dataSource << "\n";
 
     this->m_tableView->reloadData();
 
@@ -183,7 +178,7 @@ ModListView* ModListView::create(
 ) {
     auto pRet = new ModListView;
     if (pRet) {
-        if (pRet->init(actions, kBoomListType_Mod, 56.f, 220.f)) {
+        if (pRet->init(actions, kBoomListType_Mod, 356.f, 220.f)) {
             pRet->autorelease();
             return pRet;
         }
