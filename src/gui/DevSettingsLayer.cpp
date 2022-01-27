@@ -10,6 +10,7 @@ bool DevSettingsLayer::init(Mod* mod) {
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
 	auto menu = CCMenu::create();
+	std::cout << "menu: " << menu << "\n";
 	GameToolbox::createToggleButton(
 		menu_selector(DevSettingsLayer::onEnableHotReload),
 		Geode::get()->isHotReloadEnabled(mod), menu,
