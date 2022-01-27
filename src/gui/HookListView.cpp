@@ -132,7 +132,7 @@ HookListView* HookListView::create(
     auto pRet = new HookListView;
     if (pRet) {
         pRet->m_mod = Mod;
-        if (pRet->init(hooks, width, height, 0, kBoomListType_Hooks)) {
+        if (pRet->init(hooks, kBoomListType_Hooks, width, height)) {
             pRet->autorelease();
             return pRet;
         }

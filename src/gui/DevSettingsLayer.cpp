@@ -10,6 +10,7 @@ bool DevSettingsLayer::init(Mod* mod) {
     auto winSize = CCDirector::sharedDirector()->getWinSize();
 
 	auto menu = CCMenu::create();
+	std::cout << "menu: " << menu << "\n";
 	GameToolbox::createToggleButton(
 		"Enable Hot Reload",
 		menu_selector(DevSettingsLayer::onEnableHotReload),

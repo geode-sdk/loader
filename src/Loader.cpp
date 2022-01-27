@@ -22,6 +22,7 @@ void Loader::createDirectories() {
         file_utils::createDirectory(const_join_path_c_str<geode_directory>);
         file_utils::createDirectory(const_join_path_c_str<geode_directory, geode_resource_directory>);
         file_utils::createDirectory(const_join_path_c_str<geode_directory, geode_mod_directory>);
+        file_utils::createDirectory(const_join_path_c_str<geode_directory, geode_api_mod_directory>);
         ghc::filesystem::remove_all(const_join_path_c_str<geode_directory, geode_temp_directory>);
     } catch(...) {}
 }
