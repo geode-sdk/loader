@@ -32,6 +32,7 @@ Result<Hook*> Mod::addHookBase(
         hook = new Hook();
         hook->m_displayName = displayName;
         hook->m_address = addr;
+        hook->m_displayName = displayName;
     }
     if ((hook->m_handle = const_cast<void*>(geode::core::hook::add(addr, detour)))) {
         this->m_hooks.push_back(hook);
@@ -47,7 +48,7 @@ Result<Hook*> Mod::addHookBase(
 
 Result<Hook*> Mod::addHookBase(Hook* hook) {
     return this->addHookBase(
-        hook->m_displayName,
+    	hook->m_displayName,
         hook->m_address,
         hook->m_detour,
         hook
@@ -93,12 +94,17 @@ Result<> Mod::removeHook(Hook* hook) {
 }
 
 Result<Hook*> Mod::addHook(void* addr, void* detour) {
+    return this->addHook("", addr, detour);
+}
+
+Result<Hook*> Mod::addHook(std::string_view displayName, void* addr, void* detour) {
     if (readyToHook()) {
-        return this->addHookBase("", addr, detour);
+        return this->addHookBase(displayName, addr, detour);
     } else {
         auto hook = new Hook();
         hook->m_address = addr;
         hook->m_detour = detour;
+        hook->m_displayName = displayName;
         internalHooks().push_back({ hook, this });
         return Ok<Hook*>(hook);
     }

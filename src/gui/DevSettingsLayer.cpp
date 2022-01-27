@@ -15,11 +15,13 @@ bool DevSettingsLayer::init(Mod* mod) {
 	std::cout << "menu: " << menu << "\n";
 	std::cout << "this: " << this << "\n";
 	GameToolbox::createToggleButton(
+		"Enable Hot Reload",
 		menu_selector(DevSettingsLayer::onEnableHotReload),
-		Geode::get()->isHotReloadEnabled(mod), menu,
-		this, menu, .75f, .5f, 100.f, nullptr,
-		false, 0, nullptr, "Enable Hot Reload",
-		{ winSize.width / 2 - 40.f, winSize.height / 2 + 40.f }, { 10, 0 }
+		Geode::get()->isHotReloadEnabled(mod), menu, 
+		{ winSize.width / 2 - 40.f, winSize.height / 2 + 40.f },
+		this, menu, .75f, .5f, 100.f, { 10, 0 }, nullptr,
+		false, 0, nullptr
+		 
 	);
 
 	this->m_input = CCTextInputNode::create(
