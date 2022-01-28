@@ -85,9 +85,9 @@ void HookCell::loadFromHook(Hook* hook, Mod* Mod) {
     	moduleName << hook->getDisplayName();
     else 
     	moduleName << "0x" << std::hex << hook->getAddress();    
-    auto label = CCLabelBMFont::create(moduleName.str().c_str(), "bigFont.fnt");
+    auto label = CCLabelBMFont::create(moduleName.str().c_str(), "chatFont.fnt");
     label->setPosition(this->m_height / 2, this->m_height / 2);
-    label->setScale(.4f);
+    label->setScale(.7f);
     label->setAnchorPoint({ .0f, .5f });
     this->m_mainLayer->addChild(label);
 }

@@ -17,7 +17,6 @@ bool DevSettingsLayer::init(Mod* mod) {
 		{ winSize.width / 2 - 40.f, winSize.height / 2 + 40.f },
 		this, menu, .75f, .5f, 100.f, { 10, 0 }, nullptr,
 		false, 0, nullptr
-		 
 	);
 
 	this->m_input = CCTextInputNode::create(
@@ -25,7 +24,7 @@ bool DevSettingsLayer::init(Mod* mod) {
 	);
 	auto path = Geode::get()->getHotReloadPath(mod);
 	if (path.size()) {
-		this->m_input->setString(path.c_str());
+		this->m_input->setString(path);
 	}
 	this->m_input->setAllowedChars("0123456789.:-_/\\()[]abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ{|!}");
 	this->m_input->setPosition(winSize.width / 2, winSize.height / 2);
@@ -54,8 +53,8 @@ void DevSettingsLayer::onEnableHotReload(CCObject* pSender) {
 				nullptr,
 				"Error",
 				"OK", 
-				nullptr,
-				"Set a .geode file path first"
+				"Set a .geode file path first",
+				nullptr
 			)->show();
 			as<CCMenuItemToggler*>(pSender)->toggle(true);
 		} else {
@@ -65,8 +64,8 @@ void DevSettingsLayer::onEnableHotReload(CCObject* pSender) {
 					nullptr,
 					"Error",
 					"OK", 
-					nullptr,
-					res.error().c_str()
+					res.error().c_str(),
+					nullptr
 				)->show();
 			}
 		}
@@ -77,9 +76,11 @@ void DevSettingsLayer::onEnableHotReload(CCObject* pSender) {
 
 void DevSettingsLayer::onPastePathFromClipboard(CCObject*) {
 	auto data = clipboard::read();
+	std::cout << data << std::endl;
 	if (data.size()) {
-		this->m_input->setString(data.c_str());
+		this->m_input->setString(data);
 	}
+	std::cout << data << std::endl;
 }
 
 DevSettingsLayer* DevSettingsLayer::create(Mod* mod) {

@@ -21,7 +21,7 @@ class ModCell : public TableViewCell {
     protected:
         ModListView* m_list;
         Mod* m_mod;
-        CCMenuItemToggler* m_enableToggle;
+        CCMenuItemToggler* m_enableToggle = nullptr;
         CCMenuItemSpriteExtra* m_unresolvedExMark;
 
 		ModCell(const char* name, CCSize size);
