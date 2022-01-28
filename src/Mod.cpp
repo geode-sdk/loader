@@ -90,21 +90,17 @@ Result<> Mod::load() {
 }
 
 Result<> Mod::unload() {
-	std::cout << "adasdasdsddasdsa" << std::endl;
     if (!this->m_loaded) {
         return Ok<>();
     }
-    std::cout << "adasdasdsddasdsa2" << std::endl;
     
     this->m_unloadFunc();
 
-    std::cout << "adasdasdsddasdsa3" << std::endl;
     for (auto const& hook : this->m_hooks) {
         auto d = this->disableHook(hook);
         if (!d) return d;
         delete hook;
     }
-    std::cout << "adasdasdsddasdsa4" << std::endl;
     this->m_hooks.clear();
 
     for (auto const& patch : this->m_patches) {
@@ -113,14 +109,12 @@ Result<> Mod::unload() {
         }
         delete patch;
     }
-    std::cout << "adasdasdsddasdsa5" << std::endl;
     this->m_patches.clear();
 
     auto res = this->unloadPlatformBinary();
     if (!res) {
         return res;
     }
-    std::cout << "adasdasdsddasdsa6" << std::endl;
     this->m_loaded = false;
     Loader::get()->updateAllDependencies();
     return Ok<>();

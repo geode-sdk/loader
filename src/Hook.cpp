@@ -32,6 +32,7 @@ Result<Hook*> Mod::addHookBase(
         hook = new Hook();
         hook->m_displayName = displayName;
         hook->m_address = addr;
+        hook->m_detour = detour;
         hook->m_displayName = displayName;
     }
     if ((hook->m_handle = const_cast<void*>(geode::core::hook::add(addr, detour)))) {
