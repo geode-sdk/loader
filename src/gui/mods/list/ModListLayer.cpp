@@ -51,7 +51,6 @@ bool ModListLayer::init() {
 
     this->addChild(this->m_pListLabel);
 
-	
 	this->reloadList();
 
     this->setKeyboardEnabled(true);
@@ -98,7 +97,7 @@ void ModListLayer::onExit(CCObject*) {
 }
 
 void ModListLayer::onReload(CCObject*) {
-	Loader::get()->updateMods();
+	Loader::get()->refreshMods();
 	this->reloadList();
 }
 

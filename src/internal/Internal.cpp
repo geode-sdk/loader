@@ -42,24 +42,6 @@ bool Geode::setup() {
     InternalMod::get()->log()
         << Severity::Debug << "Loaded hooks" << geode::endl;
 
-    InternalMod::get()->addKeybindAction(TriggerableAction {
-        "Refresh Mods List",
-        "geode.refresh_mods",
-        KB_GLOBAL_CATEGORY,
-        [](auto node, bool down) -> bool {
-            if (down) {
-                auto count = Loader::get()->updateMods();
-                FLAlertLayer::create(
-                    nullptr, "yea", 
-                    "woo wee " + std::to_string(count),
-                    "OK", nullptr,
-                    320.f
-                )->show();
-            }
-            return false;
-        }
-    }, {{ KEY_G, Keybind::kmControl | Keybind::kmAlt }});
-
     return true;
 }
 
@@ -178,7 +160,7 @@ void Geode::awaitPlatformConsole() {
     // CLIManager::get()->execute(args);
 
     if (inp == "reload") {
-        Loader::get()->updateMods();
+        Loader::get()->refreshMods();
     }
 
     if (args.size() > 1 && args[0] == "unload") {
