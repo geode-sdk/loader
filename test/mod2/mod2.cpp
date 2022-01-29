@@ -3,7 +3,6 @@
 
 class $modify(GJGarageLayer) {
 	bool init() {
-		 Interface::mod()->log() << "uwu uwu uwu uwu" << geode::endl;
 		if (!GJGarageLayer::init()) return false;
 
 	    if (Loader::get()->isModLoaded("com.geode.test_one")) {
