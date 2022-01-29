@@ -1,5 +1,5 @@
 #include "ModSettingsLayer.hpp"
-#include "ModSettingsListView.hpp"
+#include "../settings/ModSettingsListView.hpp"
 
 bool ModSettingsLayer::init(Mod* mod) {
     this->m_noElasticity = true;

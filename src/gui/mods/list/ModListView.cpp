@@ -1,5 +1,5 @@
 #include "ModListView.hpp"
-#include "ModInfoLayer.hpp"
+#include "../info/ModInfoLayer.hpp"
 #include <utils/WackyGeodeMacros>
 
 ModCell::ModCell(const char* name, CCSize size) :

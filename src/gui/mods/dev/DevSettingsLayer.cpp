@@ -24,7 +24,7 @@ bool DevSettingsLayer::init(Mod* mod) {
 	);
 	auto path = Geode::get()->getHotReloadPath(mod);
 	if (path.size()) {
-		this->m_input->setString(path);
+		this->m_input->setString(path.c_str());
 	}
 	this->m_input->setAllowedChars("0123456789.:-_/\\()[]abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ{|!}");
 	this->m_input->setPosition(winSize.width / 2, winSize.height / 2);
@@ -50,22 +50,18 @@ void DevSettingsLayer::onEnableHotReload(CCObject* pSender) {
 	if (!as<CCMenuItemToggler*>(pSender)->isToggled()) {
 		if (!path.size()) {
 			FLAlertLayer::create(
-				nullptr,
 				"Error",
-				"OK", 
 				"Set a .geode file path first",
-				nullptr
+				"OK"
 			)->show();
 			as<CCMenuItemToggler*>(pSender)->toggle(true);
 		} else {
 			auto res = Geode::get()->enableHotReload(this->m_mod, path);
 			if (!res) {
 				FLAlertLayer::create(
-					nullptr,
 					"Error",
-					"OK", 
-					res.error().c_str(),
-					nullptr
+					res.error(),
+					"OK" 
 				)->show();
 			}
 		}
@@ -76,11 +72,9 @@ void DevSettingsLayer::onEnableHotReload(CCObject* pSender) {
 
 void DevSettingsLayer::onPastePathFromClipboard(CCObject*) {
 	auto data = clipboard::read();
-	std::cout << data << std::endl;
 	if (data.size()) {
-		this->m_input->setString(data);
+		this->m_input->setString(data.c_str());
 	}
-	std::cout << data << std::endl;
 }
 
 DevSettingsLayer* DevSettingsLayer::create(Mod* mod) {

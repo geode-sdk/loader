@@ -10,6 +10,12 @@ file(GLOB CORE_SOURCES
 	src/helper/*.cpp
 	src/internal/*.cpp
 	src/gui/*.cpp
+	src/gui/loading/*.cpp
+	src/gui/mods/*.cpp
+	src/gui/mods/dev/*.cpp
+	src/gui/mods/info/*.cpp
+	src/gui/mods/list/*.cpp
+	src/gui/mods/settings/*.cpp
 	src/platform/*.cpp
 	src/platform/windows/*.cpp
 	src/platform/macos/*.mm
@@ -18,7 +24,6 @@ file(GLOB CORE_SOURCES
 	src/utils/*.cpp
 	src/utils/platform/*
 	src/hooks/*.cpp
-	src/keybinds/*.cpp
 )
 
 set(SOURCE_FILES 

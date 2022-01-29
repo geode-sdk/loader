@@ -1,6 +1,6 @@
 #include "ModInfoLayer.hpp"
-#include "HookListLayer.hpp"
-#include "DevSettingsLayer.hpp"
+#include "../dev/HookListLayer.hpp"
+#include "../dev/DevSettingsLayer.hpp"
 #include "ModSettingsLayer.hpp"
 
 bool ModInfoLayer::init(Mod* mod) {

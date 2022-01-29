@@ -303,35 +303,3 @@ Result<> Mod::setCustomSetting(
 std::vector<Setting*> Mod::getSettings() const {
     return map_utils::getValues(this->m_info.m_settings);
 }
-
-// template <typename T, typename = std::enable_if_t<std::is_base_of_v<ModInterface, T>> >
-// T Mod::with() {
-// 	return T(this);
-// }
-
-// KeybindInterface::KeybindInterface(Mod* mod) {
-// 	m_mod = mod;
-// }
-
-// void KeybindInterface::addKeybind(int key) {
-// 	/* i love girls sdkfghfgsdjfghsdf */
-// }
-
-// void idk() {
-// 	Mod* mod;
-// 	mod->with<KeybindInterface>().addKeybind(5);
-// }
-
-bool Mod::addKeybindAction(
-    KeybindAction     const& action,
-    KeybindList       const& defaults,
-    keybind_action_id const& insertAfter
-) {
-    return KeybindManager::get()->addKeybindAction(
-        this, action, defaults, insertAfter
-    );
-}
-
-bool Mod::removeKeybindAction(keybind_action_id const& id) {
-    return KeybindManager::get()->removeKeybindAction(this, id);
-}

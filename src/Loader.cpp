@@ -9,8 +9,13 @@
 #include <utils/vector.hpp>
 #include <utils/map.hpp>
 #include <utils/types.hpp>
+#include <mutex>
+#include <Geode>
 
 USE_GEODE_NAMESPACE();
+
+bool Loader::s_unloading = false;
+std::mutex g_unloadMutex;
 
 Loader* Loader::get() {
     static auto g_loader = new Loader;
@@ -25,9 +30,17 @@ void Loader::createDirectories() {
         file_utils::createDirectory(const_join_path_c_str<geode_directory, geode_api_mod_directory>);
         ghc::filesystem::remove_all(const_join_path_c_str<geode_directory, geode_temp_directory>);
     } catch(...) {}
+
+    this->m_modDirectories.insert(const_join_path_c_str<geode_directory, geode_mod_directory>);
+    this->m_modDirectories.insert(const_join_path_c_str<geode_directory, geode_api_mod_directory>);
 }
 
-size_t Loader::updateMods() {
+void Loader::addResourceSearchPaths() {
+    CCFileUtils::sharedFileUtils()->addSearchPath(const_join_path_c_str<geode_directory, geode_resource_directory>);
+    // TODO: Add mods' resources to search paths
+}
+
+size_t Loader::refreshMods() {
     InternalMod::get()->log()
         << Severity::Debug
         << "Loading mods..."
@@ -35,39 +48,46 @@ size_t Loader::updateMods() {
 
     size_t loaded = 0;
     this->createDirectories();
-    for (auto const& entry : ghc::filesystem::directory_iterator(
-        ghc::filesystem::absolute(geode_directory) / geode_mod_directory
-    )) {
-        if (
-            ghc::filesystem::is_regular_file(entry) &&
-            entry.path().extension() == geode_mod_extension
-        ) {
-            InternalMod::get()->log()
-                << Severity::Debug
-                << "Loading " << entry.path().string()
-                << geode::endl;
-            if (!map_utils::contains<std::string, Mod*>(
-                this->m_mods,
-                [entry](Mod* p) -> bool {
-                    return p->m_info.m_path == entry.path().string();
-                }
-            )) {
-                auto res = this->loadModFromFile(entry.path().string());
-                if (res && res.value()) {
-                    if (!res.value()->hasUnresolvedDependencies()) {
-                        loaded++;
-                        InternalMod::get()->log()
-                            << "Succesfully loaded " << res.value() << geode::endl;
-                    } else {
-                        InternalMod::get()->log()
-                            << res.value() << " has unresolved dependencies" << geode::endl;
+
+    for (auto const& dir : this->m_modDirectories) {
+        InternalMod::get()->log()
+            << Severity::Debug
+            << "Searching " << dir 
+            << geode::endl;
+
+        for (auto const& entry : ghc::filesystem::directory_iterator(dir)) {
+            if (
+                ghc::filesystem::is_regular_file(entry) &&
+                entry.path().extension() == geode_mod_extension
+            ) {
+                InternalMod::get()->log()
+                    << Severity::Debug
+                    << "Loading " << entry.path().string()
+                    << geode::endl;
+                if (!map_utils::contains<std::string, Mod*>(
+                    this->m_mods,
+                    [entry](Mod* p) -> bool {
+                        return p->m_info.m_path == entry.path().string();
                     }
-                } else {
-                    InternalMod::get()->logInfo(res.error(), Severity::Error);
+                )) {
+                    auto res = this->loadModFromFile(entry.path().string());
+                    if (res && res.value()) {
+                        if (!res.value()->hasUnresolvedDependencies()) {
+                            loaded++;
+                            InternalMod::get()->log()
+                                << "Succesfully loaded " << res.value() << geode::endl;
+                        } else {
+                            InternalMod::get()->log()
+                                << res.value() << " has unresolved dependencies" << geode::endl;
+                        }
+                    } else {
+                        InternalMod::get()->logInfo(res.error(), Severity::Error);
+                    }
                 }
             }
         }
     }
+
     InternalMod::get()->log()
         << Severity::Debug
         << "Loaded " << loaded << " new mods"
@@ -100,6 +120,14 @@ std::vector<Mod*> Loader::getLoadedMods() const {
     return map_utils::getValues(this->m_mods);
 }
 
+std::tuple<size_t, size_t> Loader::getLoadedModCount() const {
+    auto count = 0u;
+    for (auto const& [_, mod] : this->m_mods) {
+        if (mod->hasUnresolvedDependencies()) count++;
+    }
+    return { this->m_mods.size(), count };
+}
+
 void Loader::updateAllDependencies() {
     for (auto const& [_, mod] : this->m_mods) {
         mod->updateDependencyStates();
@@ -123,7 +151,8 @@ bool Loader::setup() {
         << geode::endl;
 
     this->createDirectories();
-    this->updateMods();
+    this->refreshMods();
+    this->addResourceSearchPaths();
 
     this->m_isSetup = true;
 
@@ -135,6 +164,9 @@ Loader::Loader() {
 }
 
 Loader::~Loader() {
+    g_unloadMutex.lock();
+    s_unloading = true;
+    g_unloadMutex.unlock();
     for (auto const& [_, mod] : this->m_mods) {
         delete mod;
     }
@@ -185,3 +217,12 @@ std::vector<LogMessage*> Loader::getLogs(
 void Loader::queueInGDThread(std::function<void()> func) {
     Geode::get()->queueInGDThread(func);
 }
+
+Mod* Loader::getInternalMod() {
+    return InternalMod::get();
+}
+
+bool Loader::isUnloading() {
+    return Loader::s_unloading;
+}
+
