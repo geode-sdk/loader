@@ -26,12 +26,20 @@ class $modify(CustomMenuLayer, MenuLayer) {
 		if (!spr) {
 			spr = ButtonSprite::create("!!");
 		} else {
+			auto rect = spr->getTextureRect();
+			
+			switch (CCDirector::sharedDirector()->getLoadedTextureQuality()) {
+				case kTextureQualityHigh:   rect.size *= 4; break;
+				case kTextureQualityMedium: rect.size *= 2; break;
+				case kTextureQualityLow:    break;
+			}
+
 			auto frame = CCSpriteFrame::createWithTexture(
 				spr->getTexture(),
-				spr->getTextureRect(),
+				rect,
 				spr->isTextureRectRotated(),
 				{ 3, -6 },
-				spr->getTextureRect().size * 3
+				rect.size
 			);
 			spr->setDisplayFrame(frame);
 			frame->release();
