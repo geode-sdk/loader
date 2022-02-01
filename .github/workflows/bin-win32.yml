@@ -26,5 +26,6 @@ jobs:
     
     - name: Build the thing
       run: |
+        cd ${{github.workspace}}/build
         cmake --build .  --config Release
           
