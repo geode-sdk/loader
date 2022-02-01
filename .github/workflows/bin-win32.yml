@@ -20,6 +20,6 @@ jobs:
 
     - name: Configure CMake
       run: |
-        cmake -G "Visual Studio 16 2019" -B ${{github.workspace}}/build -T host=x86 -A win32 --config Release
-  
+        cmake -G "Visual Studio 16 2019" -B ${{github.workspace}}/build -T host=x86 -A win32
+        cmake --build .  --config Release
           
