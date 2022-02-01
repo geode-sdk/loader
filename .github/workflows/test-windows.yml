@@ -28,3 +28,12 @@ jobs:
       run: |
         cd ${{github.workspace}}/build
         cmake --build .  --config Release
+
+    - name: Upload DLL
+      uses: actions/upload-artifact@v2
+      with:
+        name: Windows Loader Binary + Libraries
+        path: |
+          ${{github.workspace}}/build/Release/geode.dll
+          ${{github.workspace}}/build/Release/geode.lib
+          ${{github.workspace}}/build/src/CCZipUtils/Release/CCZipUtils.lib
