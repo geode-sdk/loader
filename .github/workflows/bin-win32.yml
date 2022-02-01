@@ -1,0 +1,25 @@
+name: Build Windows Binaries
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+		
+    - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x86
+	
+    - name: Configure CMake
+      run: |
+        cmake -G "Visual Studio 16 2019" -B ${{github.workspace}}/build -T host=x86 -A win32 --config Release
+  
+          
