@@ -9,7 +9,6 @@ file(GLOB CORE_SOURCES
 	src/fixes/*.cpp
 	src/helper/*.cpp
 	src/internal/*.cpp
-	src/gui/*.cpp
 	src/gui/loading/*.cpp
 	src/gui/mods/*.cpp
 	src/gui/mods/dev/*.cpp
@@ -23,7 +22,6 @@ file(GLOB CORE_SOURCES
 	src/platform/ios/*.mm
 	src/utils/*.cpp
 	src/utils/platform/*
-	src/hooks/*.cpp
 )
 
 set(SOURCE_FILES 
