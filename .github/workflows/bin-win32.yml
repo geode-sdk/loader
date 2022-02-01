@@ -38,5 +38,5 @@ jobs:
         target-directory: 'windows'
         destination-github-username: 'geode-sdk'
         destination-repository-name: 'bin'
-        user-email: hjfodgames@gmail.com
+        user-email: ${{ secrets.GEODE_BOT_EMAIL  }}
         target-branch: main
