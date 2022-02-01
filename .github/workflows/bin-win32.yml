@@ -28,4 +28,15 @@ jobs:
       run: |
         cd ${{github.workspace}}/build
         cmake --build .  --config Release
-          
+  
+    - name: Push to Bin
+      uses: cpina/github-action-push-to-another-repository@main
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN  }}
+      with:
+        source-directory: '${{github.workspace}}/build/Release'
+        target-directory: 'windows'
+        destination-github-username: 'geode-sdk'
+        destination-repository-name: 'bin'
+        user-email: hjfodgames@gmail.com
+        target-branch: main
