@@ -22,7 +22,7 @@ jobs:
 
     - name: Configure CMake
       run: |
-        cmake -G "Visual Studio 16 2019" -B ${{github.workspace}}/build -T host=x86 -A win32
+        cmake -G "Visual Studio 16 2019" -B ${{github.workspace}}/build -T host=x86 -A win32 -DGEODE_DONT_BUILD_TEST_MODS=On
     
     - name: Build the thing
       run: |
