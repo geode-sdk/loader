@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 project(GeodeLoader VERSION 0.1.0 LANGUAGES C CXX)
 
 set(GEODE_NO_GEODE_FILE On)
+set(GEODE_BUILD_CODEGEN On)
 
 file(GLOB CORE_SOURCES
 	src/*.cpp
