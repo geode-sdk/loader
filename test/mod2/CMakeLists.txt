@@ -8,7 +8,10 @@ project(${PROJECT_NAME} VERSION 1.0.0)
 
 add_library(${PROJECT_NAME} SHARED mod2.cpp)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xlinker --no-demangle")
+# todo: not this
+if (NOT WIN32)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xlinker --no-demangle")
+endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" )
 
