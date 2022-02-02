@@ -34,10 +34,10 @@ void Loader::createDirectories() {
         ghc::filesystem::remove_all(const_join_path_c_str<geode_directory, geode_temp_directory>);
     } catch(...) {}
 
-    if (vector_utils::contains<std::string>(this->m_modDirectories, api_dir)) {
+    if (!vector_utils::contains<std::string>(this->m_modDirectories, api_dir)) {
         this->m_modDirectories.push_back(api_dir);
     }
-    if (vector_utils::contains<std::string>(this->m_modDirectories, mod_dir)) {
+    if (!vector_utils::contains<std::string>(this->m_modDirectories, mod_dir)) {
         this->m_modDirectories.push_back(mod_dir);
     }
 }
