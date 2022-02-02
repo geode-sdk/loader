@@ -303,3 +303,22 @@ Result<> Mod::setCustomSetting(
 std::vector<Setting*> Mod::getSettings() const {
     return map_utils::getValues(this->m_info.m_settings);
 }
+
+ghc::filesystem::path Mod::getHotReloadPath() const {
+    return this->m_hotReloadPath;
+}
+
+Result<> Mod::enableHotReload() {
+    if (this->m_hotReloadPath.empty()) {
+        return Err<>("Mod does not have a hot reload path set");
+    }
+    return Geode::get()->enableHotReload(this, this->m_hotReloadPath);
+}
+
+void Mod::disableHotReload() {
+    return Geode::get()->disableHotReload(this);
+}
+
+bool Mod::isHotReloadEnabled() const {
+    return Geode::get()->isHotReloadEnabled(const_cast<Mod*>(this));
+}

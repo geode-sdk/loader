@@ -109,13 +109,6 @@ bool Geode::isHotReloadEnabled(Mod* mod) const {
     return this->m_hotReloads.count(mod);
 }
 
-std::string Geode::getHotReloadPath(Mod* mod) const {
-    if (!this->isHotReloadEnabled(mod)) {
-        return "";
-    }
-    return this->m_hotReloads.at(mod)->path().string();
-}
-
 void Geode::queueConsoleMessage(LogMessage* msg) {
     this->m_logQueue.push_back(msg);
 }
