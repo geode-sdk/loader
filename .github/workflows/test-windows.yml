@@ -34,6 +34,9 @@ jobs:
       with:
         name: Windows Loader Binary + Libraries
         path: |
+          ${{github.workspace}}/build/Gen/Header.hpp
+          ${{github.workspace}}/build/Gen/Interface.hpp
+          ${{github.workspace}}/build/Gen/TempName.hpp
           ${{github.workspace}}/build/Release/geode.dll
           ${{github.workspace}}/build/Release/geode.lib
           ${{github.workspace}}/build/src/CCZipUtils/Release/CCZipUtils.lib
