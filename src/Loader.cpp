@@ -23,16 +23,23 @@ Loader* Loader::get() {
 }
 
 void Loader::createDirectories() {
+    constexpr auto api_dir = const_join_path_c_str<geode_directory, geode_api_mod_directory>;
+    constexpr auto mod_dir = const_join_path_c_str<geode_directory, geode_mod_directory>;
+    
     try {
         file_utils::createDirectory(const_join_path_c_str<geode_directory>);
         file_utils::createDirectory(const_join_path_c_str<geode_directory, geode_resource_directory>);
-        file_utils::createDirectory(const_join_path_c_str<geode_directory, geode_mod_directory>);
-        file_utils::createDirectory(const_join_path_c_str<geode_directory, geode_api_mod_directory>);
+        file_utils::createDirectory(mod_dir);
+        file_utils::createDirectory(api_dir);
         ghc::filesystem::remove_all(const_join_path_c_str<geode_directory, geode_temp_directory>);
     } catch(...) {}
 
-    this->m_modDirectories.insert(const_join_path_c_str<geode_directory, geode_mod_directory>);
-    this->m_modDirectories.insert(const_join_path_c_str<geode_directory, geode_api_mod_directory>);
+    if (vector_utils::contains<std::string>(this->m_modDirectories, api_dir)) {
+        this->m_modDirectories.push_back(api_dir);
+    }
+    if (vector_utils::contains<std::string>(this->m_modDirectories, mod_dir)) {
+        this->m_modDirectories.push_back(mod_dir);
+    }
 }
 
 void Loader::addResourceSearchPaths() {
