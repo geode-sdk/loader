@@ -461,8 +461,8 @@ skip_binary_check:
 
     auto mod = new Mod(info);
     
-    if (json.contains("supports_disabling") && json["supports_disabling"].is_boolean()) {
-        mod->m_supportsDisabling = json["supports_disabling"];
+    if (json.contains("togglable") && json["togglable"].is_boolean()) {
+        mod->m_supportsDisabling = json["togglable"];
     }
 
     mod->m_enabled = true;
