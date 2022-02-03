@@ -153,6 +153,31 @@ Result<Mod*> Loader::loadModFromFile(std::string const& path) {
     }
 }
 
+std::string Credits::Person::expandKnownLink(std::string const& link) {
+    switch (hash(string_utils::toLower(link).c_str())) {
+        case hash("github"):
+            if (!string_utils::contains(link, "/")) {
+                return "https://github.com/" + link;
+            } break;
+
+        case hash("youtube"):
+            if (!string_utils::contains(link, "/")) {
+                return "https://youtube.com/channel/" + link;
+            } break;
+
+        case hash("twitter"):
+            if (!string_utils::contains(link, "/")) {
+                return "https://twitter.com/" + link;
+            } break;
+
+        case hash("newgrounds"):
+            if (!string_utils::contains(link, "/")) {
+                return "https://" + link + ".newgrounds.com";
+            } break;
+    }
+    return link;
+}
+
 template<>
 Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
     nlohmann::json json = *reinterpret_cast<nlohmann::json*>(jsonData);
@@ -198,7 +223,7 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
     JSON_ASSIGN_IF_CONTAINS_AND_TYPE_REQUIRED(developer, string);
     JSON_ASSIGN_IF_CONTAINS_AND_TYPE(description, string);
     JSON_ASSIGN_IF_CONTAINS_AND_TYPE(details, string);
-    JSON_ASSIGN_IF_CONTAINS_AND_TYPE(credits, string);
+    JSON_ASSIGN_IF_CONTAINS_AND_TYPE(repository, string);
 
     if (json.contains("binary")) {
         bool autoEnd = true;
@@ -235,6 +260,117 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
         }
     }
 skip_binary_check:
+
+    if (json.contains("credits")) {
+        if (json["credits"].is_string()) {
+            info.m_creditsString = json["credits"];
+        } else if (json["credits"].is_object()) {
+            
+            auto credits = json["credits"];
+
+            if (credits.contains("people")) {
+                if (credits["people"].is_object()) {
+                    
+                    for (auto const& [key, value] : credits["people"].items()) {
+                        auto credit = Credits::Person();
+                        credit.m_name = key;
+
+                        if (value.is_object()) {
+
+                            if (value.contains("gd")) {
+                                if (value["gd"].is_string()) {
+                                    credit.m_gdAccountName = value["gd"];
+                                } else if (value["gd"].is_number()) {
+                                    credit.m_gdAccountID = value["gd"];
+                                } else {
+                                    return Err<>("\"" + path + "\": \"credits.people." + credit.m_name + ".gd\" is not a string nor a number");
+                                }
+                            }
+
+                            if (value.contains("role")) {
+                                if (value.contains("reason")) {
+                                    InternalMod::get()->logInfo(
+                                        "\"credits.people." + credit.m_name + "\" contains both \"role\" and \"reason\"",
+                                        Severity::Warning
+                                    );
+                                }
+                                if (value["role"].is_string()) {
+                                    credit.m_reason = value["role"];
+                                } else {
+                                    return Err<>("\"" + path + "\": \"credits.people." + credit.m_name + ".role\" is not a string");
+                                }
+                            }
+
+                            if (value.contains("reason")) {
+                                if (value["reason"].is_string()) {
+                                    credit.m_reason = value["reason"];
+                                } else {
+                                    return Err<>("\"" + path + "\": \"credits.people." + credit.m_name + ".reason\" is not a string");
+                                }
+                            }
+
+                            if (value.contains("links")) {
+                                if (value["links"].is_object()) {
+                                    for (auto const& [site, url] : value["links"].items()) {
+                                        if (url.is_string()) {
+                                            credit.m_links[string_utils::toLower(site)] = Credits::Person::expandKnownLink(url);
+                                        } else {
+                                            return Err<>("\"" + path + "\": \"credits.people." + credit.m_name + ".links." + site + "\" is not a string");
+                                        }
+                                    }
+                                } else {
+                                    return Err<>("\"" + path + "\": \"credits.people." + credit.m_name + ".links\" is not an object");
+                                }
+                            }
+
+                        } else {
+                            return Err<>("\"" + path + "\": \"credits.people." + credit.m_name + "\" is not an object");
+                        }
+
+                        info.m_credits.m_people.push_back(credit);
+                    }
+
+                } else if (credits["people"].is_null()) {
+                    return Err<>("\"" + path + "\": \"credits.people\" is not an object");
+                }
+            }
+
+            if (credits.contains("thanks")) {
+                if (credits["thanks"].is_array()) {
+
+                    for (auto const& item : credits["thanks"]) {
+                        if (item.is_string()) {
+                            info.m_credits.m_thanks.push_back(item);
+                        } else {
+                            return Err<>("\"" + path + "\": \"credits.thanks\" contains a non-string item");
+                        }
+                    }
+
+                } else if (credits["thanks"].is_null()) {
+                    return Err<>("\"" + path + "\": \"credits.thanks\" is not an array");
+                }
+            }
+
+            if (credits.contains("libraries")) {
+                if (credits["libraries"].is_object()) {
+
+                    for (auto const& [name, url] : credits["libraries"].items()) {
+                        if (url.is_string()) {
+                            info.m_credits.m_libraries.push_back({ name, url });
+                        } else {
+                            return Err<>("\"" + path + "\": \"credits.libraries." + name + "\" is not a string");
+                        }
+                    }
+
+                } else if (credits["libraries"].is_null()) {
+                    return Err<>("\"" + path + "\": \"credits.libraries\" is not an object");
+                }
+            }
+
+        } else if (!json["credits"].is_null()) {
+            return Err<>("\"" + path + "\": \"credits\" is not an object, string nor null");
+        }
+    }
 
     if (json.contains("dependencies")) {
         auto deps = json["dependencies"];

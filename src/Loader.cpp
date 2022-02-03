@@ -74,7 +74,7 @@ size_t Loader::refreshMods() {
                 if (!map_utils::contains<std::string, Mod*>(
                     this->m_mods,
                     [entry](Mod* p) -> bool {
-                        return p->m_info.m_path == entry.path().string();
+                        return p->m_info.m_path == entry.path();
                     }
                 )) {
                     auto res = this->loadModFromFile(entry.path().string());

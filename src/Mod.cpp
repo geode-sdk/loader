@@ -24,10 +24,10 @@ Mod::~Mod() {
 }
 
 Result<> Mod::createTempDir() {
-    ZipFile unzip(this->m_info.m_path);
+    ZipFile unzip(this->m_info.m_path.string());
 
     if (!unzip.isLoaded()) {
-        return Err<>("Unable to unzip " + this->m_info.m_path);
+        return Err<>("Unable to unzip " + this->m_info.m_path.string());
     }
 
     if (!unzip.fileExists(this->m_info.m_binaryName)) {
@@ -59,6 +59,17 @@ Result<> Mod::createTempDir() {
 
     auto wrt = file_utils::writeBinary(tempPath, byte_array(data, data + size));
     if (!wrt) return Err<>(wrt.error());
+
+    ZipFile unzipResources(this->m_info.m_path.string(), "resources/");
+
+    for (auto file : unzipResources.getAllFiles()) {
+        unsigned long rsize;
+        auto rdata = unzipResources.getFileData(file, &rsize);
+        if (!data || !rsize) {
+            return Err<>("Unable to read \"resources/" + file + "\"");
+        }
+        file_utils::writeBinary(this->m_tempDirName / file, byte_array(rdata, rdata + rsize));
+    }
 
     return Ok<>(tempPath);
 }
@@ -221,8 +232,8 @@ decltype(ModInfo::m_developer) Mod::getDeveloper() const {
     return this->m_info.m_developer;
 }
 
-decltype(ModInfo::m_credits) Mod::getCredits() const {
-    return this->m_info.m_credits;
+decltype(ModInfo::m_creditsString) Mod::getCredits() const {
+    return this->m_info.m_creditsString;
 }
 
 decltype(ModInfo::m_description) Mod::getDescription() const {
@@ -233,8 +244,8 @@ decltype(ModInfo::m_details) Mod::getDetails() const {
     return this->m_info.m_details;
 }
 
-decltype(ModInfo::m_path) Mod::getPath() const {
-    return this->m_info.m_path;
+std::string Mod::getPath() const {
+    return this->m_info.m_path.string();
 }
 
 VersionInfo Mod::getVersion() const {
