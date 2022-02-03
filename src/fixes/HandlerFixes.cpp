@@ -1,6 +1,3 @@
-// 
-// Copyright camila314 & alk1m123 2022. 
-//
 #include <Geode>
 // this is the fix for the dynamic_cast problems
 

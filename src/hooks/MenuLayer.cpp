@@ -1,6 +1,5 @@
 #include "hook.hpp"
 #include <mods/list/ModListLayer.hpp>
-#include <WackyGeodeMacros>
 
 class $modify(GameManager) {
 	void reloadAllStep2() {
@@ -20,32 +19,37 @@ class $modify(CustomMenuLayer, MenuLayer) {
 		chest->retain();
 		chest->removeFromParent();
 
-		auto y = getChild<>(bottomMenu, 0)->getPositionY();
+		auto ng = getChild<>(bottomMenu, -1);
+		ng->retain();
+		ng->removeFromParent();
 
-		auto spr = CCSprite::create("geode-button-color.png");
+		auto spr = CCSprite::create("geode-button-gold.png");
 		if (!spr) {
 			spr = ButtonSprite::create("!!");
 		} else {
+			Interface::mod()->log() << spr->getTextureRect().size << geode::endl;
+			CCRect rect = spr->getTextureRect();
+			rect.size = rect.size * 4;
 			auto frame = CCSpriteFrame::createWithTexture(
 				spr->getTexture(),
-				spr->getTextureRect(),
+				rect,
 				spr->isTextureRectRotated(),
-				{ 3, -6 },
-				spr->getTextureRect().size * 3
+				CCPointMake(3, -6),
+				rect.size
 			);
 			spr->setDisplayFrame(frame);
 			frame->release();
 		}
+		
 		auto btn = CCMenuItemSpriteExtra::create(
 			spr, this, menu_selector(CustomMenuLayer::onGeode)
 		);
 		bottomMenu->addChild(btn);
 
-		bottomMenu->alignItemsHorizontallyWithPadding(3.f);
+		bottomMenu->addChild(ng);
+		ng->release();
 
-		CCARRAY_FOREACH_B_TYPE(bottomMenu->getChildren(), node, CCNode) {
-			node->setPositionY(y);
-		}
+		bottomMenu->alignItemsHorizontallyWithPadding(3.f);
 
 		bottomMenu->addChild(chest);
 		chest->release();
