@@ -45,7 +45,7 @@ bool Geode::setup() {
     return true;
 }
 
-void Geode::queueInGDThread(std::function<void()> func) {
+void Geode::queueInGDThread(std::function<void GEODE_CALL()> func) {
     this->m_gdThreadQueue.push_back(func);
 }
 
@@ -107,13 +107,6 @@ void Geode::disableHotReload(Mod* mod) {
 
 bool Geode::isHotReloadEnabled(Mod* mod) const {
     return this->m_hotReloads.count(mod);
-}
-
-std::string Geode::getHotReloadPath(Mod* mod) const {
-    if (!this->isHotReloadEnabled(mod)) {
-        return "";
-    }
-    return this->m_hotReloads.at(mod)->path().string();
 }
 
 void Geode::queueConsoleMessage(LogMessage* msg) {

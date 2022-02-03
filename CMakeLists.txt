@@ -3,13 +3,14 @@ cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 project(GeodeLoader VERSION 0.1.0 LANGUAGES C CXX)
 
 set(GEODE_NO_GEODE_FILE On)
+set(GEODE_BUILD_CODEGEN On)
 
 file(GLOB CORE_SOURCES
 	src/*.cpp
 	src/fixes/*.cpp
 	src/helper/*.cpp
 	src/internal/*.cpp
-	src/gui/*.cpp
+	src/hooks/*.cpp
 	src/gui/loading/*.cpp
 	src/gui/mods/*.cpp
 	src/gui/mods/dev/*.cpp
@@ -23,7 +24,6 @@ file(GLOB CORE_SOURCES
 	src/platform/ios/*.mm
 	src/utils/*.cpp
 	src/utils/platform/*
-	src/hooks/*.cpp
 )
 
 set(SOURCE_FILES 
@@ -62,6 +62,8 @@ set_target_properties(GeodeLoader PROPERTIES PREFIX "" OUTPUT_NAME "Geode")
 add_subdirectory(core)
 add_subdirectory(src/CCZipUtils)
 
-if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
-	add_subdirectory(test)
+if(NOT GEODE_DONT_BUILD_TEST_MODS)
+	if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+		add_subdirectory(test)
+	endif()
 endif()

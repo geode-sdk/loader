@@ -8,7 +8,7 @@ ModInfo getInternalModInfo() {
     info.m_developer   = "Geode Team";
     info.m_description = "Internal representation";
     info.m_details     = "Internal representation of Geode.";
-    info.m_credits     = "";
+    info.m_creditsString = "";
     info.m_version     = { 1, 0, 0 };
 
     return info;

@@ -1,5 +1,7 @@
 #include <gdstdlib.hpp>
 
+#if defined(GEODE_IS_MAC) || defined(GEODE_IS_ANDROID)
+
 using namespace gd;
 
 namespace {
@@ -31,3 +33,5 @@ string::~string() {
 		reinterpret_cast<void(*)(_internal_string*)>(geode::base::get() + 0x48b03c)(&m_data[-1]);
 	}
 }
+
+#endif

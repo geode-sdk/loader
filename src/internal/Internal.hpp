@@ -32,9 +32,8 @@ public:
 	Result<> enableHotReload(Mod* mod, ghc::filesystem::path const& path);
 	void disableHotReload(Mod* mod);
 	bool isHotReloadEnabled(Mod* mod) const;
-	std::string getHotReloadPath(Mod* mod) const;
 
-	void queueInGDThread(std::function<void(void)> func);
+	void queueInGDThread(std::function<void GEODE_CALL(void)> func);
 	void executeGDThreadQueue();
 
 	bool platformConsoleReady() const;

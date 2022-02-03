@@ -24,10 +24,10 @@ Mod::~Mod() {
 }
 
 Result<> Mod::createTempDir() {
-    ZipFile unzip(this->m_info.m_path);
+    ZipFile unzip(this->m_info.m_path.string());
 
     if (!unzip.isLoaded()) {
-        return Err<>("Unable to unzip " + this->m_info.m_path);
+        return Err<>("Unable to unzip " + this->m_info.m_path.string());
     }
 
     if (!unzip.fileExists(this->m_info.m_binaryName)) {
@@ -59,6 +59,27 @@ Result<> Mod::createTempDir() {
 
     auto wrt = file_utils::writeBinary(tempPath, byte_array(data, data + size));
     if (!wrt) return Err<>(wrt.error());
+
+    ZipFile unzipResources(this->m_info.m_path.string(), "resources/");
+
+    if (
+        !ghc::filesystem::exists(this->m_tempDirName / "resources") && 
+        !ghc::filesystem::create_directories(this->m_tempDirName / "resources")
+    ) {
+        return Err<>("Unable to create temp/resources directory");
+    }
+
+    for (auto file : unzipResources.getAllFiles()) {
+        unsigned long rsize;
+        auto rdata = unzipResources.getFileData(file, &rsize);
+        if (!data || !rsize) {
+            return Err<>("Unable to read \"" + file + "\"");
+        }
+        auto wrr = file_utils::writeBinary(this->m_tempDirName / file, byte_array(rdata, rdata + rsize));
+        if (!wrr) return Err<>(wrr.error());
+        this->m_addResourcesToSearchPath = true;
+    }
+    Loader::get()->addModResourcesPath(this);
 
     return Ok<>(tempPath);
 }
@@ -221,8 +242,8 @@ decltype(ModInfo::m_developer) Mod::getDeveloper() const {
     return this->m_info.m_developer;
 }
 
-decltype(ModInfo::m_credits) Mod::getCredits() const {
-    return this->m_info.m_credits;
+decltype(ModInfo::m_creditsString) Mod::getCredits() const {
+    return this->m_info.m_creditsString;
 }
 
 decltype(ModInfo::m_description) Mod::getDescription() const {
@@ -233,8 +254,8 @@ decltype(ModInfo::m_details) Mod::getDetails() const {
     return this->m_info.m_details;
 }
 
-decltype(ModInfo::m_path) Mod::getPath() const {
-    return this->m_info.m_path;
+std::string Mod::getPath() const {
+    return this->m_info.m_path.string();
 }
 
 VersionInfo Mod::getVersion() const {
@@ -302,4 +323,23 @@ Result<> Mod::setCustomSetting(
 
 std::vector<Setting*> Mod::getSettings() const {
     return map_utils::getValues(this->m_info.m_settings);
+}
+
+ghc::filesystem::path Mod::getHotReloadPath() const {
+    return this->m_hotReloadPath;
+}
+
+Result<> Mod::enableHotReload() {
+    if (this->m_hotReloadPath.empty()) {
+        return Err<>("Mod does not have a hot reload path set");
+    }
+    return Geode::get()->enableHotReload(this, this->m_hotReloadPath);
+}
+
+void Mod::disableHotReload() {
+    return Geode::get()->disableHotReload(this);
+}
+
+bool Mod::isHotReloadEnabled() const {
+    return Geode::get()->isHotReloadEnabled(const_cast<Mod*>(this));
 }

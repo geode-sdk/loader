@@ -23,21 +23,64 @@ Loader* Loader::get() {
 }
 
 void Loader::createDirectories() {
+    constexpr auto api_dir = const_join_path_c_str<geode_directory, geode_api_mod_directory>;
+    constexpr auto mod_dir = const_join_path_c_str<geode_directory, geode_mod_directory>;
+    
     try {
         file_utils::createDirectory(const_join_path_c_str<geode_directory>);
         file_utils::createDirectory(const_join_path_c_str<geode_directory, geode_resource_directory>);
-        file_utils::createDirectory(const_join_path_c_str<geode_directory, geode_mod_directory>);
-        file_utils::createDirectory(const_join_path_c_str<geode_directory, geode_api_mod_directory>);
+        file_utils::createDirectory(mod_dir);
+        file_utils::createDirectory(api_dir);
         ghc::filesystem::remove_all(const_join_path_c_str<geode_directory, geode_temp_directory>);
     } catch(...) {}
 
-    this->m_modDirectories.insert(const_join_path_c_str<geode_directory, geode_mod_directory>);
-    this->m_modDirectories.insert(const_join_path_c_str<geode_directory, geode_api_mod_directory>);
+    if (!vector_utils::contains<std::string>(this->m_modDirectories, api_dir)) {
+        this->m_modDirectories.push_back(api_dir);
+    }
+    if (!vector_utils::contains<std::string>(this->m_modDirectories, mod_dir)) {
+        this->m_modDirectories.push_back(mod_dir);
+    }
 }
 
-void Loader::addResourceSearchPaths() {
+void Loader::addModResourcesPath(Mod* mod) {
+    if (mod->m_addResourcesToSearchPath) {
+        CCFileUtils::sharedFileUtils()->addSearchPath(
+            (mod->m_tempDirName / "resources").string().c_str()
+        );
+    }
+}
+
+void Loader::updateResourcePaths() {
     CCFileUtils::sharedFileUtils()->addSearchPath(const_join_path_c_str<geode_directory, geode_resource_directory>);
-    // TODO: Add mods' resources to search paths
+    for (auto const& [_, mod] : this->m_mods) {
+        this->addModResourcesPath(mod);
+    }
+}
+
+void Loader::updateModResources(Mod* mod) {
+    for (auto const& sheet : mod->m_info.m_spritesheets) {
+        auto png = sheet + ".png";
+        auto plist = sheet + ".plist";
+        if (
+            png == CCFileUtils::sharedFileUtils()->fullPathForFilename(png.c_str(), false) ||
+            plist == CCFileUtils::sharedFileUtils()->fullPathForFilename(plist.c_str(), false)
+        ) {
+            InternalMod::get()->logInfo(
+                "The resource dir of \"" + mod->m_info.m_id + "\" is missing \"" + 
+                sheet + "\" png and/or plist files",
+                Severity::Warning
+            );
+        } else {
+            CCTextureCache::sharedTextureCache()->addImage(png.c_str(), false);
+            CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile(plist.c_str());
+        }
+    }
+}
+
+void Loader::updateResources() {
+    for (auto const& [_, mod] : this->m_mods) {
+        this->updateModResources(mod);
+    }
 }
 
 size_t Loader::refreshMods() {
@@ -67,7 +110,7 @@ size_t Loader::refreshMods() {
                 if (!map_utils::contains<std::string, Mod*>(
                     this->m_mods,
                     [entry](Mod* p) -> bool {
-                        return p->m_info.m_path == entry.path().string();
+                        return p->m_info.m_path == entry.path();
                     }
                 )) {
                     auto res = this->loadModFromFile(entry.path().string());
@@ -152,7 +195,6 @@ bool Loader::setup() {
 
     this->createDirectories();
     this->refreshMods();
-    this->addResourceSearchPaths();
 
     this->m_isSetup = true;
 
@@ -214,7 +256,7 @@ std::vector<LogMessage*> Loader::getLogs(
     return logs;
 }
 
-void Loader::queueInGDThread(std::function<void()> func) {
+void Loader::queueInGDThread(std::function<void GEODE_CALL()> func) {
     Geode::get()->queueInGDThread(func);
 }
 

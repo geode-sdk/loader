@@ -1,0 +1,42 @@
+name: Build Windows Binaries
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x86
+
+    - name: Configure CMake
+      run: |
+        cmake -G "Visual Studio 16 2019" -B ${{github.workspace}}/build -T host=x86 -A win32 -DGEODE_DONT_BUILD_TEST_MODS=On
+    
+    - name: Build the thing
+      run: |
+        cd ${{github.workspace}}/build
+        cmake --build .  --config Release
+
+    - name: Upload DLL
+      uses: actions/upload-artifact@v2
+      with:
+        name: Windows Loader Binary + Libraries
+        path: |
+          ${{github.workspace}}/build/Gen/Header.hpp
+          ${{github.workspace}}/build/Gen/Interface.hpp
+          ${{github.workspace}}/build/Gen/TempName.hpp
+          ${{github.workspace}}/build/Release/geode.dll
+          ${{github.workspace}}/build/Release/geode.lib
+          ${{github.workspace}}/build/src/CCZipUtils/Release/CCZipUtils.lib

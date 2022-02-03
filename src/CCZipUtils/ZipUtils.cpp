@@ -597,4 +597,13 @@ bool ZipFile::isLoaded() const
     return _data->zipFile && _dataThread->zipFile;
 }
 
+std::vector<std::string> ZipFile::getAllFiles() const
+{
+    std::vector<std::string> res;
+    for (auto [key, _] : _data->fileList) {
+        res.push_back(key);
+    }
+    return res;
+}
+
 NS_CC_END
