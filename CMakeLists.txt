@@ -56,7 +56,7 @@ endif()
 add_definitions(-DGEODE_EXPORTING)
 add_compile_definitions(GEODE_PLATFORM_CONSOLE)
 
-include(sdk/SDK/BuildFiles/cmake/Root.cmake)
+include(sdk/Geode.cmake)
 # target_compile_definitions(GeodeLoader PUBLIC "/w") // what is this
 set_target_properties(GeodeLoader PROPERTIES PREFIX "" OUTPUT_NAME "Geode")
 
