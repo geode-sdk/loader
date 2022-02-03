@@ -435,15 +435,23 @@ skip_binary_check:
     }
 
     if (json.contains("resources")) {
-        if (json["resources"].is_object()) {
+        auto json_resources = json["resources"];
+        if (json_resources.is_object()) {
 
-            for (auto const& [key, _] : json["resources"].items()) {
-                if (key != "*") {
-                    info.m_spritesheets.push_back(key);
+            if (json_resources.contains("spritesheets")) {
+                if (json_resources["spritesheets"].is_object()) {
+                    for (auto const& [key, _] : json_resources["spritesheets"].items()) {
+                        info.m_spritesheets.push_back(key);
+                    }
+                } else if (!json_resources["spritesheets"].is_null()) {
+                    InternalMod::get()->logInfo(
+                        strfmt("\"%s\": \"resources.spritesheets\" is not an object", info.m_id.c_str()),
+                        Severity::Warning
+                    );
                 }
             }
 
-        } else if (!json["resources"].is_null()) {
+        } else if (!json_resources.is_null()) {
             InternalMod::get()->logInfo(
                 strfmt("\"%s\": \"resources\" is not an object", info.m_id.c_str()),
                 Severity::Warning
