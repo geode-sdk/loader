@@ -460,6 +460,11 @@ skip_binary_check:
     }
 
     auto mod = new Mod(info);
+    
+    if (json.contains("supports_disabling") && json["supports_disabling"].is_boolean()) {
+        mod->m_supportsDisabling = json["supports_disabling"];
+    }
+
     mod->m_enabled = true;
     this->m_mods.insert({ info.m_id, mod });
     mod->updateDependencyStates();
