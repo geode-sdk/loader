@@ -62,13 +62,22 @@ Result<> Mod::createTempDir() {
 
     ZipFile unzipResources(this->m_info.m_path.string(), "resources/");
 
+    if (
+        !ghc::filesystem::exists(this->m_tempDirName / "resources") && 
+        !ghc::filesystem::create_directories(this->m_tempDirName / "resources")
+    ) {
+        return Err<>("Unable to create temp/resources directory");
+    }
+
     for (auto file : unzipResources.getAllFiles()) {
         unsigned long rsize;
         auto rdata = unzipResources.getFileData(file, &rsize);
         if (!data || !rsize) {
-            return Err<>("Unable to read \"resources/" + file + "\"");
+            return Err<>("Unable to read \"" + file + "\"");
         }
-        file_utils::writeBinary(this->m_tempDirName / file, byte_array(rdata, rdata + rsize));
+        auto wrr = file_utils::writeBinary(this->m_tempDirName / file, byte_array(rdata, rdata + rsize));
+        if (!wrr) return Err<>(wrr.error());
+        Loader::get()->addModSearchPath(this);
     }
 
     return Ok<>(tempPath);

@@ -42,9 +42,22 @@ void Loader::createDirectories() {
     }
 }
 
-void Loader::addResourceSearchPaths() {
+void Loader::addModSearchPath(Mod* mod) {
+    mod->m_addResourcesToSearchPath = true;
+    CCFileUtils::sharedFileUtils()->addSearchPath(
+        (mod->m_tempDirName / "resources").string().c_str()
+    );
+}
+
+void Loader::updateResourceSearchPaths() {
     CCFileUtils::sharedFileUtils()->addSearchPath(const_join_path_c_str<geode_directory, geode_resource_directory>);
-    // TODO: Add mods' resources to search paths
+    for (auto const& [_, mod] : this->m_mods) {
+        if (mod->m_addResourcesToSearchPath) {
+            CCFileUtils::sharedFileUtils()->addSearchPath(
+                (mod->m_tempDirName / "resources").string().c_str()
+            );
+        }
+    }
 }
 
 size_t Loader::refreshMods() {
@@ -159,7 +172,7 @@ bool Loader::setup() {
 
     this->createDirectories();
     this->refreshMods();
-    this->addResourceSearchPaths();
+    this->updateResourceSearchPaths();
 
     this->m_isSetup = true;
 
