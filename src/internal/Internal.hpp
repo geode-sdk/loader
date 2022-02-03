@@ -33,7 +33,7 @@ public:
 	void disableHotReload(Mod* mod);
 	bool isHotReloadEnabled(Mod* mod) const;
 
-	void queueInGDThread(std::function<void(void)> func);
+	void queueInGDThread(std::function<void GEODE_CALL(void)> func);
 	void executeGDThreadQueue();
 
 	bool platformConsoleReady() const;

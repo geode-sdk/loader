@@ -45,7 +45,7 @@ bool Geode::setup() {
     return true;
 }
 
-void Geode::queueInGDThread(std::function<void()> func) {
+void Geode::queueInGDThread(std::function<void GEODE_CALL()> func) {
     this->m_gdThreadQueue.push_back(func);
 }
 

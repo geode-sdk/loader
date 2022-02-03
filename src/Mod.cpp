@@ -79,7 +79,7 @@ Result<> Mod::createTempDir() {
         if (!wrr) return Err<>(wrr.error());
         this->m_addResourcesToSearchPath = true;
     }
-    Loader::get()->addModResources(this);
+    Loader::get()->addModResourcesPath(this);
 
     return Ok<>(tempPath);
 }

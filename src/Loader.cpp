@@ -42,34 +42,44 @@ void Loader::createDirectories() {
     }
 }
 
-void Loader::addModResources(Mod* mod) {
+void Loader::addModResourcesPath(Mod* mod) {
     if (mod->m_addResourcesToSearchPath) {
         CCFileUtils::sharedFileUtils()->addSearchPath(
             (mod->m_tempDirName / "resources").string().c_str()
         );
-        for (auto const& sheet : mod->m_info.m_spritesheets) {
-            auto png = sheet + ".png";
-            auto plist = sheet + ".plist";
-            if (!ghc::filesystem::exists(png) || !ghc::filesystem::exists(plist)) {
-                InternalMod::get()->logInfo(
-                    "The resource dir of \"" + mod->m_info.m_id + "\" is missing \"" + 
-                    sheet + "\" png and/or plist files",
-                    Severity::Warning
-                );
-            } else {
-                CCTextureCache::sharedTextureCache()->addImage(png.c_str(), false);
-                CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile(plist.c_str());
-            }
+    }
+}
+
+void Loader::updateResourcePaths() {
+    CCFileUtils::sharedFileUtils()->addSearchPath(const_join_path_c_str<geode_directory, geode_resource_directory>);
+    for (auto const& [_, mod] : this->m_mods) {
+        this->addModResourcesPath(mod);
+    }
+}
+
+void Loader::updateModResources(Mod* mod) {
+    for (auto const& sheet : mod->m_info.m_spritesheets) {
+        auto png = sheet + ".png";
+        auto plist = sheet + ".plist";
+        if (
+            png == CCFileUtils::sharedFileUtils()->fullPathForFilename(png.c_str(), false) ||
+            plist == CCFileUtils::sharedFileUtils()->fullPathForFilename(plist.c_str(), false)
+        ) {
+            InternalMod::get()->logInfo(
+                "The resource dir of \"" + mod->m_info.m_id + "\" is missing \"" + 
+                sheet + "\" png and/or plist files",
+                Severity::Warning
+            );
+        } else {
+            CCTextureCache::sharedTextureCache()->addImage(png.c_str(), false);
+            CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile(plist.c_str());
         }
     }
 }
 
 void Loader::updateResources() {
-    CCFileUtils::sharedFileUtils()->addSearchPath(const_join_path_c_str<geode_directory, geode_resource_directory>);
     for (auto const& [_, mod] : this->m_mods) {
-        if (mod->m_addResourcesToSearchPath) {
-            this->addModResources(mod);
-        }
+        this->updateModResources(mod);
     }
 }
 
@@ -185,7 +195,6 @@ bool Loader::setup() {
 
     this->createDirectories();
     this->refreshMods();
-    this->updateResources();
 
     this->m_isSetup = true;
 
@@ -247,7 +256,7 @@ std::vector<LogMessage*> Loader::getLogs(
     return logs;
 }
 
-void Loader::queueInGDThread(std::function<void()> func) {
+void Loader::queueInGDThread(std::function<void GEODE_CALL()> func) {
     Geode::get()->queueInGDThread(func);
 }
 
