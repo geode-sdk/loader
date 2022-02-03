@@ -62,8 +62,8 @@ void Loader::updateModResources(Mod* mod) {
         auto png = sheet + ".png";
         auto plist = sheet + ".plist";
         if (
-            png == CCFileUtils::sharedFileUtils()->fullPathForFilename(png.c_str(), false) ||
-            plist == CCFileUtils::sharedFileUtils()->fullPathForFilename(plist.c_str(), false)
+            png == std::string(CCFileUtils::sharedFileUtils()->fullPathForFilename(png.c_str(), false)) ||
+            plist == std::string(CCFileUtils::sharedFileUtils()->fullPathForFilename(plist.c_str(), false))
         ) {
             InternalMod::get()->logInfo(
                 "The resource dir of \"" + mod->m_info.m_id + "\" is missing \"" + 
