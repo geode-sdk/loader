@@ -10,6 +10,7 @@ file(GLOB CORE_SOURCES
 	src/fixes/*.cpp
 	src/helper/*.cpp
 	src/internal/*.cpp
+	src/hooks/*.cpp
 	src/gui/loading/*.cpp
 	src/gui/mods/*.cpp
 	src/gui/mods/dev/*.cpp

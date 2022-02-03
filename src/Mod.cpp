@@ -77,8 +77,9 @@ Result<> Mod::createTempDir() {
         }
         auto wrr = file_utils::writeBinary(this->m_tempDirName / file, byte_array(rdata, rdata + rsize));
         if (!wrr) return Err<>(wrr.error());
-        Loader::get()->addModSearchPath(this);
+        this->m_addResourcesToSearchPath = true;
     }
+    Loader::get()->addModResources(this);
 
     return Ok<>(tempPath);
 }

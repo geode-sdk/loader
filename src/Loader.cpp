@@ -42,20 +42,33 @@ void Loader::createDirectories() {
     }
 }
 
-void Loader::addModSearchPath(Mod* mod) {
-    mod->m_addResourcesToSearchPath = true;
-    CCFileUtils::sharedFileUtils()->addSearchPath(
-        (mod->m_tempDirName / "resources").string().c_str()
-    );
+void Loader::addModResources(Mod* mod) {
+    if (mod->m_addResourcesToSearchPath) {
+        CCFileUtils::sharedFileUtils()->addSearchPath(
+            (mod->m_tempDirName / "resources").string().c_str()
+        );
+        for (auto const& sheet : mod->m_info.m_spritesheets) {
+            auto png = sheet + ".png";
+            auto plist = sheet + ".plist";
+            if (!ghc::filesystem::exists(png) || !ghc::filesystem::exists(plist)) {
+                InternalMod::get()->logInfo(
+                    "The resource dir of \"" + mod->m_info.m_id + "\" is missing \"" + 
+                    sheet + "\" png and/or plist files",
+                    Severity::Warning
+                );
+            } else {
+                CCTextureCache::sharedTextureCache()->addImage(png.c_str(), false);
+                CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile(plist.c_str());
+            }
+        }
+    }
 }
 
-void Loader::updateResourceSearchPaths() {
+void Loader::updateResources() {
     CCFileUtils::sharedFileUtils()->addSearchPath(const_join_path_c_str<geode_directory, geode_resource_directory>);
     for (auto const& [_, mod] : this->m_mods) {
         if (mod->m_addResourcesToSearchPath) {
-            CCFileUtils::sharedFileUtils()->addSearchPath(
-                (mod->m_tempDirName / "resources").string().c_str()
-            );
+            this->addModResources(mod);
         }
     }
 }
@@ -172,7 +185,7 @@ bool Loader::setup() {
 
     this->createDirectories();
     this->refreshMods();
-    this->updateResourceSearchPaths();
+    this->updateResources();
 
     this->m_isSetup = true;
 

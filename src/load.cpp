@@ -434,6 +434,23 @@ skip_binary_check:
         }
     }
 
+    if (json.contains("resources")) {
+        if (json["resources"].is_object()) {
+
+            for (auto const& [key, _] : json["resources"].items()) {
+                if (key != "*") {
+                    info.m_spritesheets.push_back(key);
+                }
+            }
+
+        } else if (!json["resources"].is_null()) {
+            InternalMod::get()->logInfo(
+                strfmt("\"%s\": \"resources\" is not an object", info.m_id.c_str()),
+                Severity::Warning
+            );
+        }
+    }
+
     auto mod = new Mod(info);
     mod->m_enabled = true;
     this->m_mods.insert({ info.m_id, mod });
