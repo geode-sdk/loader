@@ -1,4 +1,5 @@
 #pragma once
+#include <utils/platform.hpp>
 
 #ifdef GEODE_IS_MACOS
 
