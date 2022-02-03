@@ -8,6 +8,8 @@ add_library(CCZipUtils ${SOURCES})
 
 if("${GEODE_TARGET_PLATFORM}" STREQUAL "MacOS")
 	target_include_directories(CCZipUtils PUBLIC
+		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/"
+		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/base"
 		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/c++stl"
 		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/cocos/cocos2dx/kazmath/include"
 	    "${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/cocos/cocos2dx/support/zip_support"
@@ -20,6 +22,8 @@ if("${GEODE_TARGET_PLATFORM}" STREQUAL "MacOS")
 	)
 elseif("${GEODE_TARGET_PLATFORM}" STREQUAL "Win32")
 	target_include_directories(CCZipUtils PUBLIC
+		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/"
+		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/base"
 		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/c++stl"
 		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/cocos/cocos2dx/kazmath/include"
 	    "${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/cocos/cocos2dx/support/zip_support"
