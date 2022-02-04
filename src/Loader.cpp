@@ -61,9 +61,6 @@ void Loader::updateModResources(Mod* mod) {
     for (auto const& sheet : mod->m_info.m_spritesheets) {
         auto png = sheet + ".png";
         auto plist = sheet + ".plist";
-        mod->log() << plist << " " << std::string(CCFileUtils::sharedFileUtils()->fullPathForFilename(plist.c_str(), false)) << geode::endl;
-         mod->log() << std::string(CCFileUtils::sharedFileUtils()->getWritablePath2()) << geode::endl;
-
         if (
             png == std::string(CCFileUtils::sharedFileUtils()->fullPathForFilename(png.c_str(), false)) ||
             plist == std::string(CCFileUtils::sharedFileUtils()->fullPathForFilename(plist.c_str(), false))
