@@ -460,6 +460,12 @@ skip_binary_check:
     }
 
     auto mod = new Mod(info);
+    
+    // this was not meant to be available to the end user but ok
+    if (json.contains("toggleable") && json["toggleable"].is_boolean()) {
+        mod->m_supportsDisabling = json["toggleable"];
+    }
+
     mod->m_enabled = true;
     this->m_mods.insert({ info.m_id, mod });
     mod->updateDependencyStates();
