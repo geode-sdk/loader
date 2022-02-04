@@ -20,6 +20,14 @@ if("${GEODE_TARGET_PLATFORM}" STREQUAL "MacOS")
 	)
 elseif("${GEODE_TARGET_PLATFORM}" STREQUAL "Win32")
 	target_include_directories(CCZipUtils PUBLIC
+		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/"
+		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/helpers"
+		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/base"
+		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/hook"
+		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/loader"
+		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/utils"
+		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/meta"
+		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/cocos"
 		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/c++stl"
 		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/cocos/cocos2dx/kazmath/include"
 	    "${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/cocos/cocos2dx/support/zip_support"
