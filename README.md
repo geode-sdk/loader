@@ -1,6 +1,6 @@
 # Loader
 
-Repository for the Geode Mod Loader. This is not the 
+Repository for the Geode Mod Loader
 
 ## Documentation
 
