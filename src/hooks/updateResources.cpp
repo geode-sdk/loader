@@ -3,10 +3,10 @@
 USE_GEODE_NAMESPACE();
 
 class $modify(GameManager) {
-	// void reloadAllStep2() {
-	// 	$GameManager::reloadAllStep2();
-	// 	Loader::get()->updateResourcePaths();
-	// }
+	void reloadAllStep2() {
+		$GameManager::reloadAllStep2();
+		Loader::get()->updateResourcePaths();
+	}
 };
 
 class $modify(LoadingLayer) {
