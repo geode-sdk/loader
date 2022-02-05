@@ -8,6 +8,6 @@ class $modify(AppDelegate) {
             auto r = mod->saveData();
             if (!r) Loader::getInternalMod()->logInfo(r.error(), Severity::Error);
         }
-        return $AppDelegate::trySaveGame(dt);
+        return $AppDelegate::trySaveGame();
     }
 };
