@@ -1,4 +1,4 @@
-#include <Geode>
+#include <Geode.hpp>
 #include <Internal.hpp>
 
 USE_GEODE_NAMESPACE();

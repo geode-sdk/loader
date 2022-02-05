@@ -1,4 +1,4 @@
-#include <Geode>
+#include <Geode.hpp>
 #include <Log.hpp>
 #include <Mod.hpp>
 #include <Loader.hpp>

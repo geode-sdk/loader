@@ -1,5 +1,5 @@
 #pragma once
 
-#include <Geode>
+#include <Geode.hpp>
 
 USE_GEODE_NAMESPACE();

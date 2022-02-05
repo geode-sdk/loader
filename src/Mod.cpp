@@ -100,10 +100,19 @@ Result<> Mod::load() {
     }
     auto err = this->loadPlatformBinary();
     if (!err) return err;
-    auto r = this->m_loadFunc(this);
-    if (!r) {
-        this->unloadPlatformBinary();
-        return Err<>("Mod entry point returned an error");
+    if (this->m_implicitLoadFunc) {
+        auto r = this->m_implicitLoadFunc(this);
+        if (!r) {
+            this->unloadPlatformBinary();
+            return Err<>("Implicit mod entry point returned an error");
+        }
+    }
+    if (this->m_loadFunc) {
+        auto r = this->m_loadFunc(this);
+        if (!r) {
+            this->unloadPlatformBinary();
+            return Err<>("Mod entry point returned an error");
+        }
     }
     this->m_loaded = true;
     Loader::get()->updateAllDependencies();
@@ -115,7 +124,9 @@ Result<> Mod::unload() {
         return Ok<>();
     }
     
-    this->m_unloadFunc();
+    if (this->m_unloadFunc) {
+        this->m_unloadFunc();
+    }
 
     for (auto const& hook : this->m_hooks) {
         auto d = this->disableHook(hook);

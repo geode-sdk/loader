@@ -10,7 +10,7 @@
 #include <utils/map.hpp>
 #include <utils/types.hpp>
 #include <mutex>
-#include <Geode>
+#include <Geode.hpp>
 
 USE_GEODE_NAMESPACE();
 

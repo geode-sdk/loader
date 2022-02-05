@@ -1,13 +1,13 @@
-#include <Geode>
+#include <Geode.hpp>
 
 USE_GEODE_NAMESPACE();
 
-class $modify(GameManager) {
-	void reloadAllStep2() {
-		$GameManager::reloadAllStep2();
-		Loader::get()->updateResourcePaths();
-	}
-};
+// class $modify(GameManager) {
+// 	void reloadAllStep2() {
+// 		$GameManager::reloadAllStep2();
+// 		Loader::get()->updateResourcePaths();
+// 	}
+// };
 
 class $modify(LoadingLayer) {
 	void loadAssets() {
