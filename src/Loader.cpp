@@ -159,8 +159,17 @@ Mod* Loader::getLoadedMod(std::string const& id, bool resolved) const {
     return nullptr;
 }
 
-std::vector<Mod*> Loader::getLoadedMods() const {
-    return map_utils::getValues(this->m_mods);
+std::vector<Mod*> Loader::getLoadedMods(bool resolved) const {
+    if (!resolved) {
+        return map_utils::getValues(this->m_mods);
+    }
+    std::vector<Mod*> res;
+    for (auto const& [_, val] : this->m_mods) {
+        if (!val->hasUnresolvedDependencies()) {
+            res.push_back(val);
+        }
+    }
+    return res;
 }
 
 std::tuple<size_t, size_t> Loader::getLoadedModCount() const {

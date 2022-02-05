@@ -6,7 +6,7 @@ set(PROJECT_NAME TestMod2)
 
 project(${PROJECT_NAME} VERSION 1.0.0)
 
-add_library(${PROJECT_NAME} SHARED mod2.cpp)
+add_library(${PROJECT_NAME} SHARED mod2.cpp ../../sdk/include/implicitEntry.cpp)
 
 # todo: not this
 if (NOT WIN32)

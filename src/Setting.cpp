@@ -687,8 +687,92 @@ Result<Setting*> Setting::parseFromJSON(nlohmann::json const& json) {
 	return Err<>("Setting is neither a string nor an object");
 }
 
-void Setting::save(nlohmann::json& json) const {}
+#define GEODE_DECL_BASIC_SAVE_LOAD(_sett_, _type_, _jsontype_) \
+	Result<> _sett_::save(nlohmann::json& json) const {				\
+		json["value"] = this->m_value;								\
+		return Ok<>();												\
+	}																\
+	Result<> _sett_::load(nlohmann::json const& json) {				\
+		if (json.contains("value")) {								\
+			if (json["value"]._jsontype_()) {						\
+				this->m_value = json["value"];						\
+				return Ok<>();										\
+			} else {												\
+				return Err<>("JSON has value, but it is not a "#_type_);\
+			}														\
+		}															\
+		return Ok<>();												\
+	}
 
-void Setting::load(nlohmann::json const& json) {}
+GEODE_DECL_BASIC_SAVE_LOAD(BoolSetting, bool, is_boolean);
+GEODE_DECL_BASIC_SAVE_LOAD(IntSetting, int, is_number_integer);
+GEODE_DECL_BASIC_SAVE_LOAD(FloatSetting, float, is_number);
+GEODE_DECL_BASIC_SAVE_LOAD(StringSetting, string, is_string);
+GEODE_DECL_BASIC_SAVE_LOAD(StringSelectSetting, unsigned int, is_number_unsigned);
+
+Result<> PathSetting::save(nlohmann::json& json) const {
+	json["value"] = this->m_value;
+	return Ok<>();
+}
+Result<> PathSetting::load(nlohmann::json const& json) {
+	if (json.contains("value")) {
+		if (json["value"].is_string()) {
+			this->m_value = json["value"].get<std::string>();
+			return Ok<>();
+		} else {
+			return Err<>("JSON has value, but it is not a ""string");
+		}
+	}
+	return Ok<>();
+}
+
+Result<> ColorSetting::save(nlohmann::json& json) const {
+	json["r"] = this->m_value.r;
+	json["g"] = this->m_value.g;
+	json["b"] = this->m_value.b;
+	return Ok<>();
+}
+Result<> ColorSetting::load(nlohmann::json const& json) {
+	if (json.empty()) return Ok<>();
+
+	if (!json.contains("r") || !json["r"].is_number_integer()) return Err<>("JSON lacks \"r\" or it is not an int");
+	if (!json.contains("g") || !json["g"].is_number_integer()) return Err<>("JSON lacks \"g\" or it is not an int");
+	if (!json.contains("b") || !json["b"].is_number_integer()) return Err<>("JSON lacks \"b\" or it is not an int");
+
+	this->m_value.r = json["r"];
+	this->m_value.g = json["g"];
+	this->m_value.b = json["b"];
+
+	return Ok<>();
+}
+
+Result<> ColorAlphaSetting::save(nlohmann::json& json) const {
+	json["r"] = this->m_value.r;
+	json["g"] = this->m_value.g;
+	json["b"] = this->m_value.b;
+	json["a"] = this->m_value.a;
+	return Ok<>();
+}
+Result<> ColorAlphaSetting::load(nlohmann::json const& json) {
+	if (json.empty()) return Ok<>();
+	
+	if (!json.contains("r") || !json["r"].is_number_integer()) return Err<>("JSON lacks \"r\" or it is not an int");
+	if (!json.contains("g") || !json["g"].is_number_integer()) return Err<>("JSON lacks \"g\" or it is not an int");
+	if (!json.contains("b") || !json["b"].is_number_integer()) return Err<>("JSON lacks \"b\" or it is not an int");
+	if (!json.contains("a") || !json["a"].is_number_integer()) return Err<>("JSON lacks \"a\" or it is not an int");
+
+	this->m_value.r = json["r"];
+	this->m_value.g = json["g"];
+	this->m_value.b = json["b"];
+	this->m_value.a = json["a"];
+
+	return Ok<>();}
+
+Result<> CustomSettingPlaceHolder::save(nlohmann::json& json) const {
+	return Ok<>();
+}
+Result<> CustomSettingPlaceHolder::load(nlohmann::json const& json) {
+	return Ok<>();
+}
 
 #pragma warning(default: 4067)

@@ -238,7 +238,7 @@ std::vector<Dependency> Mod::getUnresolvedDependencies() {
 }
 
 ghc::filesystem::path Mod::getSaveDir() const {
-    return this->m_saveDirName;
+    return this->m_saveDirPath;
 }
 
 decltype(ModInfo::m_id) Mod::getID() const {
@@ -265,6 +265,36 @@ decltype(ModInfo::m_details) Mod::getDetails() const {
     return this->m_info.m_details;
 }
 
+Result<> Mod::saveData() {
+    auto json = nlohmann::json::object();
+    for (auto [key, sett] : this->m_info.m_settings) {
+        auto value = nlohmann::json::object();
+        auto r = sett->save(value);
+        if (!r) return r;
+        json[key] = value;
+    }
+    return file_utils::writeString(this->m_saveDirPath / "settings.json", json.dump(4));
+}
+
+Result<> Mod::loadData() {
+    if (!ghc::filesystem::exists(this->m_saveDirPath / "settings.json"))
+        return Ok<>();
+    auto read = file_utils::readString(this->m_saveDirPath / "settings.json");
+    if (!read) return read;
+    try {
+        auto json = nlohmann::json::parse(read.value());
+        for (auto [key, sett] : this->m_info.m_settings) {
+            if (json.contains(key)) {
+                auto r = sett->load(json[key]);
+                if (!r) return r;
+            }
+        }
+        return Ok<>();
+    } catch(std::exception const& e) {
+        return Err<>(e.what());
+    }
+}
+
 std::string Mod::getPath() const {
     return this->m_info.m_path.string();
 }
@@ -278,7 +308,7 @@ bool Mod::isEnabled() const {
 }
 
 bool Mod::supportsDisabling() const {
-    return this->m_supportsDisabling;
+    return this->m_info.m_supportsDisabling;
 }
 
 std::vector<Hook*> Mod::getHooks() const {

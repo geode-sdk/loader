@@ -7,6 +7,7 @@
 #include <ZipUtils.h>
 #include <utils/general.hpp>
 #include <utils/string.hpp>
+#include <Geode.hpp>
 
 USE_GEODE_NAMESPACE();
 
@@ -459,12 +460,21 @@ skip_binary_check:
         }
     }
 
-    auto mod = new Mod(info);
-    
     // this was not meant to be available to the end user but ok
     if (json.contains("toggleable") && json["toggleable"].is_boolean()) {
-        mod->m_supportsDisabling = json["toggleable"];
+        info.m_supportsDisabling = json["toggleable"];
     }
+
+    auto mod = new Mod(info);
+
+    mod->m_saveDirPath = CCFileUtils::sharedFileUtils()->getWritablePath();
+    mod->m_saveDirPath /= "geode/mods";
+    mod->m_saveDirPath /= info.m_id;
+
+    ghc::filesystem::create_directories(mod->m_saveDirPath);
+
+    auto r = mod->loadData();
+    if (!r) mod->logInfo(r.error(), Severity::Error);
 
     mod->m_enabled = true;
     this->m_mods.insert({ info.m_id, mod });

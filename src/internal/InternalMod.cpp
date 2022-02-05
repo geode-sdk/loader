@@ -10,16 +10,14 @@ ModInfo getInternalModInfo() {
     info.m_details     = "Internal representation of Geode.";
     info.m_creditsString = "";
     info.m_version     = { 1, 0, 0 };
+    info.m_supportsDisabling = false;
 
     return info;
 }
 
-InternalMod::InternalMod() : Mod(getInternalModInfo()) {
-    this->m_supportsDisabling = false;
-}
+InternalMod::InternalMod() : Mod(getInternalModInfo()) {}
 
-InternalMod::~InternalMod() {
-}
+InternalMod::~InternalMod() {}
 
 InternalMod* InternalMod::get() {
     static auto g_mod = new InternalMod;
