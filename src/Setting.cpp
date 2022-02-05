@@ -272,7 +272,7 @@ Result<ccColor4B> ColorAlphaSetting::parseColor(nlohmann::json const& json) {
 
 template <>
 Result<BoolSetting*> GeodeSetting<BoolSetting>::parse(nlohmann::json const& json) {
-	auto res = new BoolSetting;
+	auto res = new BoolSetting();
 	res->parseFields(json);
 	bool foundDefaultValue = false;
 	if (json.contains("value")) {
@@ -318,12 +318,13 @@ Result<BoolSetting*> GeodeSetting<BoolSetting>::parse(nlohmann::json const& json
 		delete res;
 		return Err<>("Setting has neither \"default\" nor \"value.default\"");
 	}
+	res->m_value = res->m_default;
 	return Ok<>(res);
 }
 
 template<>
 Result<IntSetting*> GeodeSetting<IntSetting>::parse(nlohmann::json const& json) {
-	auto res = new IntSetting;
+	auto res = new IntSetting();
 	res->parseFields(json);
 	if (json.contains("value")) {
 		auto value = json["value"];
@@ -397,12 +398,13 @@ Result<IntSetting*> GeodeSetting<IntSetting>::parse(nlohmann::json const& json) 
 			return Err<>("Setting has \"control\" but it is not an object");
 		}
 	}
+	res->m_value = res->m_default;
 	return Ok<>(res);
 }
 
 template<>
 Result<FloatSetting*> GeodeSetting<FloatSetting>::parse(nlohmann::json const& json) {
-	auto res = new FloatSetting;
+	auto res = new FloatSetting();
 	res->parseFields(json);
 	if (json.contains("value")) {
 		auto value = json["value"];
@@ -434,6 +436,15 @@ Result<FloatSetting*> GeodeSetting<FloatSetting>::parse(nlohmann::json const& js
 				} else {
 					delete res;
 					return Err<>("Setting has \"value.max\" but it is not a float");
+				}
+			}
+
+			if (value.contains("precision")) {
+				if (value["precision"].is_number_unsigned()) {
+					res->m_precision = value["precision"];
+				} else {
+					delete res;
+					return Err<>("Setting has \"value.precision\" but it is not an unsigned integer");
 				}
 			}
 		} else {
@@ -476,12 +487,13 @@ Result<FloatSetting*> GeodeSetting<FloatSetting>::parse(nlohmann::json const& js
 			return Err<>("Setting has \"control\" but it is not an object");
 		}
 	}
+	res->m_value = res->m_default;
 	return Ok<>(res);
 }
 
 template<>
 Result<StringSetting*> GeodeSetting<StringSetting>::parse(nlohmann::json const& json) {
-	auto res = new StringSetting;
+	auto res = new StringSetting();
 	res->parseFields(json);
 	if (json.contains("value")) {
 		auto value = json["value"];
@@ -514,12 +526,13 @@ Result<StringSetting*> GeodeSetting<StringSetting>::parse(nlohmann::json const& 
 		delete res;
 		return Err<>("Setting lacks \"value\"");
 	}
+	res->m_value = res->m_default;
 	return Ok<>(res);
 }
 
 template<>
 Result<ColorSetting*> GeodeSetting<ColorSetting>::parse(nlohmann::json const& json) {
-	auto res = new ColorSetting;
+	auto res = new ColorSetting();
 	res->parseFields(json);
 	if (json.contains("value")) {
 		auto value = json["value"];
@@ -544,12 +557,13 @@ Result<ColorSetting*> GeodeSetting<ColorSetting>::parse(nlohmann::json const& js
 		delete res;
 		return Err<>("Setting lacks \"value\"");
 	}
+	res->m_value = res->m_default;
 	return Ok<>(res);
 }
 
 template<>
 Result<ColorAlphaSetting*> GeodeSetting<ColorAlphaSetting>::parse(nlohmann::json const& json) {
-	auto res = new ColorAlphaSetting;
+	auto res = new ColorAlphaSetting();
 	res->parseFields(json);
 	if (json.contains("value")) {
 		auto value = json["value"];
@@ -574,12 +588,13 @@ Result<ColorAlphaSetting*> GeodeSetting<ColorAlphaSetting>::parse(nlohmann::json
 		delete res;
 		return Err<>("Setting lacks \"value\"");
 	}
+	res->m_value = res->m_default;
 	return Ok<>(res);
 }
 
 template<>
 Result<PathSetting*> GeodeSetting<PathSetting>::parse(nlohmann::json const& json) {
-	auto res = new PathSetting;
+	auto res = new PathSetting();
 	res->parseFields(json);
 	if (json.contains("value")) {
 		auto value = json["value"];
@@ -603,12 +618,13 @@ Result<PathSetting*> GeodeSetting<PathSetting>::parse(nlohmann::json const& json
 		delete res;
 		return Err<>("Setting lacks \"value\"");
 	}
+	res->m_value = res->m_default;
 	return Ok<>(res);
 }
 
 template<>
 Result<StringSelectSetting*> GeodeSetting<StringSelectSetting>::parse(nlohmann::json const& json) {
-	auto res = new StringSelectSetting;
+	auto res = new StringSelectSetting();
 	res->parseFields(json);
 	if (json.contains("value")) {
 		auto value = json["value"];
@@ -653,6 +669,7 @@ Result<StringSelectSetting*> GeodeSetting<StringSelectSetting>::parse(nlohmann::
 		delete res;
 		return Err<>("Setting lacks \"value\"");
 	}
+	res->m_value = res->m_default;
 	return Ok<>(res);
 }
 
@@ -679,7 +696,7 @@ Result<Setting*> Setting::parseFromJSON(nlohmann::json const& json) {
 		}
 	} else if (json.is_string()) {
 		if (json == "custom") {
-			return Ok<>(new CustomSettingPlaceHolder);
+			return Ok<>(new CustomSettingPlaceHolder());
 		} else {
 			return Err<>("Setting is string, but its value is not \"custom\"");
 		}
@@ -706,9 +723,31 @@ Result<Setting*> Setting::parseFromJSON(nlohmann::json const& json) {
 
 GEODE_DECL_BASIC_SAVE_LOAD(BoolSetting, bool, is_boolean);
 GEODE_DECL_BASIC_SAVE_LOAD(IntSetting, int, is_number_integer);
-GEODE_DECL_BASIC_SAVE_LOAD(FloatSetting, float, is_number);
 GEODE_DECL_BASIC_SAVE_LOAD(StringSetting, string, is_string);
 GEODE_DECL_BASIC_SAVE_LOAD(StringSelectSetting, unsigned int, is_number_unsigned);
+
+Result<> FloatSetting::save(nlohmann::json& json) const {
+	if (this->m_precision == 0) {
+		json["value"] = this->m_value;
+		return Ok<>();
+	}
+	auto add = this->m_value >= 0 ? .5 : -.5;
+	auto mul = powl(10, this->m_precision);
+	// wacky workaround to ensure correct precision in JSON
+	json["value"] = static_cast<int>(this->m_value * mul + add) / static_cast<double>(mul);
+	return Ok<>();
+}
+Result<> FloatSetting::load(nlohmann::json const& json) {
+	if (json.contains("value")) {
+		if (json["value"].is_number()) {
+			this->m_value = json["value"];
+			return Ok<>();
+		} else {
+			return Err<>("JSON has value, but it is not a ""float");
+		}
+	}
+	return Ok<>();
+}
 
 Result<> PathSetting::save(nlohmann::json& json) const {
 	json["value"] = this->m_value;

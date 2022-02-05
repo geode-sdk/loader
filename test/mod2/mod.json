@@ -50,6 +50,7 @@
             "type": "float",
             "value": {
                 "default": 65.7,
+                "precision": 2,
                 "min": 25,
                 "max": 500
             }
