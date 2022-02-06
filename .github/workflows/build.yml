@@ -9,8 +9,12 @@ jobs:
     strategy:
       matrix:
         config:
-        - { name: "Windows", os: windows-latest, extra_flags: '-G "Visual Studio 16 2019" -T host=x86 -A win32' }
-        - { name: "macOS", os: macos-latest, extra_flags: "" }
+        - name: "Windows"
+          os: windows-latest
+          extra_flags: '-G "Visual Studio 16 2019" -T host=x86 -A win32'
+        - name: "macOS"
+          os: macos-latest
+          extra_flags: ""
 
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
@@ -27,7 +31,7 @@ jobs:
 
     - name: Configure CMake
       run: |
-        cmake -B ${{github.workspace}}/build ${{matrix.config.extra_args}} -DGEODE_DONT_BUILD_TEST_MODS=On
+        cmake -B ${{github.workspace}}/build ${{matrix.config.extra_flags}} -DGEODE_DONT_BUILD_TEST_MODS=On
     
     - name: Build
       run: |
