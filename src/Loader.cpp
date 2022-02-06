@@ -45,7 +45,7 @@ void Loader::createDirectories() {
 void Loader::addModResourcesPath(Mod* mod) {
     if (mod->m_addResourcesToSearchPath) {
         CCFileUtils::sharedFileUtils()->addSearchPath(
-            (mod->m_tempDirName / "resources").string().c_str()
+            fs::absolute(mod->m_tempDirName / "resources").string().c_str()
         );
     }
 }
@@ -61,6 +61,7 @@ void Loader::updateModResources(Mod* mod) {
     for (auto const& sheet : mod->m_info.m_spritesheets) {
         auto png = sheet + ".png";
         auto plist = sheet + ".plist";
+
         if (
             png == std::string(CCFileUtils::sharedFileUtils()->fullPathForFilename(png.c_str(), false)) ||
             plist == std::string(CCFileUtils::sharedFileUtils()->fullPathForFilename(plist.c_str(), false))
