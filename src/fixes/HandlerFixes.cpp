@@ -50,7 +50,7 @@ class $modify(CCUtility##HandlerTypeinfoFix, CCUtility##Handler) {              
 
 HandlerFixFor(CCKeypad);
 HandlerFixFor(CCKeyboard);
-HandlerFixFor(CCMouse);
+//HandlerFixFor(CCMouse);
 
 class $modify(CCTargetedTouchHandlerTypeinfoFix, CCTargetedTouchHandler) {
 	void destructor() {

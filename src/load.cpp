@@ -467,7 +467,7 @@ skip_binary_check:
 
     auto mod = new Mod(info);
 
-    mod->m_saveDirPath = CCFileUtils::sharedFileUtils()->getWritablePath();
+    mod->m_saveDirPath = std::string(CCFileUtils::sharedFileUtils()->getWritablePath());
     mod->m_saveDirPath /= "geode/mods";
     mod->m_saveDirPath /= info.m_id;
 
