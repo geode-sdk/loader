@@ -1,4 +1,4 @@
-name: Build Windows Binaries
+name: Build Binaries
 
 on:
   push:
@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         config:
-        - { name: "Windows", os: windows-latest, extra_flags: '-G "Visual Studio 16 2019" -T host=x86 -A win32"' }
+        - { name: "Windows", os: windows-latest, extra_flags: '-G "Visual Studio 16 2019" -T host=x86 -A win32' }
         - { name: "macOS", os: macos-latest, extra_flags: "" }
 
     name: ${{ matrix.config.name }}
