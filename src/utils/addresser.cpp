@@ -58,8 +58,8 @@ using namespace geode::addresser;
 
 namespace {
 	template<ptrdiff_t index, ptrdiff_t thunk>
-	GEODE_HIDDEN virtual_meta_t f() {
-		return {index, thunk};
+	GEODE_HIDDEN virtual_meta_t* f() {
+		return new virtual_meta_t(index, thunk);
 	}
 
 	using thunk0_table_t = intptr_t[0x100];
