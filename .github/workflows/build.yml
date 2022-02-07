@@ -1,15 +1,24 @@
-name: Build Windows Binaries
+name: Build Binaries
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   build:
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        - name: "Windows"
+          os: windows-latest
+          extra_flags: '-G "Visual Studio 16 2019" -T host=x86 -A win32'
+        - name: "macOS"
+          os: macos-latest
+          extra_flags: ""
 
-    runs-on: windows-latest
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
 
     steps:
     - uses: actions/checkout@v2
@@ -19,15 +28,16 @@ jobs:
     - uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: x86
+      if: matrix.config.os == 'windows-latest'
 
     - name: Configure CMake
       run: |
-        cmake -G "Visual Studio 16 2019" -B ${{github.workspace}}/build -T host=x86 -A win32 -DGEODE_DONT_BUILD_TEST_MODS=On
+        cmake -B ${{github.workspace}}/build ${{matrix.config.extra_flags}} -DGEODE_DONT_BUILD_TEST_MODS=On
     
-    - name: Build the thing
+    - name: Build
       run: |
         cd ${{github.workspace}}/build
-        cmake --build .  --config Release
+        cmake --build . --config Release
 
     - name: Upload DLL
       uses: actions/upload-artifact@v2
@@ -40,3 +50,5 @@ jobs:
           ${{github.workspace}}/build/Release/geode.dll
           ${{github.workspace}}/build/Release/geode.lib
           ${{github.workspace}}/build/src/CCZipUtils/Release/CCZipUtils.lib
+      # TODO: idk where it is on mac
+      if: matrix.config.os == 'window-latest'
