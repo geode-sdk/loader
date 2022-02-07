@@ -63,7 +63,7 @@ set_target_properties(GeodeLoader PROPERTIES PREFIX "" OUTPUT_NAME "Geode")
 
 add_subdirectory(core)
 add_subdirectory(src/CCZipUtils)
-add_subdirectory(src/addressertest)
+# add_subdirectory(src/addressertest)
 
 if(NOT GEODE_DONT_BUILD_TEST_MODS)
 	if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
