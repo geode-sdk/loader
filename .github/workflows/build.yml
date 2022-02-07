@@ -14,21 +14,21 @@ jobs:
           os: windows-latest
           extra_flags: '-G "Visual Studio 16 2019" -T host=x86 -A win32'
           upload_paths:  |
-            ./Gen/Header.hpp
-            ./Gen/Interface.hpp
-            ./Gen/TempName.hpp
-            ./Release/geode.dll
-            ./Release/geode.lib
-            ./src/CCZipUtils/Release/CCZipUtils.lib
+            ./build/Gen/Header.hpp
+            ./build/Gen/Interface.hpp
+            ./build/Gen/TempName.hpp
+            ./build/Release/geode.dll
+            ./build/Release/geode.lib
+            ./build/src/CCZipUtils/Release/CCZipUtils.lib
         - name: "macOS"
           os: macos-latest
           extra_flags: ""
           upload_paths:  |
-            ./gen/Header.hpp
-            ./gen/Interface.hpp
-            ./gen/TempName.hpp
-            ./Geode.dylib
-            ./src/CCZipUtils/libCCZipUtils.a
+            ./build/gen/Header.hpp
+            ./build/gen/Interface.hpp
+            ./build/gen/TempName.hpp
+            ./build/Geode.dylib
+            ./build/src/CCZipUtils/libCCZipUtils.a
 
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
