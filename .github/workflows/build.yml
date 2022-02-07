@@ -14,21 +14,21 @@ jobs:
           os: windows-latest
           extra_flags: '-G "Visual Studio 16 2019" -T host=x86 -A win32'
           upload_paths:  |
-            ${{ github.workspace }}/build/Gen/Header.hpp
-            ${{ github.workspace }}/build/Gen/Interface.hpp
-            ${{ github.workspace }}/build/Gen/TempName.hpp
-            ${{ github.workspace }}/build/Release/geode.dll
-            ${{ github.workspace }}/build/Release/geode.lib
-            ${{ github.workspace }}/build/src/CCZipUtils/Release/CCZipUtils.lib
+            ./build/Gen/Header.hpp
+            ./build/Gen/Interface.hpp
+            ./build/Gen/TempName.hpp
+            ./build/Release/geode.dll
+            ./build/Release/geode.lib
+            ./build/src/CCZipUtils/Release/CCZipUtils.lib
         - name: "macOS"
           os: macos-latest
           extra_flags: ""
           upload_paths:  |
-            ${{ github.workspace }}/build/gen/Header.hpp
-            ${{ github.workspace }}/build/gen/Interface.hpp
-            ${{ github.workspace }}/build/gen/TempName.hpp
-            ${{ github.workspace }}/build/Geode.dylib
-            ${{ github.workspace }}/build/src/CCZipUtils/libCCZipUtils.a
+            ./build/gen/Header.hpp
+            ./build/gen/Interface.hpp
+            ./build/gen/TempName.hpp
+            ./build/Geode.dylib
+            ./build/src/CCZipUtils/libCCZipUtils.a
 
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
@@ -45,14 +45,14 @@ jobs:
 
     - name: Configure CMake
       run: |
-        cmake -B ${{ github.workspace }}/build ${{ matrix.config.extra_flags }} -DGEODE_DONT_BUILD_TEST_MODS=On
+        cmake -B build ${{ matrix.config.extra_flags }} -DGEODE_DONT_BUILD_TEST_MODS=On
     
     - name: Build
       run: |
         cd ${{ github.workspace }}/build
-        cmake --build . --config Release
+        cmake --build build --config Release
 
-    - name: Upload DLL
+    - name: Upload Artifacts
       uses: actions/upload-artifact@v2
       with:
         name: ${{ matrix.config.name }} Loader Binary + Libraries
