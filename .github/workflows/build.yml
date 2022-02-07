@@ -14,21 +14,21 @@ jobs:
           os: windows-latest
           extra_flags: '-G "Visual Studio 16 2019" -T host=x86 -A win32'
           upload_paths:  |
-            ./build/Gen/Header.hpp
-            ./build/Gen/Interface.hpp
-            ./build/Gen/TempName.hpp
-            ./build/Release/geode.dll
-            ./build/Release/geode.lib
-            ./build/src/CCZipUtils/Release/CCZipUtils.lib
+            ./Gen/Header.hpp
+            ./Gen/Interface.hpp
+            ./Gen/TempName.hpp
+            ./Release/geode.dll
+            ./Release/geode.lib
+            ./src/CCZipUtils/Release/CCZipUtils.lib
         - name: "macOS"
           os: macos-latest
           extra_flags: ""
           upload_paths:  |
-            ./build/gen/Header.hpp
-            ./build/gen/Interface.hpp
-            ./build/gen/TempName.hpp
-            ./build/Geode.dylib
-            ./build/src/CCZipUtils/libCCZipUtils.a
+            ./gen/Header.hpp
+            ./gen/Interface.hpp
+            ./gen/TempName.hpp
+            ./Geode.dylib
+            ./src/CCZipUtils/libCCZipUtils.a
 
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
@@ -45,12 +45,12 @@ jobs:
 
     - name: Configure CMake
       run: |
-        cmake -B build ${{ matrix.config.extra_flags }} -DGEODE_DONT_BUILD_TEST_MODS=On
+        cmake -B ${{ github.workspace }}/build ${{ matrix.config.extra_flags }} -DGEODE_DONT_BUILD_TEST_MODS=On
     
     - name: Build
       run: |
         cd ${{ github.workspace }}/build
-        cmake --build build --config Release
+        cmake --build . --config Release
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
