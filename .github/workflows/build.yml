@@ -20,6 +20,7 @@ jobs:
             ./build/Release/geode.dll
             ./build/Release/geode.lib
             ./build/src/CCZipUtils/Release/CCZipUtils.lib
+            ./build/src/addressertest/Release/AddresserTest.lib
         - name: "macOS"
           os: macos-latest
           extra_flags: ""
@@ -29,6 +30,7 @@ jobs:
             ./build/gen/TempName.hpp
             ./build/Geode.dylib
             ./build/src/CCZipUtils/libCCZipUtils.a
+            ./build/src/addressertest/libAddresserTest.a
 
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
