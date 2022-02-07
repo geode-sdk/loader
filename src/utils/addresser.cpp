@@ -104,6 +104,6 @@ namespace {
 	};
 }
 
-Addresser* Addresser::instance() {
-	return reinterpret_cast<Addresser*>(&TableTable::table);
+Addresser::MultipleInheritance* Addresser::instance() {
+	return reinterpret_cast<Addresser::MultipleInheritance*>(&TableTable::table);
 }
