@@ -3,7 +3,7 @@
 USE_GEODE_NAMESPACE();
 
 class $modify(AppDelegate) {
-    void trySaveGame_() {
+    void trySaveGame() {
         Loader::getInternalMod()->log() << "Saving..." << geode::endl;
         for (auto mod : Loader::get()->getLoadedMods()) {
             auto r = mod->saveData();
