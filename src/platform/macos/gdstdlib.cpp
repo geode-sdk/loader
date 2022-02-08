@@ -16,6 +16,7 @@ namespace gd {
 		reinterpret_cast<void(*)(string*, char const*)>(geode::base::get() + 0x48b0b4)(this, ok);
 	}
 	string::string(string const& ok) : m_data(nullptr) {
+		if (*(string**)(&ok) == nullptr) return;
 		reinterpret_cast<void(*)(string*, string const&)>(geode::base::get() + 0x489fcc)(this, ok);
 	}
 	string& string::operator=(char const* ok) {
