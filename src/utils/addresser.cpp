@@ -48,8 +48,8 @@ GEODE_ADDRESSER_NEST1(macro, GEODE_CONCAT(begin, e)), \
 GEODE_ADDRESSER_NEST1(macro, GEODE_CONCAT(begin, f))  
 
 
-#define GEODE_ADDRESSER_THUNK0_DEFINE(hex) (intptr_t)&f<hex * sizeof(intptr_t), 0>
-#define GEODE_ADDRESSER_TABLE_DEFINE(hex) (intptr_t)&ThunkTable<hex * sizeof(intptr_t)>::table
+#define GEODE_ADDRESSER_THUNK0_DEFINE(hex) (intptr_t)&f<hex * sizeof(intptr_t)>
+#define GEODE_ADDRESSER_TABLE_DEFINE(hex) (intptr_t)&ThunkTable::table
 
 #define GEODE_ADDRESSER_THUNK0_SET() GEODE_ADDRESSER_NEST2(GEODE_ADDRESSER_THUNK0_DEFINE, 0x)
 #define GEODE_ADDRESSER_TABLE_SET() GEODE_ADDRESSER_NEST2(GEODE_ADDRESSER_TABLE_DEFINE, 0x)
@@ -57,39 +57,15 @@ GEODE_ADDRESSER_NEST1(macro, GEODE_CONCAT(begin, f))
 using namespace geode::addresser;
 
 namespace {
-	template<ptrdiff_t index, ptrdiff_t thunk>
-	GEODE_HIDDEN virtual_meta_t* f() {
-		return new virtual_meta_t(index, thunk);
+	template<ptrdiff_t index>
+	GEODE_HIDDEN ptrdiff_t f() {
+		return index;
 	}
 
 	using thunk0_table_t = intptr_t[0x100];
-	using thunk_table_t = intptr_t[0x10];
 	using table_table_t = intptr_t[0x100];
 
-	template <ptrdiff_t I>
 	struct GEODE_HIDDEN ThunkTable {
-		static inline thunk_table_t table = {
-			(intptr_t)&f<0 * sizeof(intptr_t), I>,
-			(intptr_t)&f<1 * sizeof(intptr_t), I>,
-			(intptr_t)&f<2 * sizeof(intptr_t), I>,
-			(intptr_t)&f<3 * sizeof(intptr_t), I>,
-			(intptr_t)&f<4 * sizeof(intptr_t), I>,
-			(intptr_t)&f<5 * sizeof(intptr_t), I>,
-			(intptr_t)&f<6 * sizeof(intptr_t), I>,
-			(intptr_t)&f<7 * sizeof(intptr_t), I>,
-			(intptr_t)&f<8 * sizeof(intptr_t), I>,
-			(intptr_t)&f<9 * sizeof(intptr_t), I>,
-			(intptr_t)&f<10 * sizeof(intptr_t), I>,
-			(intptr_t)&f<11 * sizeof(intptr_t), I>,
-			(intptr_t)&f<12 * sizeof(intptr_t), I>,
-			(intptr_t)&f<13 * sizeof(intptr_t), I>,
-			(intptr_t)&f<14 * sizeof(intptr_t), I>,
-			(intptr_t)&f<15 * sizeof(intptr_t), I>
-		};
-	};
-
-	template <>
-	struct GEODE_HIDDEN ThunkTable<0> {
 		static inline thunk0_table_t table = {
 			GEODE_ADDRESSER_THUNK0_SET()
 		};
