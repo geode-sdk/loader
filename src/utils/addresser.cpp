@@ -5,11 +5,7 @@
 #include <utils/addresser.hpp>
 #include <cstdlib>
 #include <stddef.h>
-#include <Macros.hpp>
-#include <loader/Interface.hpp>
-#include <loader/Mod.hpp>
-#include <loader/Log.hpp>
-#include <utils/general.hpp>
+#include <base/Macros.hpp>
 
 #define GEODE_ADDRESSER_NEST1(macro, begin)           \
 macro(GEODE_CONCAT(begin, 0)),                        \
