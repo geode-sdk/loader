@@ -168,9 +168,9 @@ Result<> Mod::disable() {
 
 bool Dependency::isUnresolved() const {
     return this->m_required &&
-           this->m_state == ModResolveState::Unloaded ||
+           (this->m_state == ModResolveState::Unloaded ||
            this->m_state == ModResolveState::Unresolved ||
-           this->m_state == ModResolveState::Disabled;
+           this->m_state == ModResolveState::Disabled);
 }
 
 bool Mod::updateDependencyStates() {

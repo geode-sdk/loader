@@ -51,7 +51,21 @@ elseif("${GEODE_TARGET_PLATFORM}" STREQUAL "Win32")
 
 	add_definitions(-DGEODE_EXPORTING)
 elseif("${GEODE_TARGET_PLATFORM}" STREQUAL "iOS")
+	target_include_directories(CCZipUtils PUBLIC
+		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/"
+		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/base"
+		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/c++stl"
+		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/cocos/cocos2dx/kazmath/include"
+	    "${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/cocos/cocos2dx/support/zip_support"
+	    "${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/cocos/cocos2dx"
+	    "${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/cocos/cocos2dx/include"
+	    "${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/cocos/cocos2dx/platform/ios"
+	)
+	target_link_libraries(CCZipUtils PUBLIC 
+		z
+	)
 elseif("${GEODE_TARGET_PLATFORM}" STREQUAL "Android")
+	message(FATAL_ERROR "implement android pls!")
 else()
 endif()
 
