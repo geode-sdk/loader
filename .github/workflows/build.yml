@@ -2,7 +2,8 @@ name: Build Binaries
 
 on:
   push:
-    branches: [ main, addresser ]
+    tags:
+    - '*'
 
 jobs:
   build:
@@ -10,27 +11,16 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - name: "Windows"
+        - name: "windows"
           os: windows-latest
           extra_flags: '-G "Visual Studio 16 2019" -T host=x86 -A win32'
-          upload_paths:  |
-            ./build/Gen/Header.hpp
-            ./build/Gen/Interface.hpp
-            ./build/Gen/TempName.hpp
-            ./build/Release/geode.dll
-            ./build/Release/geode.lib
-            ./build/src/CCZipUtils/Release/CCZipUtils.lib
-            ./build/src/addressertest/Release/AddresserTest.lib
-        - name: "macOS"
+          upload_paths:  './build/Release/geode.dll ./build/Release/geode.lib ./build/src/CCZipUtils/Release/CCZipUtils.lib'
+          gen_folder: './build/Gen/*'
+        - name: "macos"
           os: macos-latest
           extra_flags: ""
-          upload_paths:  |
-            ./build/gen/Header.hpp
-            ./build/gen/Interface.hpp
-            ./build/gen/TempName.hpp
-            ./build/Geode.dylib
-            ./build/src/CCZipUtils/libCCZipUtils.a
-            ./build/src/addressertest/libAddresserTest.a
+          upload_paths:  './build/Geode.dylib ./build/src/CCZipUtils/libCCZipUtils.a ./build/src/addressertest/libAddresserTest.a'
+          gen_folder: './build/gen/*'
 
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
@@ -54,8 +44,16 @@ jobs:
         cd ${{ github.workspace }}/build
         cmake --build . --config Release
 
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ matrix.config.name }} Loader Binary + Libraries
-        path: ${{ matrix.config.upload_paths }}
+    - name: Move files to bin
+      shell: bash
+      run: |
+        cd ${{ github.workspace }}
+        mv ${{ matrix.config.upload_paths }} ./sdk/bin/${{ matrix.config.name }} 
+        mv ${{ matrix.config.gen_folder }} ./sdk/bin/${{ matrix.config.name }}/gen
+      
+    - name: Commit and push to bin
+      run: |
+        cd ./sdk/bin
+        git commit -am "Auto-update from https://$GITHUB_SERVER/$GITHUB_REPOSITORY/commit/$GITHUB_SHA"
+        git push "https://${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}@github.com/geode-sdk/bin.git" main
+        
