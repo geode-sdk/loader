@@ -24,6 +24,7 @@ file(GLOB CORE_SOURCES
 	src/platform/macos/*.mm
 	src/platform/macos/*.cpp
 	src/platform/ios/*.mm
+	src/platform/ios/*.cpp
 	src/utils/*.cpp
 	src/utils/platform/*
 )
@@ -47,7 +48,11 @@ set(LINK_LIBRARIES
 )
 
 if (APPLE) 
-	set (LINK_LIBRARIES ${LINK_LIBRARIES} "-framework Cocoa")
+	if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR GEODE_TARGET_PLATFORM STREQUAL "iOS")
+		set (LINK_LIBRARIES ${LINK_LIBRARIES} "-framework UIKit -framework Foundation")
+	else()
+		set (LINK_LIBRARIES ${LINK_LIBRARIES} "-framework Cocoa")
+	endif()
 endif()
 
 if (WIN32)

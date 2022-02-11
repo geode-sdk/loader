@@ -34,3 +34,6 @@ public:
 #ifdef GEODE_IS_MACOS
 #include <macos/FileWatcherMac.hpp>
 #endif
+#ifdef GEODE_IS_IOS
+#include <ios/FileWatcheriOS.hpp>
+#endif

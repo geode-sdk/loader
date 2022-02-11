@@ -235,5 +235,27 @@ void Geode::awaitPlatformConsole() {
 void Geode::closePlatformConsole() {
 }
 
+#elif defined(GEODE_IS_IOS)
+
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
+
+void Geode::platformMessageBox(const char* title, const char* info) {
+    std::cout << title << ": " << info << std::endl;
+}
+
+void Geode::setupPlatformConsole() {
+    ghc::filesystem::path(getpwuid(getuid())->pw_dir);
+    freopen((ghc::filesystem::path(getpwuid(getuid())->pw_dir) / "geode_log.txt").string().c_str(),"w",stdout);
+    Geode::
+    m_platformConsoleReady = true;
+}
+
+void Geode::awaitPlatformConsole() {
+}
+
+void Geode::closePlatformConsole() {
+}
 #endif
 
