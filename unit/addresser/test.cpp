@@ -71,24 +71,3 @@ int main() {
     exit_assert(fun10() == 10);
     return 0;
 }
-
-struct Base {
-	virtual void init() {}
-}
-
-template <typename Derived >
-struct Modify : Base {
-	virtual void init() {}
-	static void initWrap(Derived* p0) {
-		p0->Derived::init();
-	}
-	void apply() {
-		// use initWrap
-	}
-}
-
-struct MyThing : Modify<MyThing> {
-	virtual void init() {
-		// stuff
-	}
-}
