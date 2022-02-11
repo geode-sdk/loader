@@ -1,6 +1,7 @@
-name: Build Binaries
+name: Update Bin
 
 on:
+  workflow_dispatch:
   push:
     tags:
     - '*'
