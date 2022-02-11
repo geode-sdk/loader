@@ -27,7 +27,7 @@ jobs:
         workflow_conclusion: success
         branch: main
         name: "Windows Loader Binary + Libraries"
-        path: './windows'
+        path: '${{ github.workspace }}/windows'
         
     - name: Download MacOS artifact
       uses: dawidd6/action-download-artifact@v2
@@ -38,7 +38,7 @@ jobs:
         workflow_conclusion: success
         branch: main
         name: "macOS Loader Binary + Libraries"
-        path: './macos'
+        path: '${{ github.workspace }}/macos'
       
     - name: Move windows files to bin
       if: steps.dlwin.outcome == 'success'
