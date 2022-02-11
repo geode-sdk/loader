@@ -46,7 +46,7 @@ jobs:
       shell: bash
       working-directory: ${{ github.workspace }}
       run: |
-        mv ${{ github.workspace }}/windows/**/*.dll ${{ github.workspace }}/windows/**/*.lib ${{ github.workspace }}/bin/windows
+        mv "${{ github.workspace }}/windows"/**/*.dll ${{ github.workspace }}/windows/**/*.lib ${{ github.workspace }}/bin/windows
         mv ${{ github.workspace }}/windows/Gen ${{ github.workspace }}/bin/windows/gen
         
     - name: Move macos files to bin
@@ -55,7 +55,7 @@ jobs:
       shell: bash
       working-directory: ${{ github.workspace }}
       run: |
-        mv ${{ github.workspace }}/macos/**/*.dylib ${{ github.workspace }}/macos/**/*.a ${{ github.workspace }}/bin/macos
+        mv "${{ github.workspace }}/macos"/**/*.dylib ${{ github.workspace }}/macos/**/*.a ${{ github.workspace }}/bin/macos
         mv ${{ github.workspace }}/macos/gen ${{ github.workspace }}/bin/macos/gen
         
     - name: Commit and push to bin
