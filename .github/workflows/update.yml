@@ -38,19 +38,13 @@ jobs:
         name: "macOS Loader Binary + Libraries"
         path: '${{ github.workspace }}/macos'
       
-    - name: Move windows files to bin
+    - name: Move files to bin
       shell: bash
       working-directory: ${{ github.workspace }}
       run: |
-        mv ./windows/**/*.dll ./windows/**/*.lib ${{ github.workspace }}/bin/windows
+        mv ./windows/**/*.dll ./windows/**/*.lib ./bin/windows
         mv ./windows/Gen ./bin/windows/gen
-        
-    - name: Move macos files to bin
-      shell: bash
-      working-directory: ${{ github.workspace }}
-      run: |
-        ls ./macos 
-        mv ./macos/**/*.dylib ./macos/**/*.a ${{ github.workspace }}/bin/macos
+        mv ./macos/**/*.dylib ./macos/**/*.a ./bin/macos
         mv ./macos/gen ./bin/macos/gen
         
     - name: Commit and push to bin
