@@ -45,6 +45,11 @@ jobs:
         cd ${{ github.workspace }}/build
         cmake --build . --config Release
 
+    - name: Checkout bin
+      working-directory: ${{ github.workspace }}/sdk/bin
+      run: |
+        git checkout main
+      
     - name: Move files to bin
       shell: bash
       working-directory: ${{ github.workspace }}
@@ -55,8 +60,7 @@ jobs:
     - name: Commit and push to bin
       working-directory: ${{ github.workspace }}/sdk/bin
       run: |
-        git checkout main
         git config --global user.email "${{ secrets.GEODE_BOT_EMAIL }}"
         git config --global user.name "GeodeBot"
-        git commit -am "Auto-update from https://$GITHUB_SERVER/$GITHUB_REPOSITORY/commit/$GITHUB_SHA"
+        git commit -am "Auto-update from https://${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
         git push "https://${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}@github.com/geode-sdk/bin.git" main
