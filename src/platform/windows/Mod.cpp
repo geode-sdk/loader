@@ -45,6 +45,8 @@ Result<> Mod::loadPlatformBinary() {
         this->m_implicitLoadFunc = findSymbolOrMangled<geode_load>(load, "geode_implicit_load", "_geode_implicit_load@4");
         this->m_loadFunc = findSymbolOrMangled<geode_load>(load, "geode_load", "_geode_load@4");
         this->m_unloadFunc = findSymbolOrMangled<geode_unload>(load, "geode_unload", "_geode_unload@0");
+        this->m_enableFunc = findSymbolOrMangled<geode_enable>(load, "geode_enable", "_geode_enable@0");
+        this->m_disableFunc = findSymbolOrMangled<geode_disable>(load, "geode_disable", "_geode_disable@0");
 
         if (!this->m_implicitLoadFunc && !this->m_loadFunc) {
             return Err<>("Unable to find mod entry point (lacking both implicit & explicit definition)");

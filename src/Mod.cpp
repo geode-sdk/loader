@@ -85,9 +85,6 @@ Result<> Mod::createTempDir() {
 }
 
 Result<> Mod::load() {
-    if (!this->m_enabled) {
-        return Err<>("Mod is not enabled");
-    }
     if (!this->m_tempDirName.string().size()) {
         auto err = this->createTempDir();
         if (!err) return Err<>("Unable to create temp directory: " + err.error());
@@ -115,6 +112,7 @@ Result<> Mod::load() {
         }
     }
     this->m_loaded = true;
+    this->m_enabled = true;
     Loader::get()->updateAllDependencies();
     return Ok<>();
 }
@@ -153,17 +151,55 @@ Result<> Mod::unload() {
 }
 
 Result<> Mod::enable() {
+    if (!this->m_loaded) {
+        auto r = this->load();
+        if (!r) this->m_enabled = false;
+        return r;
+    }
+    
+    if (this->m_enableFunc) {
+        if (!this->m_enableFunc()) {
+            return Err<>("Mod enable function returned false");
+        }
+    }
+
+    for (auto const& hook : this->m_hooks) {
+        auto d = this->enableHook(hook);
+        if (!d) return d;
+    }
+
+    for (auto const& patch : this->m_patches) {
+        if (!patch->apply()) {
+            return Err<>("Unable to apply patch at " + std::to_string(patch->getAddress()));
+        }
+    }
+
     this->m_enabled = true;
-    auto r = this->load();
-    if (!r) this->m_enabled = false;
-    return r;
+
+    return Ok<>();
 }
 
 Result<> Mod::disable() {
+    if (this->m_disableFunc) {
+        if (!this->m_disableFunc()) {
+            return Err<>("Mod disable function returned false");
+        }
+    }
+
+    for (auto const& hook : this->m_hooks) {
+        auto d = this->disableHook(hook);
+        if (!d) return d;
+    }
+
+    for (auto const& patch : this->m_patches) {
+        if (!patch->restore()) {
+            return Err<>("Unable to restore patch at " + std::to_string(patch->getAddress()));
+        }
+    }
+
     this->m_enabled = false;
-    auto r = this->unload();
-    if (!r) this->m_enabled = true;
-    return r;
+
+    return Ok<>();
 }
 
 bool Dependency::isUnresolved() const {
@@ -212,8 +248,10 @@ bool Mod::updateDependencyStates() {
 	}
     if (!hasUnresolved && !this->m_resolved) {
         this->m_resolved = true;
-        auto r = this->load();
-        if (!r) this->logInfo(r.error(), Severity::Error);
+        if (this->m_enabled) {
+            auto r = this->load();
+            if (!r) this->logInfo(r.error(), Severity::Error);
+        }
     }
     return hasUnresolved;
 }

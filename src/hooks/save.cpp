@@ -3,12 +3,13 @@
 USE_GEODE_NAMESPACE();
 
 class $modify(AppDelegate) {
-    void trySaveGame() {
+    virtual void trySaveGame() {
         Loader::getInternalMod()->log() << "Saving..." << geode::endl;
+        Loader::get()->saveSettings();
         for (auto mod : Loader::get()->getLoadedMods()) {
             auto r = mod->saveData();
             if (!r) Loader::getInternalMod()->logInfo(r.error(), Severity::Error);
         }
-        return $AppDelegate::trySaveGame_();
+        return $AppDelegate::trySaveGame();
     }
 };
