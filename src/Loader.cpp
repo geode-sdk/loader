@@ -147,13 +147,13 @@ Result<> Loader::saveSettings() {
         value["enabled"] = mod->m_enabled;
         json["mods"][id] = value;
     }
-    auto path = ghc::filesystem::path(CCFileUtils::sharedFileUtils()->getWritablePath());
+    auto path = ghc::filesystem::path(CCFileUtils::sharedFileUtils()->getWritablePath().c_str());
     path /= "geode/mods.json";
     return file_utils::writeString(path, json.dump(4));
 }
 
 Result<> Loader::loadSettings() {
-    auto path = ghc::filesystem::path(CCFileUtils::sharedFileUtils()->getWritablePath());
+    auto path = ghc::filesystem::path(CCFileUtils::sharedFileUtils()->getWritablePath().c_str());
     path /= "geode/mods.json";
     if (!ghc::filesystem::exists(path))
         return Ok<>();
