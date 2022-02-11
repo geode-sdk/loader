@@ -56,11 +56,16 @@ jobs:
       run: |
         mv ${{ matrix.config.upload_paths }} ./sdk/bin/${{ matrix.config.name }} 
         mv ${{ matrix.config.gen_folder }} ./sdk/bin/${{ matrix.config.name }}/gen
-      
+    
+    - uses: oleksiyrudenko/gha-git-credentials@v2-latest
+      with:
+        global: true
+        token: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
+        email: '${{ secrets.GEODE_BOT_EMAIL }}'
+        name: 'Geode Bot'
+        
     - name: Commit and push to bin
       working-directory: ${{ github.workspace }}/sdk/bin
       run: |
-        git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
-        git config --local user.name "GeodeBot"
         git commit -am "Auto-update from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
-        git push "https://GeodeBot:${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}@github.com/geode-sdk/bin.git" main
+        git push "https://github.com/geode-sdk/bin.git" main
