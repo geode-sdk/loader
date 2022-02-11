@@ -35,7 +35,7 @@ jobs:
         workflow: build.yml
         workflow_conclusion: success
         branch: main
-        name: "MacOS Loader Binary + Libraries"
+        name: "macOS Loader Binary + Libraries"
         path: './macos'
       
     - name: Move windows files to bin
