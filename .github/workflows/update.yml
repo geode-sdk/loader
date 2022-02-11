@@ -41,7 +41,7 @@ jobs:
         path: './macos'
       
     - name: Move windows files to bin
-      if: steps.dlwin.outcome == 'success'
+      if: always() && steps.dlwin.outcome == 'success'
       id: mvwin
       shell: bash
       working-directory: ${{ github.workspace }}
@@ -50,7 +50,7 @@ jobs:
         mv ./windows/Gen ./bin/windows/gen
         
     - name: Move macos files to bin
-      if: steps.dlmac.outcome == 'success'
+      if: always() && steps.dlmac.outcome == 'success'
       id: mvmac
       shell: bash
       working-directory: ${{ github.workspace }}
@@ -59,7 +59,7 @@ jobs:
         mv ./macos/gen ./bin/macos/gen
         
     - name: Commit and push to bin
-      if: steps.mvwin.outcome == 'success' || steps.mvmac.outcome == 'success'
+      if: always() && (steps.mvwin.outcome == 'success' || steps.mvmac.outcome == 'success')
       working-directory: ${{ github.workspace }}/bin
       run: |
         git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
