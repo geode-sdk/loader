@@ -42,6 +42,7 @@ jobs:
       shell: bash
       working-directory: ${{ github.workspace }}
       run: |
+        ls ./macos/**/*
         mv ./windows/**/*.dll ./windows/**/*.lib ./bin/windows
         mv ./windows/Gen ./bin/windows/gen
         mv ./macos/*.dylib ./macos/*.a ./bin/macos
