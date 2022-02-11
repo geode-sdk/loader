@@ -42,10 +42,9 @@ jobs:
       shell: bash
       working-directory: ${{ github.workspace }}
       run: |
-        ls ./macos/**/*
         mv ./windows/**/*.dll ./windows/**/*.lib ./bin/windows
         mv ./windows/Gen ./bin/windows/gen
-        mv ./macos/*.dylib ./macos/*.a ./bin/macos
+        mv ./macos/*.dylib ./bin/macos
         mv ./macos/gen ./bin/macos/gen
         
     - name: Commit and push to bin
