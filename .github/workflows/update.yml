@@ -52,5 +52,6 @@ jobs:
       run: |
         git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
         git config --local user.name "GeodeBot"
-        git commit -am "Auto-update ${{ matrix.config.name }} from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
+        git add -A
+        git commit -m "Auto-update ${{ matrix.config.name }} from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
         git push "https://GeodeBot:${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN}}@github.com/geode-sdk/bin.git" main
