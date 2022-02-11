@@ -85,9 +85,6 @@ Result<> Mod::createTempDir() {
 }
 
 Result<> Mod::load() {
-    if (!this->m_enabled) {
-        return Err<>("Mod is not enabled");
-    }
     if (!this->m_tempDirName.string().size()) {
         auto err = this->createTempDir();
         if (!err) return Err<>("Unable to create temp directory: " + err.error());
@@ -115,6 +112,12 @@ Result<> Mod::load() {
         }
     }
     this->m_loaded = true;
+    this->m_enabled = true;
+    if (this->m_loadDataFunc) {
+        if (!this->m_loadDataFunc(this->m_saveDirPath.string().c_str())) {
+            this->logInfo("Mod load data function returned false", Severity::Error);
+        }
+    }
     Loader::get()->updateAllDependencies();
     return Ok<>();
 }
@@ -124,6 +127,12 @@ Result<> Mod::unload() {
         return Ok<>();
     }
     
+    if (this->m_saveDataFunc) {
+        if (!this->m_saveDataFunc(this->m_saveDirPath.string().c_str())) {
+            this->logInfo("Mod save data function returned false", Severity::Error);
+        }
+    }
+
     if (this->m_unloadFunc) {
         this->m_unloadFunc();
     }
@@ -153,17 +162,55 @@ Result<> Mod::unload() {
 }
 
 Result<> Mod::enable() {
+    if (!this->m_loaded) {
+        auto r = this->load();
+        if (!r) this->m_enabled = false;
+        return r;
+    }
+    
+    if (this->m_enableFunc) {
+        if (!this->m_enableFunc()) {
+            return Err<>("Mod enable function returned false");
+        }
+    }
+
+    for (auto const& hook : this->m_hooks) {
+        auto d = this->enableHook(hook);
+        if (!d) return d;
+    }
+
+    for (auto const& patch : this->m_patches) {
+        if (!patch->apply()) {
+            return Err<>("Unable to apply patch at " + std::to_string(patch->getAddress()));
+        }
+    }
+
     this->m_enabled = true;
-    auto r = this->load();
-    if (!r) this->m_enabled = false;
-    return r;
+
+    return Ok<>();
 }
 
 Result<> Mod::disable() {
+    if (this->m_disableFunc) {
+        if (!this->m_disableFunc()) {
+            return Err<>("Mod disable function returned false");
+        }
+    }
+
+    for (auto const& hook : this->m_hooks) {
+        auto d = this->disableHook(hook);
+        if (!d) return d;
+    }
+
+    for (auto const& patch : this->m_patches) {
+        if (!patch->restore()) {
+            return Err<>("Unable to restore patch at " + std::to_string(patch->getAddress()));
+        }
+    }
+
     this->m_enabled = false;
-    auto r = this->unload();
-    if (!r) this->m_enabled = true;
-    return r;
+
+    return Ok<>();
 }
 
 bool Dependency::isUnresolved() const {
@@ -212,8 +259,10 @@ bool Mod::updateDependencyStates() {
 	}
     if (!hasUnresolved && !this->m_resolved) {
         this->m_resolved = true;
-        auto r = this->load();
-        if (!r) this->logInfo(r.error(), Severity::Error);
+        if (this->m_enabled) {
+            auto r = this->load();
+            if (!r) this->logInfo(r.error(), Severity::Error);
+        }
     }
     return hasUnresolved;
 }
@@ -266,6 +315,10 @@ decltype(ModInfo::m_details) Mod::getDetails() const {
 }
 
 Result<> Mod::saveData() {
+    bool savedmod = true;
+    if (this->m_saveDataFunc) {
+        savedmod = this->m_saveDataFunc(this->m_saveDirPath.string().c_str());
+    }
     auto json = nlohmann::json::object();
     for (auto [key, sett] : this->m_info.m_settings) {
         auto value = nlohmann::json::object();
@@ -273,12 +326,22 @@ Result<> Mod::saveData() {
         if (!r) return r;
         json[key] = value;
     }
-    return file_utils::writeString(this->m_saveDirPath / "settings.json", json.dump(4));
+    auto res = file_utils::writeString(this->m_saveDirPath / "settings.json", json.dump(4));
+    if (!res) return res;
+    if (!savedmod) return Err<>("Mod save function returned false");
+    return Ok<>();
 }
 
 Result<> Mod::loadData() {
-    if (!ghc::filesystem::exists(this->m_saveDirPath / "settings.json"))
+    bool loadedmod = true;
+    if (this->m_loadDataFunc) {
+        loadedmod = this->m_loadDataFunc(this->m_saveDirPath.string().c_str());
+    }
+    if (!ghc::filesystem::exists(this->m_saveDirPath / "settings.json")) {
+        if (!loadedmod)
+            return Err<>("Mod load function returned false");
         return Ok<>();
+    }
     auto read = file_utils::readString(this->m_saveDirPath / "settings.json");
     if (!read) return read;
     try {
@@ -289,6 +352,8 @@ Result<> Mod::loadData() {
                 if (!r) return r;
             }
         }
+        if (!loadedmod)
+            return Err<>("Mod load function returned false");
         return Ok<>();
     } catch(std::exception const& e) {
         return Err<>(e.what());

@@ -31,7 +31,6 @@ jobs:
             ./build/Geode.dylib
             ./build/src/CCZipUtils/libCCZipUtils.a
             ./build/src/addressertest/libAddresserTest.a
-
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
 
@@ -53,7 +52,7 @@ jobs:
       run: |
         cd ${{ github.workspace }}/build
         cmake --build . --config Release
-
+        
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
       with:
