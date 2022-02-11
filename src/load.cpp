@@ -10,6 +10,7 @@
 #include <Geode.hpp>
 
 USE_GEODE_NAMESPACE();
+using namespace std::string_literals;
 
 #define JSON_ASSIGN_IF_CONTAINS_AND_TYPE_FROM(_name_, _from_, _type_)\
     if (json.contains(#_from_) && !json[#_from_].is_null()) {   \
@@ -154,34 +155,106 @@ Result<Mod*> Loader::loadModFromFile(std::string const& path) {
     }
 }
 
-std::string Credits::Person::expandKnownLink(std::string const& link) {
-    switch (hash(string_utils::toLower(link).c_str())) {
-        case hash("github"):
-            if (!string_utils::contains(link, "/")) {
-                return "https://github.com/" + link;
-            } break;
-
-        case hash("youtube"):
-            if (!string_utils::contains(link, "/")) {
-                return "https://youtube.com/channel/" + link;
-            } break;
-
-        case hash("twitter"):
-            if (!string_utils::contains(link, "/")) {
-                return "https://twitter.com/" + link;
-            } break;
-
-        case hash("newgrounds"):
-            if (!string_utils::contains(link, "/")) {
-                return "https://" + link + ".newgrounds.com";
-            } break;
+struct json_check_failure : public std::exception {
+    std::string m_info;
+    const char* what() const throw() {
+        return m_info.c_str();
     }
-    return link;
-}
+    json_check_failure(std::string const& info) : m_info(info) {}
+};
+
+struct json_check {
+    nlohmann::json& m_json;
+    bool m_continue = false;
+    bool m_required = false;
+    std::string m_key;
+
+    json_check(nlohmann::json& json) : m_json(json) {}
+
+    json_check& has(std::string_view const& key) {
+        if (!m_continue) return *this;
+        m_continue = m_json.contains(key);
+        m_key = key;
+        return *this;
+    }
+    json_check& needs(std::string_view const& key) {
+        if (!m_continue) return *this;
+        if (!m_json.contains(key))
+            throw json_check_failure("[mod.json] is missing required key \"" + std::string(key) + "\"");
+        m_key = key;
+        m_required = true;
+        return *this;
+    }
+    template<typename T>
+    json_check& is() {
+        if (!m_continue) return *this;
+        if constexpr (std::is_same_v<T, std::string>) {
+            if (!m_json[m_key].is_string()) {
+                if (m_required) {
+                    throw json_check_failure("[mod.json]." + m_key + " is not a string");
+                } else {
+                    if (m_json[m_key].is_null()) {
+                        m_continue = false;
+                    } else {
+                        throw json_check_failure("[mod.json]." + m_key + " is not a string nor null");
+                    }
+                }
+            }
+        } else
+        if constexpr (std::is_same_v<T, int>) {
+            if (!m_json[m_key].is_number_integer()) {
+                if (m_required) {
+                    throw json_check_failure("[mod.json]." + m_key + " is not a int");
+                } else {
+                    if (m_json[m_key].is_null()) {
+                        m_continue = false;
+                    } else {
+                        throw json_check_failure("[mod.json]." + m_key + " is not a int nor null");
+                    }
+                }
+            }
+        } else
+        if constexpr (std::is_same_v<T, nlhomann::json::object>) {
+            if (!m_json[m_key].is_object()) {
+                if (m_required) {
+                    throw json_check_failure("[mod.json]." + m_key + " is not a object");
+                } else {
+                    if (m_json[m_key].is_null()) {
+                        m_continue = false;
+                    } else {
+                        throw json_check_failure("[mod.json]." + m_key + " is not a object nor null");
+                    }
+                }
+            }
+        } else
+        if constexpr (std::is_same_v<T, nlhomann::json::array>) {
+            if (!m_json[m_key].is_array()) {
+                if (m_required) {
+                    throw json_check_failure("[mod.json]." + m_key + " is not a array");
+                } else {
+                    if (m_json[m_key].is_null()) {
+                        m_continue = false;
+                    } else {
+                        throw json_check_failure("[mod.json]." + m_key + " is not a array nor null");
+                    }
+                }
+            }
+        } else
+            static_assert(!std::is_same<T, T>, "Unimplemented type for json_check");
+        return *this;
+    }
+    template<typename T>
+    json_check& into(T& var) {
+        if (!m_continue) return *this;
+        var = m_json[m_key];
+        return *this;
+    }
+};
 
 template<>
 Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
     nlohmann::json json = *reinterpret_cast<nlohmann::json*>(jsonData);
+
     if (!json.contains("id")) {
         return Err<>("\"" + path + "\" lacks a Mod ID");
     }
@@ -200,7 +273,7 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
 
     ModInfo info;
 
-    info.m_path    = path;
+    info.m_path = path;
     info.m_version = VersionInfo(json["version"]);
 
     if (json.contains("id")) {
@@ -220,11 +293,39 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
         return Err<>( "\"" + path + "\": Missing required field \"id\"" );
     }
 
-    JSON_ASSIGN_IF_CONTAINS_AND_TYPE_REQUIRED(name, string);
-    JSON_ASSIGN_IF_CONTAINS_AND_TYPE_REQUIRED(developer, string);
-    JSON_ASSIGN_IF_CONTAINS_AND_TYPE(description, string);
-    JSON_ASSIGN_IF_CONTAINS_AND_TYPE(details, string);
-    JSON_ASSIGN_IF_CONTAINS_AND_TYPE(repository, string);
+    try {
+
+        json_check(json)
+            .needs("name")
+            .is<std::string>()
+            .into(info.m_name);
+
+        json_check(json)
+            .needs("developer")
+            .is<std::string>()
+            .into(info.m_developer);
+
+        json_check(json)
+            .has("description")
+            .is<std::string>()
+            .into(info.m_description);
+
+        json_check(json)
+            .has("details")
+            .is<std::string>()
+            .into(info.m_details);
+
+        json_check(json)
+            .has("repository")
+            .is<std::string>()
+            .into(info.m_repository);
+
+    } catch(std::exception& e) {
+        return Err<>(e.what());
+    }
+
+    json_check(json)
+        .has("binary");
 
     if (json.contains("binary")) {
         bool autoEnd = true;
@@ -314,7 +415,7 @@ skip_binary_check:
                                 if (value["links"].is_object()) {
                                     for (auto const& [site, url] : value["links"].items()) {
                                         if (url.is_string()) {
-                                            credit.m_links[string_utils::toLower(site)] = Credits::Person::expandKnownLink(url);
+                                            credit.m_links[string_utils::toLower(site)] = url;
                                         } else {
                                             return Err<>("\"" + path + "\": \"credits.people." + credit.m_name + ".links." + site + "\" is not a string");
                                         }
