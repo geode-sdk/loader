@@ -47,14 +47,14 @@ jobs:
 
     - name: Move files to bin
       shell: bash
+      working-directory: ${{ github.workspace }}
       run: |
-        cd ${{ github.workspace }}
         mv ${{ matrix.config.upload_paths }} ./sdk/bin/${{ matrix.config.name }} 
         mv ${{ matrix.config.gen_folder }} ./sdk/bin/${{ matrix.config.name }}/gen
       
     - name: Commit and push to bin
+      working-directory: ${{ github.workspace }}/sdk/bin
       run: |
-        cd ./sdk/bin
         git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
         git config --local user.name "GeodeBot"
         git commit -am "Auto-update from https://$GITHUB_SERVER/$GITHUB_REPOSITORY/commit/$GITHUB_SHA"
