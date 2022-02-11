@@ -27,16 +27,11 @@ jobs:
     runs-on: ${{ matrix.config.os }}
 
     steps:
-    - uses: oleksiyrudenko/gha-git-credentials@v2-latest
-      with:
-        global: true
-        token: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
-        email: '${{ secrets.GEODE_BOT_EMAIL }}'
-        name: 'Geode Bot'
         
     - uses: actions/checkout@v2
       with:
         submodules: recursive
+        token: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
 
     - uses: ilammy/msvc-dev-cmd@v1
       with:
@@ -67,5 +62,7 @@ jobs:
     - name: Commit and push to bin
       working-directory: ${{ github.workspace }}/sdk/bin
       run: |
+        git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
+        git config --local user.name "GeodeBot"
         git commit -am "Auto-update from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
-        git push "https://github.com/geode-sdk/bin.git" main
+        git push "https://GeodeBot:${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN}}@github.com/geode-sdk/bin.git" main
