@@ -55,6 +55,7 @@ jobs:
     - name: Commit and push to bin
       run: |
         cd ./sdk/bin
+        git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
+        git config --local user.name "GeodeBot"
         git commit -am "Auto-update from https://$GITHUB_SERVER/$GITHUB_REPOSITORY/commit/$GITHUB_SHA"
         git push "https://${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}@github.com/geode-sdk/bin.git" main
-        
