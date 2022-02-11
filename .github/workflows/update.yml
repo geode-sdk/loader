@@ -8,61 +8,61 @@ on:
 
 jobs:
   build:
-    strategy:
-      fail-fast: false
-      matrix:
-        config:
-        - name: "windows"
-          os: windows-latest
-          extra_flags: '-G "Visual Studio 16 2019" -T host=x86 -A win32'
-          upload_paths:  './build/Release/geode.dll ./build/Release/geode.lib ./build/src/CCZipUtils/Release/CCZipUtils.lib'
-          gen_folder: './build/Gen/*'
-        - name: "macos"
-          os: macos-latest
-          extra_flags: ""
-          upload_paths:  './build/Geode.dylib ./build/src/CCZipUtils/libCCZipUtils.a ./build/src/addressertest/libAddresserTest.a'
-          gen_folder: './build/gen/*'
+    runs-on: ubuntu-latest
 
-    name: ${{ matrix.config.name }}
-    runs-on: ${{ matrix.config.os }}
-
-    steps:
-        
+    steps:      
     - uses: actions/checkout@v2
       with:
+        repository: geode-sdk/bin
+        path: bin
         submodules: recursive
         token: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
 
-    - uses: ilammy/msvc-dev-cmd@v1
+    - name: Download Windows artifact
+      uses: dawidd6/action-download-artifact@v2
+      id: dlwin
       with:
-        arch: x86
-      if: matrix.config.os == 'windows-latest'
-
-    - name: Configure CMake
-      run: |
-        cmake -B ${{ github.workspace }}/build ${{ matrix.config.extra_flags }} -DGEODE_DONT_BUILD_TEST_MODS=On -DGEODE_BUILD_UNIT_TESTS=On
-    
-    - name: Build
-      run: |
-        cd ${{ github.workspace }}/build
-        cmake --build . --config Release
-
-    - name: Checkout bin
-      working-directory: ${{ github.workspace }}/sdk/bin
-      run: |
-        git checkout main
+        github_token: ${{secrets.GEODE_BOT_PUSH_BIN_TOKEN}}
+        workflow: build.yml
+        workflow_conclusion: success
+        branch: main
+        name: "Windows Loader Binary + Libraries"
+        path: './windows'
+        
+    - name: Download MacOS artifact
+      uses: dawidd6/action-download-artifact@v2
+      id: dlmac
+      with:
+        github_token: ${{secrets.GEODE_BOT_PUSH_BIN_TOKEN}}
+        workflow: build.yml
+        workflow_conclusion: success
+        branch: main
+        name: "MacOS Loader Binary + Libraries"
+        path: './macos'
       
-    - name: Move files to bin
+    - name: Move windows files to bin
+      if: steps.dlwin.outcome == 'success'
+      id: mvwin
       shell: bash
       working-directory: ${{ github.workspace }}
       run: |
-        mv ${{ matrix.config.upload_paths }} ./sdk/bin/${{ matrix.config.name }} 
-        mv ${{ matrix.config.gen_folder }} ./sdk/bin/${{ matrix.config.name }}/gen
+        mv ./windows/**/*.dll ./windows/**/*.lib ./bin/windows
+        mv ./windows/Gen ./bin/windows/gen
+        
+    - name: Move macos files to bin
+      if: steps.dlmac.outcome == 'success'
+      id: mvmac
+      shell: bash
+      working-directory: ${{ github.workspace }}
+      run: |
+        mv ./macos/**/*.dylib ./macos/**/*.a ./bin/macos
+        mv ./macos/gen ./bin/macos/gen
         
     - name: Commit and push to bin
-      working-directory: ${{ github.workspace }}/sdk/bin
+      if: steps.mvwin.outcome == 'success' || steps.mvmac.outcome == 'success'
+      working-directory: ${{ github.workspace }}/bin
       run: |
         git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
         git config --local user.name "GeodeBot"
-        git commit -am "Auto-update from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
+        git commit -am "Auto-update ${{ matrix.config.name }} from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
         git push "https://GeodeBot:${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN}}@github.com/geode-sdk/bin.git" main
