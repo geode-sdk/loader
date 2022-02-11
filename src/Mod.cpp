@@ -113,6 +113,11 @@ Result<> Mod::load() {
     }
     this->m_loaded = true;
     this->m_enabled = true;
+    if (this->m_loadDataFunc) {
+        if (!this->m_loadDataFunc(this->m_saveDirPath.string().c_str())) {
+            this->logInfo("Mod load data function returned false", Severity::Error);
+        }
+    }
     Loader::get()->updateAllDependencies();
     return Ok<>();
 }
@@ -122,6 +127,12 @@ Result<> Mod::unload() {
         return Ok<>();
     }
     
+    if (this->m_saveDataFunc) {
+        if (!this->m_saveDataFunc(this->m_saveDirPath.string().c_str())) {
+            this->logInfo("Mod save data function returned false", Severity::Error);
+        }
+    }
+
     if (this->m_unloadFunc) {
         this->m_unloadFunc();
     }
@@ -304,6 +315,10 @@ decltype(ModInfo::m_details) Mod::getDetails() const {
 }
 
 Result<> Mod::saveData() {
+    bool savedmod = true;
+    if (this->m_saveDataFunc) {
+        savedmod = this->m_saveDataFunc(this->m_saveDirPath.string().c_str());
+    }
     auto json = nlohmann::json::object();
     for (auto [key, sett] : this->m_info.m_settings) {
         auto value = nlohmann::json::object();
@@ -311,12 +326,22 @@ Result<> Mod::saveData() {
         if (!r) return r;
         json[key] = value;
     }
-    return file_utils::writeString(this->m_saveDirPath / "settings.json", json.dump(4));
+    auto res = file_utils::writeString(this->m_saveDirPath / "settings.json", json.dump(4));
+    if (!res) return res;
+    if (!savedmod) return Err<>("Mod save function returned false");
+    return Ok<>();
 }
 
 Result<> Mod::loadData() {
-    if (!ghc::filesystem::exists(this->m_saveDirPath / "settings.json"))
+    bool loadedmod = true;
+    if (this->m_loadDataFunc) {
+        loadedmod = this->m_loadDataFunc(this->m_saveDirPath.string().c_str());
+    }
+    if (!ghc::filesystem::exists(this->m_saveDirPath / "settings.json")) {
+        if (!loadedmod)
+            return Err<>("Mod load function returned false");
         return Ok<>();
+    }
     auto read = file_utils::readString(this->m_saveDirPath / "settings.json");
     if (!read) return read;
     try {
@@ -327,6 +352,8 @@ Result<> Mod::loadData() {
                 if (!r) return r;
             }
         }
+        if (!loadedmod)
+            return Err<>("Mod load function returned false");
         return Ok<>();
     } catch(std::exception const& e) {
         return Err<>(e.what());
