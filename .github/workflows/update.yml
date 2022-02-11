@@ -46,8 +46,8 @@ jobs:
       shell: bash
       working-directory: ${{ github.workspace }}
       run: |
-        mv ./windows/**/*.dll ./windows/**/*.lib ./bin/windows
-        mv ./windows/Gen ./bin/windows/gen
+        mv ${{ github.workspace }}/windows/**/*.dll ${{ github.workspace }}/windows/**/*.lib ${{ github.workspace }}/bin/windows
+        mv ${{ github.workspace }}/windows/Gen ${{ github.workspace }}/bin/windows/gen
         
     - name: Move macos files to bin
       if: steps.dlmac.outcome == 'success'
@@ -55,8 +55,8 @@ jobs:
       shell: bash
       working-directory: ${{ github.workspace }}
       run: |
-        mv ./macos/**/*.dylib ./macos/**/*.a ./bin/macos
-        mv ./macos/gen ./bin/macos/gen
+        mv ${{ github.workspace }}/macos/**/*.dylib ${{ github.workspace }}/macos/**/*.a ${{ github.workspace }}/bin/macos
+        mv ${{ github.workspace }}/macos/gen ${{ github.workspace }}/bin/macos/gen
         
     - name: Commit and push to bin
       if: steps.mvwin.outcome == 'success' && steps.mvmac.outcome == 'success'
