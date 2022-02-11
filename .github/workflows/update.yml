@@ -10,8 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    steps:
-        
+    steps:      
     - uses: actions/checkout@v2
       with:
         repository: geode-sdk/bin
@@ -21,6 +20,7 @@ jobs:
 
     - name: Download Windows artifact
       uses: dawidd6/action-download-artifact@v2
+      id: dlwin
       with:
         github_token: ${{secrets.GEODE_BOT_PUSH_BIN_TOKEN}}
         workflow: build.yml
@@ -31,6 +31,7 @@ jobs:
         
     - name: Download MacOS artifact
       uses: dawidd6/action-download-artifact@v2
+      id: dlmac
       with:
         github_token: ${{secrets.GEODE_BOT_PUSH_BIN_TOKEN}}
         workflow: build.yml
@@ -40,6 +41,8 @@ jobs:
         path: './macos'
       
     - name: Move windows files to bin
+      if: steps.dlwin.outcome == 'success'
+      id: mvwin
       shell: bash
       working-directory: ${{ github.workspace }}
       run: |
@@ -47,6 +50,8 @@ jobs:
         mv ./windows/Gen ./bin/windows/gen
         
     - name: Move macos files to bin
+      if: steps.dlmac.outcome == 'success'
+      id: mvmac
       shell: bash
       working-directory: ${{ github.workspace }}
       run: |
@@ -54,6 +59,7 @@ jobs:
         mv ./macos/gen ./bin/macos/gen
         
     - name: Commit and push to bin
+      if: steps.mvwin.outcome == 'success' || steps.mvmac.outcome == 'success'
       working-directory: ${{ github.workspace }}/bin
       run: |
         git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
