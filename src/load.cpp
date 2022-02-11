@@ -476,7 +476,7 @@ skip_binary_check:
     auto r = mod->loadData();
     if (!r) mod->logInfo(r.error(), Severity::Error);
 
-    mod->m_enabled = true;
+    mod->m_enabled = Loader::get()->shouldLoadMod(mod->m_info.m_id);
     this->m_mods.insert({ info.m_id, mod });
     mod->updateDependencyStates();
 

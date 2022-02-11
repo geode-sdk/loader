@@ -27,3 +27,13 @@ class $modify(GJGarageLayer) {
 	}
 };
 
+GEODE_API bool GEODE_CALL geode_enable() {
+	Interface::mod()->log() << "Enabling TestMod2!" << geode::endl;
+	return true;
+}
+
+GEODE_API bool GEODE_CALL geode_disable() {
+	Interface::mod()->log() << "Disabling TestMod2!" << geode::endl;
+	return true;
+}
+

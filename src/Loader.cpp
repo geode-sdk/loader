@@ -139,6 +139,62 @@ size_t Loader::refreshMods() {
     return loaded;
 }
 
+Result<> Loader::saveSettings() {
+    auto json = nlohmann::json::object();
+    json["mods"] = nlohmann::json::object();
+    for (auto [id, mod] : this->m_mods) {
+        auto value = nlohmann::json::object();
+        value["enabled"] = mod->m_enabled;
+        json["mods"][id] = value;
+    }
+    auto path = ghc::filesystem::path(CCFileUtils::sharedFileUtils()->getWritablePath());
+    path /= "geode/mods.json";
+    return file_utils::writeString(path, json.dump(4));
+}
+
+Result<> Loader::loadSettings() {
+    auto path = ghc::filesystem::path(CCFileUtils::sharedFileUtils()->getWritablePath());
+    path /= "geode/mods.json";
+    if (!ghc::filesystem::exists(path))
+        return Ok<>();
+    auto read = file_utils::readString(path);
+    if (!read) return read;
+    try {
+        auto json = nlohmann::json::parse(read.value());
+        if (json.contains("mods")) {
+            auto mods = json["mods"];
+            if (mods.is_object()) {
+                for (auto [key, val] : mods.items()) {
+                    if (!val.is_object()) {
+                        return Err<>("[loader settings].mods.\"" + key + "\" is not an object");
+                    }
+                    LoaderSettings::ModSettings mod;
+                    if (val.contains("enabled")) {
+                        if (val["enabled"].is_boolean()) {
+                            mod.m_enabled = val["enabled"];
+                        } else {
+                            return Err<>("[loader settings].mods.\"" + key + "\".enabled is not a boolean");
+                        }
+                    }
+                    this->m_loadedSettings.m_mods.insert({ key, mod });
+                }
+            } else {
+                return Err<>("[loader settings].mods is not an object");
+            }
+        }
+        return Ok<>();
+    } catch(std::exception const& e) {
+        return Err<>(e.what());
+    }
+}
+
+bool Loader::shouldLoadMod(std::string const& id) const {
+    if (this->m_loadedSettings.m_mods.count(id)) {
+        return this->m_loadedSettings.m_mods.at(id).m_enabled;
+    }
+    return true;
+}
+
 bool Loader::isModLoaded(std::string const& id, bool resolved) const {
     if (this->m_mods.count(id)) {
         if (resolved && this->m_mods.at(id)->hasUnresolvedDependencies()) {
@@ -204,6 +260,7 @@ bool Loader::setup() {
         << geode::endl;
 
     this->createDirectories();
+    this->loadSettings();
     this->refreshMods();
 
     this->m_isSetup = true;
