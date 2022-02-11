@@ -27,6 +27,13 @@ jobs:
     runs-on: ${{ matrix.config.os }}
 
     steps:
+    - uses: oleksiyrudenko/gha-git-credentials@v2-latest
+      with:
+        global: true
+        token: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
+        email: '${{ secrets.GEODE_BOT_EMAIL }}'
+        name: 'Geode Bot'
+        
     - uses: actions/checkout@v2
       with:
         submodules: recursive
@@ -56,13 +63,6 @@ jobs:
       run: |
         mv ${{ matrix.config.upload_paths }} ./sdk/bin/${{ matrix.config.name }} 
         mv ${{ matrix.config.gen_folder }} ./sdk/bin/${{ matrix.config.name }}/gen
-    
-    - uses: oleksiyrudenko/gha-git-credentials@v2-latest
-      with:
-        global: true
-        token: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
-        email: '${{ secrets.GEODE_BOT_EMAIL }}'
-        name: 'Geode Bot'
         
     - name: Commit and push to bin
       working-directory: ${{ github.workspace }}/sdk/bin
