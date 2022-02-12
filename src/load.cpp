@@ -12,58 +12,6 @@
 USE_GEODE_NAMESPACE();
 using namespace std::string_literals;
 
-#define JSON_ASSIGN_IF_CONTAINS_AND_TYPE_FROM(_name_, _from_, _type_)\
-    if (json.contains(#_from_) && !json[#_from_].is_null()) {   \
-        if (json[#_from_].is_##_type_()) {                      \
-            info.m_##_name_ = json[#_from_];                    \
-        }                                                       \
-    }
-
-#define JSON_ASSIGN_IF_CONTAINS_AND_TYPE(_name_, _type_)        \
-    if (json.contains(#_name_) && !json[#_name_].is_null()) {   \
-        if (json[#_name_].is_##_type_()) {                      \
-            info.m_##_name_ = json[#_name_];                    \
-        } else {                                                \
-            InternalMod::get()->logInfo(                     \
-                strfmt("\"%s\": \"" #_name_ "\" is not of expected type \"" #_type_ "\"", info.m_id.c_str()),   \
-                Severity::Warning                                                                       \
-            );                                                  \
-        }                                                       \
-    }
-
-#define JSON_ASSIGN_IF_CONTAINS_AND_TYPE_NO_NULL(_name_, _type_)\
-    if (json.contains(#_name_)) {                               \
-        if (json[#_name_].is_null()) {                          \
-            return Err<>(                                       \
-                "\"" + path + "\": \"" #_name_ "\" is not "     \
-                "of expected type -- expected \""               \
-                #_type_ "\", got " +                            \
-                json[#_name_].type_name()                       \
-            );                                                  \
-        }                                                       \
-        if (json[#_name_].is_##_type_()) {                      \
-            info.m_##_name_ = json[#_name_];                    \
-        }                                                       \
-    }
-
-#define JSON_ASSIGN_IF_CONTAINS_AND_TYPE_REQUIRED(_name_, _type_)\
-    if (json.contains(#_name_)) {                               \
-        if (!json[#_name_].is_##_type_()) {                     \
-            return Err<>(                                       \
-                "\"" + path + "\": \"" #_name_ "\" is not "     \
-                "of expected type -- expected \""               \
-                #_type_ "\", got " +                            \
-                json[#_name_].type_name()                       \
-            );                                                  \
-        }                                                       \
-        info.m_##_name_ = json[#_name_];                        \
-    } else {                                                    \
-        return Err<>(                                           \
-            "\"" + path + "\": Missing required field \""       \
-            #_name_ "\""                                        \
-        );                                                      \
-    }
-
 bool Mod::validateID(std::string const& id) {
     if (!id.size()) return false;
     for (auto const& c : id) {
@@ -164,12 +112,20 @@ struct json_check_failure : public std::exception {
 };
 
 struct json_check {
-    nlohmann::json& m_json;
-    bool m_continue = false;
+    nlohmann::json m_json;
+    bool m_continue = true;
+    bool m_branched = false;
+    bool m_hasBranch= false;
     bool m_required = false;
-    std::string m_key;
+    std::string m_key = "";
+    std::string m_hierarchy = "";
+    std::string m_types = "";
 
-    json_check(nlohmann::json& json) : m_json(json) {}
+    nlohmann::json const& get_json() {
+        return m_key.size() ? m_json[m_key] : m_json;
+    }
+
+    json_check(nlohmann::json const& json) : m_json(json) {}
 
     json_check& has(std::string_view const& key) {
         if (!m_continue) return *this;
@@ -180,74 +136,166 @@ struct json_check {
     json_check& needs(std::string_view const& key) {
         if (!m_continue) return *this;
         if (!m_json.contains(key))
-            throw json_check_failure("[mod.json] is missing required key \"" + std::string(key) + "\"");
+            throw json_check_failure(
+                "[mod.json]." + m_hierarchy + " is missing required key \"" + std::string(key) + "\""
+            );
         m_key = key;
         m_required = true;
         return *this;
     }
     template<typename T>
-    json_check& is() {
+    json_check& as() {
         if (!m_continue) return *this;
+        auto json = get_json();
+        auto keyName = m_key.size() ? "[self]" : m_key;
         if constexpr (std::is_same_v<T, std::string>) {
-            if (!m_json[m_key].is_string()) {
+            m_types += "string, ";
+            if (!json.is_string()) {
                 if (m_required) {
-                    throw json_check_failure("[mod.json]." + m_key + " is not a string");
+                    throw json_check_failure("[mod.json]." + m_hierarchy + keyName + " is not a string");
                 } else {
-                    if (m_json[m_key].is_null()) {
+                    if (json.is_null()) {
                         m_continue = false;
                     } else {
-                        throw json_check_failure("[mod.json]." + m_key + " is not a string nor null");
+                        throw json_check_failure("[mod.json]." + m_hierarchy + keyName + " is not a string nor null");
                     }
                 }
             }
         } else
         if constexpr (std::is_same_v<T, int>) {
-            if (!m_json[m_key].is_number_integer()) {
+            m_types += "int, ";
+            if (!json.is_number_integer()) {
                 if (m_required) {
-                    throw json_check_failure("[mod.json]." + m_key + " is not a int");
+                    throw json_check_failure("[mod.json]." + m_hierarchy + keyName + " is not a int");
                 } else {
-                    if (m_json[m_key].is_null()) {
+                    if (json.is_null()) {
                         m_continue = false;
                     } else {
-                        throw json_check_failure("[mod.json]." + m_key + " is not a int nor null");
+                        throw json_check_failure("[mod.json]." + m_hierarchy + keyName + " is not a int nor null");
                     }
                 }
             }
         } else
-        if constexpr (std::is_same_v<T, nlhomann::json::object>) {
-            if (!m_json[m_key].is_object()) {
+        if constexpr (std::is_same_v<T, bool>) {
+            m_types += "bool, ";
+            if (!json.is_boolean()) {
                 if (m_required) {
-                    throw json_check_failure("[mod.json]." + m_key + " is not a object");
+                    throw json_check_failure("[mod.json]." + m_hierarchy + keyName + " is not a boolean");
                 } else {
-                    if (m_json[m_key].is_null()) {
+                    if (json.is_null()) {
                         m_continue = false;
                     } else {
-                        throw json_check_failure("[mod.json]." + m_key + " is not a object nor null");
+                        throw json_check_failure("[mod.json]." + m_hierarchy + keyName + " is not a boolean nor null");
                     }
                 }
             }
         } else
-        if constexpr (std::is_same_v<T, nlhomann::json::array>) {
-            if (!m_json[m_key].is_array()) {
+        if constexpr (std::is_same_v<T, nlohmann::json::object_t>) {
+            m_types += "object, ";
+            if (!json.is_object()) {
                 if (m_required) {
-                    throw json_check_failure("[mod.json]." + m_key + " is not a array");
+                    throw json_check_failure("[mod.json]." + m_hierarchy + keyName + " is not a object");
                 } else {
-                    if (m_json[m_key].is_null()) {
+                    if (json.is_null()) {
                         m_continue = false;
                     } else {
-                        throw json_check_failure("[mod.json]." + m_key + " is not a array nor null");
+                        throw json_check_failure("[mod.json]." + m_hierarchy + keyName + " is not a object nor null");
                     }
                 }
             }
         } else
-            static_assert(!std::is_same<T, T>, "Unimplemented type for json_check");
+        if constexpr (std::is_same_v<T, nlohmann::json::array_t>) {
+            m_types += "array, ";
+            if (!json.is_array()) {
+                if (m_required) {
+                    throw json_check_failure("[mod.json]." + m_hierarchy + keyName + " is not a array");
+                } else {
+                    if (json.is_null()) {
+                        m_continue = false;
+                    } else {
+                        throw json_check_failure("[mod.json]." + m_hierarchy + keyName + " is not a array nor null");
+                    }
+                }
+            }
+        } else
+            static_assert(!std::is_same_v<T, T>, "Unimplemented type for json_check");
+        return *this;
+    }
+    template<typename T>
+    json_check& is(std::function<void(nlohmann::json const&)> branch) {
+        if (!m_continue) return *this;
+        m_hasBranch = true;
+        try { this->as<T>(); } catch(json_check_failure&) { return *this; }
+        branch(get_json());
+        m_continue = false;
+        m_branched = true;
+        return *this;
+    }
+    json_check& is_ok() {
+        if (m_hasBranch && !m_branched) {
+            throw json_check_failure("[mod.json]" + m_hierarchy + m_key + " is not one of " + m_types.substr(0, m_types.size() - 2));
+        }
+        return *this;
+    }
+    json_check& validate(std::function<bool(nlohmann::json const&)> predicate) {
+        if (!predicate(get_json())) {
+            throw json_check_failure("[mod.json]" + m_hierarchy + m_key + " is invalidly formatted");
+        }
         return *this;
     }
     template<typename T>
     json_check& into(T& var) {
         if (!m_continue) return *this;
-        var = m_json[m_key];
+        var = get_json().get<T>();
         return *this;
+    }
+    template<typename T>
+    json_check& into_if(T& var) {
+        return this->is<T>([&var](nlohmann::json const& json) -> void { json_check(json).as<T>().into(var); });
+    }
+    template<typename T>
+    json_check& into_as(T& var) {
+        return this->as<T>().into(var);
+    }
+    json_check& into(std::function<void(nlohmann::json const&)> var) {
+        if (!m_continue) return *this;
+        var(get_json());
+        return *this;
+    }
+    json_check& each(std::function<void(std::string const&, nlohmann::json const&)> func) {
+        if (!m_continue) return *this;
+        for (auto const& [key, val] : get_json().items()) {
+            func(key, val);
+        }
+        return *this;
+    }
+    json_check& each(std::function<void(nlohmann::json const&)> func) {
+        if (!m_continue) return *this;
+        for (auto const& val : get_json()) {
+            func(val);
+        }
+        return *this;
+    }
+    json_check& step() {
+        if (!m_continue) return *this;
+        this->m_hierarchy += m_key + ".";
+        this->m_json = get_json();
+        m_key = "";
+        return *this;
+    }
+};
+
+template<typename T>
+struct json_assign_required : json_check {
+    json_assign_required(nlohmann::json& json, std::string_view const& key, T& var) : json_check(json) {
+        this->needs(key).as<T>().into(var);
+    }
+};
+
+template<typename T>
+struct json_assign_optional : json_check {
+    json_assign_optional(nlohmann::json& json, std::string_view const& key, T& var) : json_check(json) {
+        this->has(key).as<T>().into(var);
     }
 };
 
@@ -255,77 +303,125 @@ template<>
 Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
     nlohmann::json json = *reinterpret_cast<nlohmann::json*>(jsonData);
 
-    if (!json.contains("id")) {
-        return Err<>("\"" + path + "\" lacks a Mod ID");
-    }
-
-    if (
-        !json.contains("version") ||
-        !json["version"].is_string() ||
-        !VersionInfo::validate(json["version"])
-    ) {
-        return Err<>(
-            "\"" + path + "\" is either lacking a version field, "
-            "or its value is incorrectly formatted (should be "
-            "\"vX.X.X\")"
-        );
-    }
-
     ModInfo info;
 
     info.m_path = path;
-    info.m_version = VersionInfo(json["version"]);
-
-    if (json.contains("id")) {
-        if (!json["id"].is_string()) {
-            return Err<>(
-                "\"" + path + "\": \"id\" is not "
-                "of expected type -- expected \"string\", "
-                "got " + json["id"].type_name()
-            );
-        }
-        if (Mod::validateID(json["id"])) {
-            info.m_id = json["id"];
-        } else {
-            return Err<>( "\"" + path + "\": \"id\" is invalid (may only contain `a-z`, `A-Z`, `-`, `_` and `.`)" );
-        }
-    } else {
-        return Err<>( "\"" + path + "\": Missing required field \"id\"" );
-    }
 
     try {
 
-        json_check(json)
-            .needs("name")
-            .is<std::string>()
-            .into(info.m_name);
+    json_check(json)
+        .needs("id")
+        .as<std::string>()
+        .validate([](auto t) -> bool { return Mod::validateID(t.get<std::string>()); })
+        .into(info.m_id);
 
-        json_check(json)
-            .needs("developer")
-            .is<std::string>()
-            .into(info.m_developer);
+    json_check(json)
+        .needs("version")
+        .as<std::string>()
+        .validate([](auto t) -> bool { return VersionInfo::validate(t.get<std::string>()); })
+        .into([&info](auto json) -> void { info.m_version = VersionInfo(json.get<std::string>()); });
 
-        json_check(json)
-            .has("description")
-            .is<std::string>()
-            .into(info.m_description);
+    json_assign_required(json, "name", info.m_name);
+    json_assign_required(json, "developer", info.m_developer);
+    json_assign_optional(json, "description", info.m_description);
+    json_assign_optional(json, "details", info.m_details);
+    json_assign_optional(json, "repository", info.m_repository);
 
-        json_check(json)
-            .has("details")
-            .is<std::string>()
-            .into(info.m_details);
+    json_check(json)
+        .has("credits")
+        .into_if<std::string>(info.m_creditsString)
+        .is<nlohmann::json::object_t>([&info](nlohmann::json const& jobj) -> void {
+            json_check(jobj)
+                .has("people")
+                .as<nlohmann::json::object_t>()
+                .each([&](auto key, auto val) -> void {
+                    auto credit = Credits::Person();
+                    credit.m_name = key;
 
-        json_check(json)
-            .has("repository")
-            .is<std::string>()
-            .into(info.m_repository);
+                    json_check(val)
+                        .has("gd")
+                        .into_if<std::string>(credit.m_gdAccountName)
+                        .into_if<int>(credit.m_gdAccountID)
+                        .is_ok();
+
+                    json_check(val)
+                        .has("role").into(credit.m_reason);
+
+                    json_check(val)
+                        .has("links")
+                        .as<nlohmann::json::object_t>()
+                        .each([&](auto site, auto url) -> void {
+                            json_check(url).into_as(credit.m_links[string_utils::toLower(site)]);
+                        });
+                });
+            
+            json_check(jobj)
+                .has("thanks")
+                .as<nlohmann::json::array_t>()
+                .each([&](auto json) -> void {
+                    json_check(json)
+                        .as<std::string>()
+                        .into([&info](auto item) -> void {
+                            info.m_credits.m_thanks.push_back(item.get<std::string>());
+                        });
+                });
+            
+            json_check(jobj)
+                .has("libraries")
+                .as<nlohmann::json::object_t>()
+                .each([&](auto name, auto url) -> void {
+                    json_check(url)
+                        .as<std::string>()
+                        .into([&](auto item) -> void {
+                            info.m_credits.m_libraries.push_back({ name, url.get<std::string>() });
+                        });
+                });
+        })
+        .is_ok();
+
+    json_check(json)
+        .has("dependencies")
+        .as<nlohmann::json::array_t>()
+        .each([&](auto dep) -> void {
+            auto djson = json_check(dep).as<nlohmann::json::object_t>();
+            auto depobj = Dependency {};
+            json_assign_required(dep, "id", depobj.m_id);
+            djson.needs("version")
+                .as<std::string>()
+                .validate([&](auto t) -> bool { return VersionInfo::validate(t.get<std::string>()); })
+                .into([&info](auto json) -> void { info.m_version = VersionInfo(json.get<std::string>()); });
+            json_assign_optional(dep, "required", depobj.m_required);
+            info.m_dependencies.push_back(depobj);
+        });
+    
+    json_check(json)
+        .has("settings")
+        .as<nlohmann::json::object_t>()
+        .each([&info](auto key, auto value) -> void {
+            auto res = Setting::parseFromJSON(value);
+            if (res) {
+                res.value()->m_key = key;
+                info.m_settings.insert({ key, res.value() });
+            } else {
+                throw json_check_failure("Error parsing setting \"" + key + "\": " + res.error());
+            }
+        });
+    
+    json_check(json)
+        .has("resources")
+        .as<nlohmann::json::object_t>()
+        .step()
+        .has("spritesheets")
+        .as<nlohmann::json::object_t>()
+        .each([&info](auto key, auto value) -> void {
+            info.m_spritesheets.push_back(key);
+        });
+    
+    json_assign_optional(json, "toggleable", info.m_supportsDisabling);
 
     } catch(std::exception& e) {
         return Err<>(e.what());
     }
-
-    json_check(json)
-        .has("binary");
 
     if (json.contains("binary")) {
         bool autoEnd = true;
@@ -361,210 +457,7 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
             info.m_binaryName += GEODE_PLATFORM_EXTENSION;
         }
     }
-skip_binary_check:
-
-    if (json.contains("credits")) {
-        if (json["credits"].is_string()) {
-            info.m_creditsString = json["credits"];
-        } else if (json["credits"].is_object()) {
-            
-            auto credits = json["credits"];
-
-            if (credits.contains("people")) {
-                if (credits["people"].is_object()) {
-                    
-                    for (auto const& [key, value] : credits["people"].items()) {
-                        auto credit = Credits::Person();
-                        credit.m_name = key;
-
-                        if (value.is_object()) {
-
-                            if (value.contains("gd")) {
-                                if (value["gd"].is_string()) {
-                                    credit.m_gdAccountName = value["gd"];
-                                } else if (value["gd"].is_number()) {
-                                    credit.m_gdAccountID = value["gd"];
-                                } else {
-                                    return Err<>("\"" + path + "\": \"credits.people." + credit.m_name + ".gd\" is not a string nor a number");
-                                }
-                            }
-
-                            if (value.contains("role")) {
-                                if (value.contains("reason")) {
-                                    InternalMod::get()->logInfo(
-                                        "\"credits.people." + credit.m_name + "\" contains both \"role\" and \"reason\"",
-                                        Severity::Warning
-                                    );
-                                }
-                                if (value["role"].is_string()) {
-                                    credit.m_reason = value["role"];
-                                } else {
-                                    return Err<>("\"" + path + "\": \"credits.people." + credit.m_name + ".role\" is not a string");
-                                }
-                            }
-
-                            if (value.contains("reason")) {
-                                if (value["reason"].is_string()) {
-                                    credit.m_reason = value["reason"];
-                                } else {
-                                    return Err<>("\"" + path + "\": \"credits.people." + credit.m_name + ".reason\" is not a string");
-                                }
-                            }
-
-                            if (value.contains("links")) {
-                                if (value["links"].is_object()) {
-                                    for (auto const& [site, url] : value["links"].items()) {
-                                        if (url.is_string()) {
-                                            credit.m_links[string_utils::toLower(site)] = url;
-                                        } else {
-                                            return Err<>("\"" + path + "\": \"credits.people." + credit.m_name + ".links." + site + "\" is not a string");
-                                        }
-                                    }
-                                } else {
-                                    return Err<>("\"" + path + "\": \"credits.people." + credit.m_name + ".links\" is not an object");
-                                }
-                            }
-
-                        } else {
-                            return Err<>("\"" + path + "\": \"credits.people." + credit.m_name + "\" is not an object");
-                        }
-
-                        info.m_credits.m_people.push_back(credit);
-                    }
-
-                } else if (credits["people"].is_null()) {
-                    return Err<>("\"" + path + "\": \"credits.people\" is not an object");
-                }
-            }
-
-            if (credits.contains("thanks")) {
-                if (credits["thanks"].is_array()) {
-
-                    for (auto const& item : credits["thanks"]) {
-                        if (item.is_string()) {
-                            info.m_credits.m_thanks.push_back(item);
-                        } else {
-                            return Err<>("\"" + path + "\": \"credits.thanks\" contains a non-string item");
-                        }
-                    }
-
-                } else if (credits["thanks"].is_null()) {
-                    return Err<>("\"" + path + "\": \"credits.thanks\" is not an array");
-                }
-            }
-
-            if (credits.contains("libraries")) {
-                if (credits["libraries"].is_object()) {
-
-                    for (auto const& [name, url] : credits["libraries"].items()) {
-                        if (url.is_string()) {
-                            info.m_credits.m_libraries.push_back({ name, url });
-                        } else {
-                            return Err<>("\"" + path + "\": \"credits.libraries." + name + "\" is not a string");
-                        }
-                    }
-
-                } else if (credits["libraries"].is_null()) {
-                    return Err<>("\"" + path + "\": \"credits.libraries\" is not an object");
-                }
-            }
-
-        } else if (!json["credits"].is_null()) {
-            return Err<>("\"" + path + "\": \"credits\" is not an object, string nor null");
-        }
-    }
-
-    if (json.contains("dependencies")) {
-        auto deps = json["dependencies"];
-        if (deps.is_array()) {
-            size_t ix = 0;
-            for (auto const& dep : deps) {
-                if (dep.is_object()) {
-                    if (dep.contains("id") && dep["id"].is_string()) {
-                        auto depobj = Dependency {};
-                        depobj.m_id = dep["id"];
-                        if (dep.contains("version")) {
-                            depobj.m_version = VersionInfo(dep["version"]);
-                        }
-                        if (dep.contains("required")) {
-                            depobj.m_required = dep["required"];
-                        }
-                        depobj.m_mod = this->getLoadedMod(depobj.m_id);
-                        info.m_dependencies.push_back(depobj);
-                    } else {
-                        InternalMod::get()->logInfo(
-                            strfmt("\"%s\": Item #%d in \"dependencies\" array lacks ID", info.m_id.c_str(), ix),
-                            Severity::Warning
-                        );
-                    }
-                } else {
-                    InternalMod::get()->logInfo(
-                        strfmt("\"%s\": Item #%d in \"dependencies\" array is not an object", info.m_id.c_str(), ix),
-                        Severity::Warning
-                    );
-                }
-                ix++;
-            }
-        } else if (!deps.is_null()) {
-            InternalMod::get()->logInfo(
-                strfmt("\"%s\": \"dependencies\" is not an array", info.m_id.c_str()),
-                Severity::Warning
-            );
-        }
-    }
-
-    if (json.contains("settings")) {
-        auto settings = json["settings"];
-        if (settings.is_object()) {
-            for (auto const& [key, value] : settings.items()) {
-                auto res = Setting::parseFromJSON(value);
-                if (res) {
-                    res.value()->m_key = key;
-                    info.m_settings.insert({ key, res.value() });
-                } else {
-                    InternalMod::get()->logInfo(
-                        "Error parsing setting \"" + key + "\": " + res.error(),
-                        Severity::Warning
-                    );
-                }
-            }
-        } else if (!settings.is_null()) {
-            InternalMod::get()->logInfo(
-                strfmt("\"%s\": \"settings\" is not an object", info.m_id.c_str()),
-                Severity::Warning
-            );
-        }
-    }
-
-    if (json.contains("resources")) {
-        auto json_resources = json["resources"];
-        if (json_resources.is_object()) {
-
-            if (json_resources.contains("spritesheets")) {
-                if (json_resources["spritesheets"].is_object()) {
-                    for (auto const& [key, _] : json_resources["spritesheets"].items()) {
-                        info.m_spritesheets.push_back(key);
-                    }
-                } else if (!json_resources["spritesheets"].is_null()) {
-                    InternalMod::get()->logInfo(
-                        strfmt("\"%s\": \"resources.spritesheets\" is not an object", info.m_id.c_str()),
-                        Severity::Warning
-                    );
-                }
-            }
-
-        } else if (!json_resources.is_null()) {
-            InternalMod::get()->logInfo(
-                strfmt("\"%s\": \"resources\" is not an object", info.m_id.c_str()),
-                Severity::Warning
-            );
-        }
-    }
-
-    // this was not meant to be available to the end user but ok
-    if (json.contains("toggleable") && json["toggleable"].is_boolean()) {
-        info.m_supportsDisabling = json["toggleable"];
-    }
+    skip_binary_check:
 
     auto mod = new Mod(info);
 

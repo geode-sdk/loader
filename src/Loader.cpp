@@ -126,6 +126,7 @@ size_t Loader::refreshMods() {
                         }
                     } else {
                         InternalMod::get()->logInfo(res.error(), Severity::Error);
+                        this->m_erroredMods.push_back({ entry.path().string(), res.error() });
                     }
                 }
             }
@@ -335,3 +336,6 @@ bool Loader::isUnloading() {
     return Loader::s_unloading;
 }
 
+std::vector<Loader::UnloadedModInfo> const& Loader::getFailedMods() const {
+    return m_erroredMods;
+}
