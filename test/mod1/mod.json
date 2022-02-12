@@ -9,26 +9,5 @@
     "credits":      null,
 	"dependencies": null,
     "binary": "TestMod1",
-    "settings": {
-        "awesome-setting": {
-            "type": "int",
-            "default": 4,
-            "name": "Awesome Setting",
-            "description": null,
-            "control": "slider",
-            "value": {
-                "default": 0,
-                "min": -20,
-                "max": 20
-            }
-        },
-        "other-setting": {
-            "type": "string",
-            "value": {
-                "default": "",
-                "filter": "letters"
-            }
-        },
-        "custom-setting": "custom"
-    }
+    "settings": null
 }
