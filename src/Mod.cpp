@@ -470,9 +470,9 @@ const char* Mod::expandSpriteName(const char* name) {
     if (expanded.count(name)) {
         return expanded[name];
     }
-    auto exp = new char[strlen(name) + 1 + this->m_info.m_id.size()];
+    auto exp = new char[strlen(name) + 2 + this->m_info.m_id.size()];
     auto exps = this->m_info.m_id + "_" + name;
-    memcpy(exp, exps.data(), exps.size());
+    memcpy(exp, exps.c_str(), exps.size() + 1);
     expanded[name] = exp;
     return exp;
 }
