@@ -235,10 +235,10 @@ bool Mod::updateDependencyStates() {
 				if (!dep.m_mod->m_resolved) {
 					dep.m_mod->m_resolved = true;
 					dep.m_state = ModResolveState::Resolved;
-                    auto r = this->load();
+                    auto r = dep.m_mod->load();
                     if (!r) {
                         dep.m_state = ModResolveState::Unloaded;
-                        this->logInfo(r.error(), Severity::Error);
+                        dep.m_mod->logInfo(r.error(), Severity::Error);
                     }
 				} else {
 					if (dep.m_mod->isEnabled()) {
