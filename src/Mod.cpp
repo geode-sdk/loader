@@ -60,6 +60,21 @@ Result<> Mod::createTempDir() {
     auto wrt = file_utils::writeBinary(tempPath, byte_array(data, data + size));
     if (!wrt) return Err<>(wrt.error());
 
+    for (auto const& file : { "logo-uhd.png", "logo-hd.png", "logo.png" }) {
+        if (unzip.fileExists(file)) {
+            unsigned long logosize;
+            auto logodata = unzip.getFileData(file, &logosize);
+            if (!logodata || !logosize) {
+                return Err<>("Unable to read \"" + std::string(file) + "\"");
+            }
+            auto logowrt = file_utils::writeBinary(
+                this->m_tempDirName / file,
+                byte_array(logodata, logodata + logosize)
+            );
+            if (!logowrt) return Err<>(logowrt.error());
+        }
+    }
+
     ZipFile unzipResources(this->m_info.m_path.string(), "resources/");
 
     if (
@@ -448,4 +463,16 @@ void Mod::disableHotReload() {
 
 bool Mod::isHotReloadEnabled() const {
     return Geode::get()->isHotReloadEnabled(const_cast<Mod*>(this));
+}
+
+const char* Mod::expandSpriteName(const char* name) {
+    static std::unordered_map<std::string, const char*> expanded = {};
+    if (expanded.count(name)) {
+        return expanded[name];
+    }
+    auto exp = new char[strlen(name) + 1 + this->m_info.m_id.size()];
+    auto exps = this->m_info.m_id + "_" + name;
+    memcpy(exp, exps.data(), exps.size());
+    expanded[name] = exp;
+    return exp;
 }
