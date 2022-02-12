@@ -8,6 +8,7 @@
 #include <utils/vector.hpp>
 #include <utils/map.hpp>
 #include <utils/conststring.hpp>
+#include <utils/string.hpp>
 
 USE_GEODE_NAMESPACE();
 
@@ -44,56 +45,35 @@ Result<> Mod::createTempDir() {
         }
     }
     
-    unsigned long size;
-    auto data = unzip.getFileData(this->m_info.m_binaryName, &size);
-    if (!data || !size) {
-        return Err<>("Unable to read \"" + this->m_info.m_binaryName + "\"");
-    }
-    
     auto tempPath = ghc::filesystem::path(tempDir) / this->m_info.m_id;
     if (!ghc::filesystem::exists(tempPath) && !ghc::filesystem::create_directories(tempPath)) {
         return Err<>("Unable to create temp directory");
     }
     this->m_tempDirName = tempPath;
-    tempPath /= this->m_info.m_binaryName;
 
-    auto wrt = file_utils::writeBinary(tempPath, byte_array(data, data + size));
-    if (!wrt) return Err<>(wrt.error());
-
-    for (auto const& file : { "logo-uhd.png", "logo-hd.png", "logo.png" }) {
-        if (unzip.fileExists(file)) {
-            unsigned long logosize;
-            auto logodata = unzip.getFileData(file, &logosize);
-            if (!logodata || !logosize) {
-                return Err<>("Unable to read \"" + std::string(file) + "\"");
+    for (auto file : unzip.getAllFiles()) {
+        auto path = ghc::filesystem::path(file);
+        if (path.has_parent_path()) {
+            if (
+                !ghc::filesystem::exists(tempPath / path.parent_path()) &&
+                !ghc::filesystem::create_directories(tempPath / path.parent_path())
+            ) {
+                return Err<>("Unable to create directories \"" + path.parent_path().string() + "\"");
             }
-            auto logowrt = file_utils::writeBinary(
-                this->m_tempDirName / file,
-                byte_array(logodata, logodata + logosize)
-            );
-            if (!logowrt) return Err<>(logowrt.error());
         }
-    }
-
-    ZipFile unzipResources(this->m_info.m_path.string(), "resources/");
-
-    if (
-        !ghc::filesystem::exists(this->m_tempDirName / "resources") && 
-        !ghc::filesystem::create_directories(this->m_tempDirName / "resources")
-    ) {
-        return Err<>("Unable to create temp/resources directory");
-    }
-
-    for (auto file : unzipResources.getAllFiles()) {
-        unsigned long rsize;
-        auto rdata = unzipResources.getFileData(file, &rsize);
-        if (!data || !rsize) {
-            return Err<>("Unable to read \"" + file + "\"");
+        unsigned long size;
+        auto data = unzip.getFileData(file, &size);
+        if (!data || !size) {
+            return Err<>("Unable to read \"" + std::string(file) + "\"");
         }
-        auto wrr = file_utils::writeBinary(this->m_tempDirName / file, byte_array(rdata, rdata + rsize));
-        if (!wrr) return Err<>(wrr.error());
-        this->m_addResourcesToSearchPath = true;
+        auto wrt = file_utils::writeBinary(
+            tempPath / file,
+            byte_array(data, data + size)
+        );
+        if (!wrt) return Err<>("Unable to write \"" + file + "\": " + wrt.error());
     }
+
+    this->m_addResourcesToSearchPath = true;
     Loader::get()->addModResourcesPath(this);
 
     return Ok<>(tempPath);

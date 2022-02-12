@@ -45,6 +45,9 @@ void Loader::createDirectories() {
 void Loader::addModResourcesPath(Mod* mod) {
     if (mod->m_addResourcesToSearchPath) {
         CCFileUtils::sharedFileUtils()->addSearchPath(
+            fs::absolute(mod->m_tempDirName).string().c_str()
+        );
+        CCFileUtils::sharedFileUtils()->addSearchPath(
             fs::absolute(mod->m_tempDirName / "resources").string().c_str()
         );
     }
