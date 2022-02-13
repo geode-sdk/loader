@@ -288,14 +288,14 @@ struct json_check {
 template<typename T>
 struct json_assign_required : json_check {
     json_assign_required(nlohmann::json& json, std::string_view const& key, T& var) : json_check(json) {
-        this->needs(key).as<T>().into(var);
+        this->needs(key).template as<T>().into(var);
     }
 };
 
 template<typename T>
 struct json_assign_optional : json_check {
     json_assign_optional(nlohmann::json& json, std::string_view const& key, T& var) : json_check(json) {
-        this->has(key).as<T>().into(var);
+        this->has(key).template as<T>().into(var);
     }
 };
 
@@ -312,14 +312,14 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
     json_check(json)
         .needs("id")
         .as<std::string>()
-        .validate([](auto t) -> bool { return Mod::validateID(t.get<std::string>()); })
+        .validate([](auto t) -> bool { return Mod::validateID(t.template get<std::string>()); })
         .into(info.m_id);
 
     json_check(json)
         .needs("version")
         .as<std::string>()
-        .validate([](auto t) -> bool { return VersionInfo::validate(t.get<std::string>()); })
-        .into([&info](auto json) -> void { info.m_version = VersionInfo(json.get<std::string>()); });
+        .validate([](auto t) -> bool { return VersionInfo::validate(t.template get<std::string>()); })
+        .into([&info](auto json) -> void { info.m_version = VersionInfo(json.template get<std::string>()); });
 
     json_assign_required(json, "name", info.m_name);
     json_assign_required(json, "developer", info.m_developer);
@@ -373,7 +373,7 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
                     json_check(url)
                         .as<std::string>()
                         .into([&](auto item) -> void {
-                            info.m_credits.m_libraries.push_back({ name, url.get<std::string>() });
+                            info.m_credits.m_libraries.push_back({ name, url.template get<std::string>() });
                         });
                 });
         })
@@ -388,8 +388,8 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
             json_assign_required(dep, "id", depobj.m_id);
             djson.needs("version")
                 .as<std::string>()
-                .validate([&](auto t) -> bool { return VersionInfo::validate(t.get<std::string>()); })
-                .into([&info](auto json) -> void { info.m_version = VersionInfo(json.get<std::string>()); });
+                .validate([&](auto t) -> bool { return VersionInfo::validate(t.template get<std::string>()); })
+                .into([&info](auto json) -> void { info.m_version = VersionInfo(json.template get<std::string>()); });
             json_assign_optional(dep, "required", depobj.m_required);
             info.m_dependencies.push_back(depobj);
         });
