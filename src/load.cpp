@@ -362,7 +362,7 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
                     json_check(json)
                         .as<std::string>()
                         .into([&info](auto item) -> void {
-                            info.m_credits.m_thanks.push_back(item.get<std::string>());
+                            info.m_credits.m_thanks.push_back(item.template get<std::string>());
                         });
                 });
             
