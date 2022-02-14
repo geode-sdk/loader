@@ -36,10 +36,8 @@ jobs:
     - name: Download ccache Windows
       shell: bash
       run: |
-         echo set(ccache_url \"https://github.com/cristianadam/ccache/releases/latest/download/Windows.tar.xz\") >> test.txt
-         echo file(DOWNLOAD \"${ccache_url}\" ./ccache.tar.xz SHOW_PROGRESS) >> test.txt
-         echo execute_process(COMMAND ${CMAKE_COMMAND} -E tar xvf ./ccache.tar.xz) >> test.txt
-         cmake -P text.txt
+         wget https://github.com/cristianadam/ccache/releases/latest/download/Windows.tar.xz
+         tar xvf ./ccache.tar.xz
       if: matrix.config.os == 'windows-latest'
     
     - name: ccache
