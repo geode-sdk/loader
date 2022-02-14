@@ -33,8 +33,17 @@ jobs:
         arch: x86
       if: matrix.config.os == 'windows-latest'
 
+    - name: Download ccache Windows
+      run: cmake -P ${DL_CMD}
+      env: 
+        DL_CMD: |
+         set(ccache_url "https://github.com/cristianadam/ccache/releases/latest/download/Windows.tar.xz") 
+         file(DOWNLOAD "${ccache_url}" ./ccache.tar.xz SHOW_PROGRESS)
+         execute_process(COMMAND ${CMAKE_COMMAND} -E tar xvf ./ccache.tar.xz)
+      if: matrix.config.os == 'windows-latest'
+    
     - name: ccache
-      uses: figmentboy/ccache-action@v1.2
+      uses: figmentboy/ccache-action@v1.3
       with:
         key: ${{ matrix.config.os }}
 
