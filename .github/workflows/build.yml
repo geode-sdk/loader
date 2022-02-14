@@ -14,7 +14,7 @@ jobs:
           os: windows-latest
           extra_flags: '-G "Visual Studio 16 2019" -T host=x86 -A win32'
           gen_paths:  './build/Gen/Header.hpp ./build/Gen/Interface.hpp ./build/Gen/TempName.hpp'
-          out_paths: './build/Release/geode.dll ./build/Release/geode.lib ./build/src/inject/windows/Release/XInput9_1_0.dll ./build/src/CCZipUtils/Release/CCZipUtils.lib'
+          out_paths: './build/geode.dll ./build/geode.lib ./build/src/inject/windows/XInput9_1_0.dll ./build/src/CCZipUtils/CCZipUtils.lib'
         - name: "macOS"
           os: macos-latest
           extra_flags: ""
