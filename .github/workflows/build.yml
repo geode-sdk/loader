@@ -19,6 +19,7 @@ jobs:
             ./build/Gen/TempName.hpp
             ./build/Release/geode.dll
             ./build/Release/geode.lib
+            ./build/src/inject/windows/Release/XInput9_1_0.dll
             ./build/src/CCZipUtils/Release/CCZipUtils.lib
             ./build/src/addressertest/Release/AddresserTest.lib
         - name: "macOS"
