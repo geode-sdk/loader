@@ -19,7 +19,7 @@ jobs:
           os: macos-latest
           extra_flags: ""
           gen_paths:  './build/gen/Header.hpp ./build/gen/Interface.hpp ./build/gen/TempName.hpp'
-          out_paths: './build/Geode.dylib ./build/src/CCZipUtils/libCCZipUtils.a ./build/src/addressertest/libAddresserTest.a'
+          out_paths: './build/Geode.dylib ./build/src/CCZipUtils/libCCZipUtils.a'
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
 
@@ -40,9 +40,9 @@ jobs:
     - name: Restore Cached Build Files
       uses: actions/cache@v2.1.7
       with:
-        path: '${{ github.workspace }}/build'
-        key: "${{ matrix.config.os }}-${{ hashFiles('${{ github.workspace }}/build/**/*') }}"
-        restore-keys: "${{ matrix.config.os }}-"
+        path: './build'
+        key: "${{ matrix.config.os }}-cmake-${{ hashFiles('./build/*') }}"
+        restore-keys: "${{ matrix.config.os }}-cmake-"
     
     - name: Build
       run: |
