@@ -37,7 +37,7 @@ jobs:
       shell: bash
       run: |
          curl -o ./ccache.tar.xz -L https://github.com/cristianadam/ccache/releases/latest/download/Windows.tar.xz 
-         cmake -E tar xfv ./ccache.tar.xz
+         cmake -E tar xfv ./ccache.tar.xz -C ./ccache
          echo ./ccache >> $GITHUB_PATH
       if: matrix.config.os == 'windows-latest'
     
