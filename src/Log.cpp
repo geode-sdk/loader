@@ -187,6 +187,12 @@ LogStream& LogStream::operator<<(std::string_view const& str) {
     return *this;
 }
 
+LogStream& LogStream::operator<<(ghc::filesystem::path const& path) {
+    this->init();
+    this->m_stream << path;
+    return *this;
+}
+
 LogStream& LogStream::operator<<(const char* str) {
     this->init();
     this->m_stream << str;

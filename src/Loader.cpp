@@ -23,21 +23,21 @@ Loader* Loader::get() {
 }
 
 void Loader::createDirectories() {
-    constexpr auto api_dir = const_join_path_c_str<geode_directory, geode_api_mod_directory>;
-    constexpr auto mod_dir = const_join_path_c_str<geode_directory, geode_mod_directory>;
+    auto api_dir = this->getGeodeDirectory() / geode_api_mod_directory;
+    auto mod_dir = this->getGeodeDirectory() / geode_mod_directory;
     
     try {
-        file_utils::createDirectory(const_join_path_c_str<geode_directory>);
-        file_utils::createDirectory(const_join_path_c_str<geode_directory, geode_resource_directory>);
-        file_utils::createDirectory(mod_dir);
-        file_utils::createDirectory(api_dir);
-        ghc::filesystem::remove_all(const_join_path_c_str<geode_directory, geode_temp_directory>);
+        ghc::filesystem::create_directories(this->getGeodeDirectory());
+        ghc::filesystem::create_directories(this->getGeodeDirectory() / geode_resource_directory);
+        ghc::filesystem::create_directories(mod_dir);
+        ghc::filesystem::create_directories(api_dir);
+        ghc::filesystem::remove_all(this->getGeodeDirectory() / geode_temp_directory);
     } catch(...) {}
 
-    if (!vector_utils::contains<std::string>(this->m_modDirectories, api_dir)) {
+    if (!vector_utils::contains(this->m_modDirectories, api_dir)) {
         this->m_modDirectories.push_back(api_dir);
     }
-    if (!vector_utils::contains<std::string>(this->m_modDirectories, mod_dir)) {
+    if (!vector_utils::contains(this->m_modDirectories, mod_dir)) {
         this->m_modDirectories.push_back(mod_dir);
     }
 }
@@ -151,14 +151,12 @@ Result<> Loader::saveSettings() {
         value["enabled"] = mod->m_enabled;
         json["mods"][id] = value;
     }
-    auto path = ghc::filesystem::path(CCFileUtils::sharedFileUtils()->getWritablePath().c_str());
-    path /= "geode/mods.json";
+    auto path = this->getGeodeSaveDirectory() / "mods.json";
     return file_utils::writeString(path, json.dump(4));
 }
 
 Result<> Loader::loadSettings() {
-    auto path = ghc::filesystem::path(CCFileUtils::sharedFileUtils()->getWritablePath().c_str());
-    path /= "geode/mods.json";
+    auto path = this->getGeodeSaveDirectory() / "mods.json";
     if (!ghc::filesystem::exists(path))
         return Ok<>();
     auto read = file_utils::readString(path);
@@ -341,4 +339,20 @@ bool Loader::isUnloading() {
 
 std::vector<Loader::UnloadedModInfo> const& Loader::getFailedMods() const {
     return m_erroredMods;
+}
+
+ghc::filesystem::path Loader::getGameDirectory() const {
+    return ghc::filesystem::path(CCFileUtils::sharedFileUtils()->getWritablePath2().c_str());
+}
+
+ghc::filesystem::path Loader::getSaveDirectory() const {
+    return ghc::filesystem::path(CCFileUtils::sharedFileUtils()->getWritablePath().c_str());
+}
+
+ghc::filesystem::path Loader::getGeodeDirectory() const {
+    return this->getGameDirectory() / geode_directory;
+}
+
+ghc::filesystem::path Loader::getGeodeSaveDirectory() const {
+    return this->getSaveDirectory() / geode_directory;
 }

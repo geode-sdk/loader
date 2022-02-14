@@ -461,9 +461,7 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
 
     auto mod = new Mod(info);
 
-    mod->m_saveDirPath = std::string(CCFileUtils::sharedFileUtils()->getWritablePath());
-    mod->m_saveDirPath /= "geode/mods";
-    mod->m_saveDirPath /= info.m_id;
+    mod->m_saveDirPath = Loader::get()->getGeodeSaveDirectory() / geode_mod_directory / info.m_id;
 
     ghc::filesystem::create_directories(mod->m_saveDirPath);
 
