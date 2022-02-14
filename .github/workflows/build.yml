@@ -34,6 +34,7 @@ jobs:
       if: matrix.config.os == 'windows-latest'
 
     - name: Download ccache Windows
+      shell: bash
       run: |
          curl -LJO https://github.com/ccache/ccache/releases/download/v4.5.1/ccache-4.5.1-windows-64.zip
          unzip ${{ github.workspace }}/ccache-4.5.1-windows-64.zip -d ${{ github.workspace }}
