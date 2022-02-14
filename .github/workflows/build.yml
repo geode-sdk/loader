@@ -38,9 +38,7 @@ jobs:
       run: |
          curl -LJO https://github.com/cristianadam/ccache/releases/latest/download/Windows.tar.xz
          tar  -xvf ./Windows.tar.xz
-         echo ./Windows >> $GITHUB_PATH
-         ls
-         ls ./Windows
+         echo . >> $GITHUB_PATH
       if: matrix.config.os == 'windows-latest'
     
     - name: ccache
