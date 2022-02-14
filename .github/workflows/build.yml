@@ -34,7 +34,7 @@ jobs:
       if: matrix.config.os == 'windows-latest'
 
     - name: ccache
-      uses: figmentboy/ccache-action@v1.1.1
+      uses: figmentboy/ccache-action@v1.1.2
       with:
         key: ${{ matrix.config.os }}
 
