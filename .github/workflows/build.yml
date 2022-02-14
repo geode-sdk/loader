@@ -36,8 +36,8 @@ jobs:
     - name: Download ccache Windows
       shell: bash
       run: |
-         curl -o ccache.tar.xz https://github.com/cristianadam/ccache/releases/latest/download/Windows.tar.xz
-         tar xvf ./ccache.tar.xz
+         curl -o ccache.tar.xz https://github.com/cristianadam/ccache/releases/latest/download/Windows.tar.xz 
+         tar xf ./ccache.tar.xz
       if: matrix.config.os == 'windows-latest'
     
     - name: ccache
