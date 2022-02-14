@@ -37,9 +37,12 @@ jobs:
       shell: bash
       run: |
          curl -o ccache.tar.xz https://github.com/cristianadam/ccache/releases/latest/download/Windows.tar.xz 
-         7z x ccache.tar.xz
-         7z x ccache.tar
       if: matrix.config.os == 'windows-latest'
+ 
+    - name: Install ccache Windows
+      uses: edgarrc/action-7z@v1
+      with:
+       args: 7z x ccache.tar.xz && 7z x ccache.tar
     
     - name: ccache
       uses: figmentboy/ccache-action@v1.3
