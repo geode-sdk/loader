@@ -34,8 +34,9 @@ jobs:
       if: matrix.config.os == 'windows-latest'
 
     - name: Download ccache Windows
+      shell: bash
       run: |
-         Invoke-WebRequest -Uri https://github.com/cristianadam/ccache/releases/latest/download/Windows.tar.xz -OutFile ./ccache.tar.xz
+         curl -o ccache.tar.xz https://github.com/cristianadam/ccache/releases/latest/download/Windows.tar.xz
          tar xvf ./ccache.tar.xz
       if: matrix.config.os == 'windows-latest'
     
