@@ -49,13 +49,13 @@ jobs:
         key: ${{ matrix.config.os }}
     
     - name: Configure CMake
-        run: |
-          cmake -B ${{ github.workspace }}/build -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache ${{ matrix.config.extra_flags }} -DGEODE_DONT_BUILD_TEST_MODS=On -DGEODE_BUILD_UNIT_TESTS=On
+      run: |
+        cmake -B ${{ github.workspace }}/build -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache ${{ matrix.config.extra_flags }} -DGEODE_DONT_BUILD_TEST_MODS=On -DGEODE_BUILD_UNIT_TESTS=On
           
     - name: Build
-        run: |
-          cd build
-          cmake --build . --config Release
+      run: |
+        cd build
+        cmake --build . --config Release
           
     - name: Move to output folder
       shell: bash
