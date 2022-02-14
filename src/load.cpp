@@ -137,7 +137,7 @@ struct json_check {
         if (!m_continue) return *this;
         if (!m_json.contains(key))
             throw json_check_failure(
-                "[mod.json]." + m_hierarchy + " is missing required key \"" + std::string(key) + "\""
+                "[mod.json]" + m_hierarchy + " is missing required key \"" + std::string(key) + "\""
             );
         m_key = key;
         m_required = true;
@@ -152,12 +152,12 @@ struct json_check {
             m_types += "string, ";
             if (!json.is_string()) {
                 if (m_required) {
-                    throw json_check_failure("[mod.json]." + m_hierarchy + keyName + " is not a string");
+                    throw json_check_failure("[mod.json]" + m_hierarchy + "." + keyName + " is not a string");
                 } else {
                     if (json.is_null()) {
                         m_continue = false;
                     } else {
-                        throw json_check_failure("[mod.json]." + m_hierarchy + keyName + " is not a string nor null");
+                        throw json_check_failure("[mod.json]" + m_hierarchy + "." + keyName + " is not a string nor null");
                     }
                 }
             }
@@ -166,12 +166,12 @@ struct json_check {
             m_types += "int, ";
             if (!json.is_number_integer()) {
                 if (m_required) {
-                    throw json_check_failure("[mod.json]." + m_hierarchy + keyName + " is not a int");
+                    throw json_check_failure("[mod.json]" + m_hierarchy + "." + keyName + " is not a int");
                 } else {
                     if (json.is_null()) {
                         m_continue = false;
                     } else {
-                        throw json_check_failure("[mod.json]." + m_hierarchy + keyName + " is not a int nor null");
+                        throw json_check_failure("[mod.json]" + m_hierarchy + "." + keyName + " is not a int nor null");
                     }
                 }
             }
@@ -180,12 +180,12 @@ struct json_check {
             m_types += "bool, ";
             if (!json.is_boolean()) {
                 if (m_required) {
-                    throw json_check_failure("[mod.json]." + m_hierarchy + keyName + " is not a boolean");
+                    throw json_check_failure("[mod.json]" + m_hierarchy + "." + keyName + " is not a boolean");
                 } else {
                     if (json.is_null()) {
                         m_continue = false;
                     } else {
-                        throw json_check_failure("[mod.json]." + m_hierarchy + keyName + " is not a boolean nor null");
+                        throw json_check_failure("[mod.json]" + m_hierarchy + "." + keyName + " is not a boolean nor null");
                     }
                 }
             }
@@ -194,12 +194,12 @@ struct json_check {
             m_types += "object, ";
             if (!json.is_object()) {
                 if (m_required) {
-                    throw json_check_failure("[mod.json]." + m_hierarchy + keyName + " is not a object");
+                    throw json_check_failure("[mod.json]" + m_hierarchy + "." + keyName + " is not a object");
                 } else {
                     if (json.is_null()) {
                         m_continue = false;
                     } else {
-                        throw json_check_failure("[mod.json]." + m_hierarchy + keyName + " is not a object nor null");
+                        throw json_check_failure("[mod.json]" + m_hierarchy + "." + keyName + " is not a object nor null");
                     }
                 }
             }
@@ -208,12 +208,12 @@ struct json_check {
             m_types += "array, ";
             if (!json.is_array()) {
                 if (m_required) {
-                    throw json_check_failure("[mod.json]." + m_hierarchy + keyName + " is not a array");
+                    throw json_check_failure("[mod.json]" + m_hierarchy + "." + keyName + " is not a array");
                 } else {
                     if (json.is_null()) {
                         m_continue = false;
                     } else {
-                        throw json_check_failure("[mod.json]." + m_hierarchy + keyName + " is not a array nor null");
+                        throw json_check_failure("[mod.json]" + m_hierarchy + "." + keyName + " is not a array nor null");
                     }
                 }
             }
@@ -233,13 +233,14 @@ struct json_check {
     }
     json_check& is_ok() {
         if (m_hasBranch && !m_branched) {
-            throw json_check_failure("[mod.json]" + m_hierarchy + m_key + " is not one of " + m_types.substr(0, m_types.size() - 2));
+            throw json_check_failure("[mod.json]" + m_hierarchy + "." + m_key + " is not one of " + m_types.substr(0, m_types.size() - 2));
         }
         return *this;
     }
     json_check& validate(std::function<bool(nlohmann::json const&)> predicate) {
+        if (!m_continue) return *this;
         if (!predicate(get_json())) {
-            throw json_check_failure("[mod.json]" + m_hierarchy + m_key + " is invalidly formatted");
+            throw json_check_failure("[mod.json]" + m_hierarchy + "." + m_key + " is invalidly formatted");
         }
         return *this;
     }
@@ -262,26 +263,44 @@ struct json_check {
         var(get_json());
         return *this;
     }
-    json_check& each(std::function<void(std::string const&, nlohmann::json const&)> func) {
+    json_check& each(std::function<void(std::string const&, json_check)> func) {
         if (!m_continue) return *this;
         for (auto const& [key, val] : get_json().items()) {
-            func(key, val);
+            auto c = json_check(*this);
+            c.step();
+            c.m_key = key;
+            c.step();
+            func(key, c);
         }
         return *this;
     }
-    json_check& each(std::function<void(nlohmann::json const&)> func) {
+    json_check& each(std::function<void(json_check)> func) {
         if (!m_continue) return *this;
+        size_t ix = 0;
         for (auto const& val : get_json()) {
-            func(val);
+            auto c = json_check(val);
+            c.m_hierarchy = m_hierarchy;
+            if (m_key.size()) c.m_hierarchy += "." + m_key;
+            c.m_hierarchy += "." + std::to_string(ix);
+            func(c);
+            ix++;
         }
         return *this;
     }
     json_check& step() {
         if (!m_continue) return *this;
-        this->m_hierarchy += m_key + ".";
-        this->m_json = get_json();
-        m_key = "";
+        if (m_key.size()) {
+            this->m_hierarchy += "." + m_key;
+            this->m_json = get_json();
+            m_key = "";
+        }
         return *this;
+    }
+
+    template<typename T>
+    T get() {
+        if (!m_continue) return T();
+        return this->get_json().get<T>();
     }
 };
 
@@ -370,7 +389,7 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
                 .has("libraries")
                 .as<nlohmann::json::object_t>()
                 .each([&](auto name, auto url) -> void {
-                    json_check(url)
+                    url
                         .as<std::string>()
                         .into([&](auto item) -> void {
                             info.m_credits.m_libraries.push_back({ name, url.template get<std::string>() });
@@ -383,14 +402,15 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
         .has("dependencies")
         .as<nlohmann::json::array_t>()
         .each([&](auto dep) -> void {
-            auto djson = json_check(dep).as<nlohmann::json::object_t>();
+            dep.as<nlohmann::json::object_t>();
             auto depobj = Dependency {};
-            json_assign_required(dep, "id", depobj.m_id);
-            djson.needs("version")
+            dep.needs("id").as<std::string>().into(depobj.m_id);
+            dep
+                .has("version")
                 .as<std::string>()
                 .validate([&](auto t) -> bool { return VersionInfo::validate(t.template get<std::string>()); })
                 .into([&info](auto json) -> void { info.m_version = VersionInfo(json.template get<std::string>()); });
-            json_assign_optional(dep, "required", depobj.m_required);
+            dep.has("required").as<bool>().into(depobj.m_required);
             info.m_dependencies.push_back(depobj);
         });
     
@@ -398,7 +418,7 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
         .has("settings")
         .as<nlohmann::json::object_t>()
         .each([&info](auto key, auto value) -> void {
-            auto res = Setting::parseFromJSON(value);
+            auto res = Setting::parseFromJSON(value.get_json());
             if (res) {
                 res.value()->m_key = key;
                 info.m_settings.insert({ key, res.value() });
@@ -413,7 +433,7 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
         .step()
         .has("spritesheets")
         .as<nlohmann::json::object_t>()
-        .each([&info](auto key, auto value) -> void {
+        .each([&info](auto key, auto) -> void {
             info.m_spritesheets.push_back(key);
         });
     
