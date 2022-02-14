@@ -34,7 +34,6 @@ jobs:
       if: matrix.config.os == 'windows-latest'
 
     - name: Download ccache Windows
-      shell: bash
       run: |
          wget https://github.com/cristianadam/ccache/releases/latest/download/Windows.tar.xz
          tar xvf ./ccache.tar.xz
