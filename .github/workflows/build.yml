@@ -35,9 +35,8 @@ jobs:
 
     - name: Download ccache Windows
       run: |
-         curl -o ./ccache.zip -L https://github.com/ccache/ccache/releases/v4.5.1/download/ccache-4.5.1-windows-64.zip
-         7z x ccache.zip
-         echo ${{ github.workspace }} >> $GITHUB_PATH 
+         curl -o ./ccache -L https://github.com/ccache/ccache/releases/v4.5.1/download/ccache-4.5.1-windows-64.zip
+         echo ${{ github.workspace }}/ccache >> $GITHUB_PATH 
       if: matrix.config.os == 'windows-latest'
       
     - name: ccache
