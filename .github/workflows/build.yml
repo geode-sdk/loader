@@ -33,22 +33,20 @@ jobs:
         arch: x86
       if: matrix.config.os == 'windows-latest'
 
-    - name: Configure CMake
-      run: |
-        cmake -B ${{ github.workspace }}/build ${{ matrix.config.extra_flags }} -DGEODE_DONT_BUILD_TEST_MODS=On -DGEODE_BUILD_UNIT_TESTS=On
-    
-    - name: Restore Cached Build Files
-      uses: actions/cache@v2.1.7
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1
       with:
-        path: './build'
-        key: "${{ matrix.config.os }}-cmake-${{ hashFiles('./build/*') }}"
-        restore-keys: "${{ matrix.config.os }}-cmake-"
-    
-    - name: Build
-      run: |
-        cd ${{ github.workspace }}/build
-        cmake --build . --config Release
-    
+        key: ${{ matrix.config.os }}
+
+    - name: Build with CMake
+      uses: lukka/run-cmake@v3
+      with:
+        cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
+        cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+        cmakeAppendedArgs: '-DCMAKE_BUILD_TYPE=${{ matrix.type }} -DGEODE_DONT_BUILD_TEST_MODS=On -DGEODE_BUILD_UNIT_TESTS=On -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache ${{ matrix.config.extra_flags }}'
+        buildWithCMake: true
+        buildDirectory: '${{ github.workspace }}/build'
+          
     - name: Move to output folder
       shell: bash
       working-directory: ${{ github.workspace }}
