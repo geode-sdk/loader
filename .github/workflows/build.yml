@@ -33,11 +33,17 @@ jobs:
         arch: x86
       if: matrix.config.os == 'windows-latest'
 
+    - name: Download ccache Windows
+      run: |
+         curl -o ./ccache.zip -L https://github.com/ccache/ccache/releases/v4.5.1/download/ccache-4.5.1-windows-64.zip
+         7z x ccache.zip
+         echo ${{ github.workspace }} >> $GITHUB_PATH 
+      if: matrix.config.os == 'windows-latest'
+      
     - name: ccache
       uses: figmentboy/ccache-action@v1.3
       with:
         key: ${{ matrix.config.os }}
-      if: matrix.config.os != 'windows-latest'
     
     - name: Build with CMake
       uses: lukka/run-cmake@v3
