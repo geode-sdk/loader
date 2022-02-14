@@ -37,7 +37,7 @@ jobs:
       shell: bash
       run: |
          curl -LJO https://github.com/ccache/ccache/releases/download/v4.5.1/ccache-4.5.1-windows-64.zip
-         unzip ${{ github.workspace }}/ccache-4.5.1-windows-64.zip -d ${{ github.workspace }}
+         unzip ./ccache-4.5.1-windows-64.zip
          echo ./ccache-4.5.1-windows-64 >> $GITHUB_PATH
          ls
          ls ./ccache-4.5.1-windows-64
