@@ -42,10 +42,8 @@ jobs:
       shell: bash
       working-directory: ${{ github.workspace }}
       run: |
-        mv ./windows/**/*.dll ./windows/**/*.lib ./bin/windows
-        mv ./windows/Gen/* ./bin/windows/gen
-        mv ./macos/*.dylib ./bin/macos
-        mv ./macos/gen/* ./bin/macos/gen
+        cp -r ./windows/* ./bin/windows
+        cp -r ./macos/* ./bin/macos
         
     - name: Commit and push to bin
       working-directory: ${{ github.workspace }}/bin
@@ -53,5 +51,5 @@ jobs:
         git config --local user.email "${{ secrets.GEODE_BOT_EMAIL }}"
         git config --local user.name "GeodeBot"
         git add -A
-        git commit -m "Auto-update ${{ matrix.config.name }} from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
+        git commit -m "Loader update from ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}"
         git push "https://GeodeBot:${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN}}@github.com/geode-sdk/bin.git" main
