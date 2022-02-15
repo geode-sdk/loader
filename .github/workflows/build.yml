@@ -37,11 +37,12 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.8
-        
+        cache: 'pip'
       if: matrix.config.os == 'windows-latest'
     
     - name: Download clcache
       run: |
+         pip install wheel
          pip install git+https://github.com/frerich/clcache.git
          $env:CC = "clcache"
          $env:CXX = "clcache"
