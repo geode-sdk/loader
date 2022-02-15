@@ -11,6 +11,6 @@ class $modify(AppDelegate) {
             if (!r) Loader::getInternalMod()->logInfo(r.error(), Severity::Error);
         }
         Loader::getInternalMod()->log() << "Saved" << geode::endl;
-        return $AppDelegate::trySaveGame();
+        return AppDelegate::trySaveGame();
     }
 };

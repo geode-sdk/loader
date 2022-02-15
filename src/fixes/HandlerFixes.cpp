@@ -1,7 +1,9 @@
 #include <Geode.hpp>
+
 // this is the fix for the dynamic_cast problems
 
-
+using namespace cocos2d;
+using namespace geode::modifier;
 
 #if defined(GEODE_IS_IOS) || defined(GEODE_IS_MACOS)
 namespace geode::fixes {
@@ -15,9 +17,7 @@ class $modify(CCUtility##HandlerTypeinfoFix, CCUtility##Handler) {              
 			if (pObject) {                                                                              \
 				pObject->release();                                                                     \
 			}                                                                                           \
-			else {                                                                                      \
-				$##CCUtility##Handler::destructor();                                                    \
-			}                                                                                           \
+			/*reinterpret_cast<CCObject*>(this)->~CCObject();*/                                             \
 		}                                                                                               \
 	}                                                                                                   \
 																										\
@@ -40,7 +40,7 @@ class $modify(CCUtility##HandlerTypeinfoFix, CCUtility##Handler) {              
 			}                                                                                           \
 			else {                                                                                      \
 				CC_SAFE_RELEASE_NULL(pHandler);                                                         \
-				pHandler = $##CCUtility##Handler::handlerWithDelegate(pDelegate);                       \
+				pHandler = CCUtility##Handler::handlerWithDelegate(pDelegate);                          \
 			}                                                                                           \
 		}                                                                                               \
 																										\
@@ -61,10 +61,7 @@ class $modify(CCTargetedTouchHandlerTypeinfoFix, CCTargetedTouchHandler) {
 				pObject->release();
 				CC_SAFE_RELEASE(m_pClaimedTouches);
 			}
-			else {
-				// we are not gonna handle it
-				$CCTargetedTouchHandler::destructor();
-			}
+			/*reinterpret_cast<CCObject*>(this)->~CCObject();*/
 		}
 	}
 
@@ -93,7 +90,7 @@ class $modify(CCTargetedTouchHandlerTypeinfoFix, CCTargetedTouchHandler) {
 			}
 			else {
 				CC_SAFE_RELEASE_NULL(pHandler);
-				pHandler = $CCTargetedTouchHandler::handlerWithDelegate(pDelegate, nPriority, bSwallow);
+				pHandler = CCTargetedTouchHandler::handlerWithDelegate(pDelegate, nPriority, bSwallow);
 			}
 		}
 
@@ -109,10 +106,7 @@ class $modify(CCStandardTouchHandlerTypeinfoFix, CCStandardTouchHandler) {
 				// the entire destructor
 				pObject->release();
 			}
-			else {
-				// we are not gonna handle it
-				$CCStandardTouchHandler::destructor();
-			}
+			/*reinterpret_cast<CCObject*>(this)->~CCObject();*/
 		}
 	}
 
@@ -137,7 +131,7 @@ class $modify(CCStandardTouchHandlerTypeinfoFix, CCStandardTouchHandler) {
 			}
 			else {
 				CC_SAFE_RELEASE_NULL(pHandler);
-				pHandler = $CCStandardTouchHandler::handlerWithDelegate(pDelegate, nPriority);
+				pHandler = CCStandardTouchHandler::handlerWithDelegate(pDelegate, nPriority);
 			}
 		}
 
