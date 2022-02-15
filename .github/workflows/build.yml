@@ -41,8 +41,7 @@ jobs:
     
     - name: Download clcache
       run: |
-         pip install wheel
-         pip install git+https://github.com/frerich/clcache.git
+         pip install clcache
          $env:CC = "clcache"
          $env:CXX = "clcache"
          $env:CLCACHE_DIR = "${{ github.workspace }}/.clcache"
