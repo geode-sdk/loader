@@ -17,7 +17,7 @@ jobs:
           out_paths: './build/Release/geode.dll ./build/Release/geode.lib ./build/src/inject/windows/Release/XInput9_1_0.dll ./build/src/CCZipUtils/Release/CCZipUtils.lib'
         - name: "macOS"
           os: macos-latest
-          extra_flags: ""
+          extra_flags: "-DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
           gen_paths:  './build/gen/Header.hpp ./build/gen/Interface.hpp ./build/gen/TempName.hpp'
           out_paths: './build/Geode.dylib ./build/src/CCZipUtils/libCCZipUtils.a'
     name: ${{ matrix.config.name }}
@@ -32,23 +32,43 @@ jobs:
       with:
         arch: x86
       if: matrix.config.os == 'windows-latest'
-
-    - name: Download ccache Windows
-      shell: bash
-      run: |
-         curl -LJO https://github.com/ccache/ccache/releases/download/v4.5.1/ccache-4.5.1-windows-64.zip
-         unzip ./ccache-4.5.1-windows-64.zip
-         echo ./ccache-4.5.1-windows-64 >> $GITHUB_PATH
+    
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+        
       if: matrix.config.os == 'windows-latest'
     
-    - name: ccache
+    - name: Download clcache
+      run: |
+         pip install git+https://github.com/frerich/clcache.git
+         $env:CC = "clcache"
+         $env:CXX = "clcache"
+         $env:CLCACHE_DIR = ${{ github.workspace }}/.clcache
+      if: matrix.config.os == 'windows-latest'
+    
+    - name: Prepare clcache timestamp
+      run: $env:DATE=Get-Date -UFormat "%Y-%m-%d-%H;%M;%S"
+      if: matrix.config.os == 'windows-latest'
+    
+    - name: Configure clcache
+      uses: actions/cache@v2
+      with:
+        path: ${{ github.workspace }}/.clcache
+        key: ${{ matrix.config.os }}-${{ env.DATE }}
+        restore-keys: ${{ matrix.config.os }}
+      if: matrix.config.os == 'windows-latest'
+        
+    - name: Configure ccache
       uses: hendrikmuhs/ccache-action@v1
       with:
         key: ${{ matrix.config.os }}
+      if: matrix.config.os == 'macos-latest'
     
     - name: Configure CMake
       run: |
-        cmake -B ${{ github.workspace }}/build -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache ${{ matrix.config.extra_flags }} -DGEODE_DONT_BUILD_TEST_MODS=On -DGEODE_BUILD_UNIT_TESTS=On
+        cmake -B ${{ github.workspace }}/build ${{ matrix.config.extra_flags }} -DGEODE_DONT_BUILD_TEST_MODS=On -DGEODE_BUILD_UNIT_TESTS=On
           
     - name: Build
       run: |
