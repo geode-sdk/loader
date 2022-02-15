@@ -401,7 +401,7 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
     json_check(json)
         .has("dependencies")
         .as<nlohmann::json::array_t>()
-        .each([&](auto dep) -> void {
+        .each([&info](auto dep) -> void {
             dep.template as<nlohmann::json::object_t>();
             auto depobj = Dependency {};
             dep.needs("id").template as<std::string>().into(depobj.m_id);
