@@ -45,21 +45,24 @@ jobs:
       if: matrix.config.os == 'windows-latest'
     
     - name: Prepare clcache timestamp
-      run: $env:DATE=Get-Date -UFormat "%Y-%m-%d-%H;%M;%S"
+      id: timestamp
+      run: |
+        $DATE=Get-Date -UFormat "%Y-%m-%d-%H;%M;%S"
+        echo "::set-output name=timestamp::$DATE"
       if: matrix.config.os == 'windows-latest'
     
     - name: Configure clcache
       uses: actions/cache@v2
       with:
         path: ${{ github.workspace }}/.clcache
-        key: ${{ matrix.config.os }}-${{ env.DATE }}
+        key: ${{ matrix.config.os }}-${{ steps.timestamp.outputs.timestamp }}
         restore-keys: ${{ matrix.config.os }}
       if: matrix.config.os == 'windows-latest'
         
     - name: Configure ccache
       uses: hendrikmuhs/ccache-action@v1
       with:
-        key: ${{ matrix.config.os }}
+        key: ${{ matrix.config.os }}-
       if: matrix.config.os == 'macos-latest'
     
     - name: Configure CMake
