@@ -376,7 +376,7 @@ bool Mod::supportsDisabling() const {
 }
 
 bool Mod::wasSuccesfullyLoaded() const {
-    return (this->isLoaded() && !this->isEnabled());
+    return !this->isEnabled() || this->isLoaded();
 }
 
 std::vector<Hook*> Mod::getHooks() const {
