@@ -8,6 +8,8 @@ project(${PROJECT_NAME} VERSION 1.0.0)
 
 add_library(${PROJECT_NAME} SHARED mod4.cpp ../../sdk/include/implicitEntry.cpp)
 
+add_compile_definitions(EXPORTING_MOD)
+
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 
 target_link_libraries(

@@ -5,7 +5,7 @@
     "name":         "Geode Test 4",
     "developer":    "Geode Team",
     "description":  "Test Mod #4",
-    "details":      "Test Mod #4 for making sure scene handlers work.",
+    "details":      "Test Mod #4 for making sure templated modification classes work.",
     "credits":      null,
 	"dependencies": null,
     "binary":       "TestMod4"
