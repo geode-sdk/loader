@@ -33,15 +33,12 @@ jobs:
         arch: x86
       if: matrix.config.os == 'windows-latest'
     
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-      if: matrix.config.os == 'windows-latest'
     
     - name: Download clcache
       run: |
-         pip install clcache
+         curl -LJO https://github.com/frerich/clcache/releases/download/v4.2.0/clcache-4.2.0.zip
+         unzip ./clcache-4.2.0.zip -d ./clcache-bin
+         echo ./clcache-bin >> $GITHUB_PATH
          $env:CC = "clcache"
          $env:CXX = "clcache"
          $env:CLCACHE_DIR = "${{ github.workspace }}/.clcache"
