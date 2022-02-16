@@ -388,9 +388,9 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
             json_check(jobj)
                 .has("libraries")
                 .as<nlohmann::json::object_t>()
-                .each([&](auto name, auto url) -> void {
+                .each([&](auto name, json_check url) -> void {
                     url
-                        .template as<std::string>()
+                        .as<std::string>()
                         .into([&](auto item) -> void {
                             info.m_credits.m_libraries.push_back({ name, url.template get<std::string>() });
                         });
@@ -401,16 +401,16 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
     json_check(json)
         .has("dependencies")
         .as<nlohmann::json::array_t>()
-        .each([&info](auto dep) -> void {
-            dep.template as<nlohmann::json::object_t>();
+        .each([&info](json_check dep) -> void {
+            dep.as<nlohmann::json::object_t>();
             auto depobj = Dependency {};
-            dep.needs("id").template as<std::string>().into(depobj.m_id);
+            dep.needs("id").as<std::string>().into(depobj.m_id);
             dep
                 .has("version")
-                .template as<std::string>()
+                .as<std::string>()
                 .validate([&](auto t) -> bool { return VersionInfo::validate(t.template get<std::string>()); })
                 .into([&info](auto json) -> void { info.m_version = VersionInfo(json.template get<std::string>()); });
-            dep.has("required").template as<bool>().into(depobj.m_required);
+            dep.has("required").as<bool>().into(depobj.m_required);
             info.m_dependencies.push_back(depobj);
         });
     
