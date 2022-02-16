@@ -15,3 +15,4 @@ public:
 
 Modify<MyGarageLayerEdit<20>, MyGarageLayer<20>> myModification20;
 Modify<MyGarageLayerEdit<60>, MyGarageLayer<60>> myModification60;
+

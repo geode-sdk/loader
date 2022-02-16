@@ -404,13 +404,13 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
         .each([&info](json_check dep) -> void {
             dep.as<nlohmann::json::object_t>();
             auto depobj = Dependency {};
-            dep.needs("id").as<std::string>().into(depobj.m_id);
-            dep
+            json_check(dep).needs("id").as<std::string>().into(depobj.m_id);
+            json_check(dep)
                 .has("version")
                 .as<std::string>()
                 .validate([&](auto t) -> bool { return VersionInfo::validate(t.template get<std::string>()); })
                 .into([&info](auto json) -> void { info.m_version = VersionInfo(json.template get<std::string>()); });
-            dep.has("required").as<bool>().into(depobj.m_required);
+            json_check(dep).has("required").as<bool>().into(depobj.m_required);
             info.m_dependencies.push_back(depobj);
         });
     
