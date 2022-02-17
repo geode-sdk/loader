@@ -39,8 +39,7 @@ int geodeEntry(void* platformData) {
 
     InternalMod::get()->log()
         << Severity::Debug
-        << "Loaded internal Geode class"
-        << geode::endl;
+        << "Loaded internal Geode class";
 
     // set up loader, load mods, etc.
     if (!Loader::get()->setup()) {
@@ -55,15 +54,13 @@ int geodeEntry(void* platformData) {
 
     InternalMod::get()->log()
         << Severity::Debug
-        << "Set up loader"
-        << geode::endl;
+        << "Set up loader";
 
     // debugging console
     #ifdef GEODE_PLATFORM_CONSOLE
     InternalMod::get()->log()
         << Severity::Debug
-        << "Loading Console..."
-        << geode::endl;
+        << "Loading Console...";
 
     Geode::get()->setupPlatformConsole();
     Geode::get()->awaitPlatformConsole();
@@ -71,15 +68,13 @@ int geodeEntry(void* platformData) {
 
     InternalMod::get()->log()
         << Severity::Debug
-        << "Cleaning up..."
-        << geode::endl;
+        << "Cleaning up...";
 
     //delete Geode::get();
     #endif
 
     InternalMod::get()->log()
         << Severity::Debug
-        << "Entry done."
-        << geode::endl;
+        << "Entry done.";
     return 0;
 }

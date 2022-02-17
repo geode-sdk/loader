@@ -8,7 +8,7 @@ class $modify(GJGarageLayer) {
 	    if (Loader::get()->isModLoaded("com.geode.test_one")) {
 	        logMessage("Hi from TestMod2!");
 	    } else {
-	        Interface::mod()->log() << "TestMod1 is not loaded :(" << geode::endl;
+	        Interface::mod()->log() << "TestMod1 is not loaded :(";
 	    }
 
 	    auto label = CCLabelBMFont::create("Google En Passant", "bigFont.fnt");
@@ -28,12 +28,12 @@ class $modify(GJGarageLayer) {
 };
 
 GEODE_API bool GEODE_CALL geode_enable() {
-	Interface::mod()->log() << "Enabling TestMod2!" << geode::endl;
+	Interface::mod()->log() << "Enabling TestMod2!";
 	return true;
 }
 
 GEODE_API bool GEODE_CALL geode_disable() {
-	Interface::mod()->log() << "Disabling TestMod2!" << geode::endl;
+	Interface::mod()->log() << "Disabling TestMod2!";
 	return true;
 }
 

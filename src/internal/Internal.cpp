@@ -28,19 +28,19 @@ Geode* Geode::get() {
 
 bool Geode::setup() {
     InternalMod::get()->log()
-        << Severity::Debug << "Set up internal mod representation" << geode::endl;
+        << Severity::Debug << "Set up internal mod representation";
 
     InternalMod::get()->log()
-        << Severity::Debug << "Loading hooks... " << geode::endl;
+        << Severity::Debug << "Loading hooks... ";
 
     if (!this->loadHooks()) {
         InternalMod::get()->log()
             << "There were errors loading some hooks, "
-            "see console for details" << geode::endl;
+            "see console for details";
     }
 
     InternalMod::get()->log()
-        << Severity::Debug << "Loaded hooks" << geode::endl;
+        << Severity::Debug << "Loaded hooks";
 
     return true;
 }
@@ -109,7 +109,7 @@ bool Geode::isHotReloadEnabled(Mod* mod) const {
     return this->m_hotReloads.count(mod);
 }
 
-void Geode::queueConsoleMessage(LogMessage* msg) {
+void Geode::queueConsoleMessage(LogPtr* msg) {
     this->m_logQueue.push_back(msg);
 }
 
