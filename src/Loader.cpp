@@ -23,20 +23,15 @@ Loader* Loader::get() {
 }
 
 void Loader::createDirectories() {
-    auto api_dir = this->getGeodeDirectory() / geode_api_mod_directory;
     auto mod_dir = this->getGeodeDirectory() / geode_mod_directory;
     
     try {
         ghc::filesystem::create_directories(this->getGeodeDirectory());
         ghc::filesystem::create_directories(this->getGeodeDirectory() / geode_resource_directory);
         ghc::filesystem::create_directories(mod_dir);
-        ghc::filesystem::create_directories(api_dir);
         ghc::filesystem::remove_all(this->getGeodeDirectory() / geode_temp_directory);
     } catch(...) {}
 
-    if (!vector_utils::contains(this->m_modDirectories, api_dir)) {
-        this->m_modDirectories.push_back(api_dir);
-    }
     if (!vector_utils::contains(this->m_modDirectories, mod_dir)) {
         this->m_modDirectories.push_back(mod_dir);
     }
