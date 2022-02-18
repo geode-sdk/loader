@@ -24,16 +24,20 @@ Loader* Loader::get() {
 
 void Loader::createDirectories() {
     auto mod_dir = this->getGeodeDirectory() / geode_mod_directory;
+    auto log_dir = this->getGeodeDirectory() / geode_log_directory;
 
     ghc::filesystem::create_directories(this->getGeodeDirectory() / geode_resource_directory);
     ghc::filesystem::create_directory(mod_dir);
-    ghc::filesystem::create_directory(this->getGeodeDirectory() / geode_log_directory);
+    ghc::filesystem::create_directory(log_dir);
     ghc::filesystem::remove_all(this->getGeodeDirectory() / geode_temp_directory);
 
 
     if (!vector_utils::contains(this->m_modDirectories, mod_dir)) {
         this->m_modDirectories.push_back(mod_dir);
     }
+
+    // files too
+    this->m_logStream = std::ofstream(log_dir / log::generateLogName());
 }
 
 void Loader::addModResourcesPath(Mod* mod) {
@@ -277,10 +281,6 @@ Loader::~Loader() {
     ghc::filesystem::remove_all(const_join_path<geode_directory, geode_temp_directory>);
 }
 
-Log& Loader::logStream() {
-    return this->m_logStream;
-}
-
 void Loader::pushLog(LogPtr* logptr) {
     this->m_logs.push_back(logptr);
 
@@ -291,6 +291,8 @@ void Loader::pushLog(LogPtr* logptr) {
         Geode::get()->queueConsoleMessage(logptr);
     }
     #endif
+
+    this->m_logStream << logptr->toString(true) << std::endl;
 }
 
 void Loader::popLog(LogPtr* log) {
