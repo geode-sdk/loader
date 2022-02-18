@@ -84,17 +84,10 @@ std::string LogPtr::toString(bool logTime) const {
 }
 
 std::string geode::log::generateLogName() {
-    const auto t = std::chrono::system_clock::to_time_t(log_clock::now());
-    tm obj;
-
-    #ifdef _MSC_VER
-    localtime_s(&obj, &t);
-    #else
-    obj = *std::localtime(&t);
-    #endif
-
     std::stringstream tmp;
-    tmp << std::put_time(&obj, "Geode_%y-%m-%d_%H_%M_%S.log");
+    tmp << "Geode_" 
+        << std::chrono::duration_cast<std::chrono::seconds>(log_clock::now().time_since_epoch()).count()
+        << ".log";
     return tmp.str();
 }
 
