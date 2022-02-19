@@ -11,6 +11,7 @@ struct Modify<Derived, MyGarageLayer<I>> : ModifyBase<Modify<Derived, MyGarageLa
 	using Base = MyGarageLayer<I>;
 	using ModifyBase<Modify<Derived, Base>>::ModifyBase;
 	static void apply() {
+		using namespace geode::core::meta;
 		if constexpr (compare::init<Derived, Base, bool()>::value) {
 			Interface::get()->logInfo(
 				"Adding hook at function MyGarageLayer<>::init", 
