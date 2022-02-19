@@ -383,27 +383,16 @@ std::vector<Hook*> Mod::getHooks() const {
     return this->m_hooks;
 }
 
-LogStream& Mod::log() {
-    return Loader::get()->logStream() << this;
+log::Log Mod::log() {
+    return log::Log(this);
 }
 
 void Mod::logInfo(
     std::string const& info,
     Severity severity
 ) {
-    auto log = new LogMessage(
-        std::string(info),
-        severity,
-        this
-    );
-    Loader::get()->log(log);
-    #ifdef GEODE_PLATFORM_CONSOLE
-    if (Geode::get()->platformConsoleReady()) {
-        std::cout << log->toString(true) << "\n";
-    } else {
-        Geode::get()->queueConsoleMessage(log);
-    }
-    #endif
+    log::Log l(this);
+    l << severity << info;
 }
 
 bool Mod::depends(std::string const& id) const {

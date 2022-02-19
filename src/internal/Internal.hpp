@@ -14,7 +14,7 @@ USE_GEODE_NAMESPACE();
  */
 class Geode {
 protected:
-	std::vector<LogMessage*> m_logQueue;
+	std::vector<LogPtr*> m_logQueue;
 	std::unordered_map<Mod*, FileWatcher*> m_hotReloads;
 	std::vector<std::function<void(void)>> m_gdThreadQueue;
 	bool m_platformConsoleReady = false;
@@ -37,7 +37,7 @@ public:
 	void executeGDThreadQueue();
 
 	bool platformConsoleReady() const;
-	void queueConsoleMessage(LogMessage*);
+	void queueConsoleMessage(LogPtr*);
 	void setupPlatformConsole();
 	void awaitPlatformConsole();
 	void closePlatformConsole();

@@ -23,23 +23,21 @@ Loader* Loader::get() {
 }
 
 void Loader::createDirectories() {
-    auto api_dir = this->getGeodeDirectory() / geode_api_mod_directory;
     auto mod_dir = this->getGeodeDirectory() / geode_mod_directory;
-    
-    try {
-        ghc::filesystem::create_directories(this->getGeodeDirectory());
-        ghc::filesystem::create_directories(this->getGeodeDirectory() / geode_resource_directory);
-        ghc::filesystem::create_directories(mod_dir);
-        ghc::filesystem::create_directories(api_dir);
-        ghc::filesystem::remove_all(this->getGeodeDirectory() / geode_temp_directory);
-    } catch(...) {}
+    auto log_dir = this->getGeodeDirectory() / geode_log_directory;
 
-    if (!vector_utils::contains(this->m_modDirectories, api_dir)) {
-        this->m_modDirectories.push_back(api_dir);
-    }
+    ghc::filesystem::create_directories(this->getGeodeDirectory() / geode_resource_directory);
+    ghc::filesystem::create_directory(mod_dir);
+    ghc::filesystem::create_directory(log_dir);
+    ghc::filesystem::remove_all(this->getGeodeDirectory() / geode_temp_directory);
+
+
     if (!vector_utils::contains(this->m_modDirectories, mod_dir)) {
         this->m_modDirectories.push_back(mod_dir);
     }
+
+    // files too
+    this->m_logStream = std::ofstream(log_dir / log::generateLogName());
 }
 
 void Loader::addModResourcesPath(Mod* mod) {
@@ -90,8 +88,7 @@ void Loader::updateResources() {
 size_t Loader::refreshMods() {
     InternalMod::get()->log()
         << Severity::Debug
-        << "Loading mods..."
-        << geode::endl;
+        << "Loading mods...";
 
     size_t loaded = 0;
     this->createDirectories();
@@ -99,8 +96,7 @@ size_t Loader::refreshMods() {
     for (auto const& dir : this->m_modDirectories) {
         InternalMod::get()->log()
             << Severity::Debug
-            << "Searching " << dir 
-            << geode::endl;
+            << "Searching " << dir ;
 
         for (auto const& entry : ghc::filesystem::directory_iterator(dir)) {
             if (
@@ -109,8 +105,7 @@ size_t Loader::refreshMods() {
             ) {
                 InternalMod::get()->log()
                     << Severity::Debug
-                    << "Loading " << entry.path().string()
-                    << geode::endl;
+                    << "Loading " << entry.path().string();
                 if (!map_utils::contains<std::string, Mod*>(
                     this->m_mods,
                     [entry](Mod* p) -> bool {
@@ -122,10 +117,10 @@ size_t Loader::refreshMods() {
                         if (!res.value()->hasUnresolvedDependencies()) {
                             loaded++;
                             InternalMod::get()->log()
-                                << "Succesfully loaded " << res.value() << geode::endl;
+                                << "Succesfully loaded " << res.value();
                         } else {
                             InternalMod::get()->log()
-                                << res.value() << " has unresolved dependencies" << geode::endl;
+                                << res.value() << " has unresolved dependencies";
                         }
                     } else {
                         InternalMod::get()->logInfo(res.error(), Severity::Error);
@@ -138,8 +133,7 @@ size_t Loader::refreshMods() {
 
     InternalMod::get()->log()
         << Severity::Debug
-        << "Loaded " << loaded << " new mods"
-        << geode::endl;
+        << "Loaded " << loaded << " new mods";
     return loaded;
 }
 
@@ -258,8 +252,7 @@ bool Loader::setup() {
 
     InternalMod::get()->log()
         << Severity::Debug
-        << "Setting up Loader..."
-        << geode::endl;
+        << "Setting up Loader...";
 
     this->createDirectories();
     this->loadSettings();
@@ -271,7 +264,6 @@ bool Loader::setup() {
 }
 
 Loader::Loader() {
-    this->m_logStream = new LogStream;
 }
 
 Loader::~Loader() {
@@ -286,35 +278,40 @@ Loader::~Loader() {
         delete log;
     }
     this->m_logs.clear();
-    delete this->m_logStream;
     ghc::filesystem::remove_all(const_join_path<geode_directory, geode_temp_directory>);
 }
 
-LogStream& Loader::logStream() {
-    return *this->m_logStream;
+void Loader::pushLog(LogPtr* logptr) {
+    this->m_logs.push_back(logptr);
+
+    #ifdef GEODE_PLATFORM_CONSOLE
+    if (Geode::get()->platformConsoleReady()) {
+        std::cout << logptr->toString(true);
+    } else {
+        Geode::get()->queueConsoleMessage(logptr);
+    }
+    #endif
+
+    this->m_logStream << logptr->toString(true) << std::endl;
 }
 
-void Loader::log(LogMessage* log) {
-    this->m_logs.push_back(log);
-}
-
-void Loader::deleteLog(LogMessage* log) {
+void Loader::popLog(LogPtr* log) {
     vector_utils::erase(this->m_logs, log);
     delete log;
 }
 
-std::vector<LogMessage*> const& Loader::getLogs() const {
+std::vector<LogPtr*> const& Loader::getLogs() const {
     return this->m_logs;
 }
 
-std::vector<LogMessage*> Loader::getLogs(
+std::vector<LogPtr*> Loader::getLogs(
     std::initializer_list<Severity> severityFilter
 ) {
     if (!severityFilter.size()) {
         return this->m_logs;
     }
 
-    std::vector<LogMessage*> logs;
+    std::vector<LogPtr*> logs;
 
     for (auto const& log : this->m_logs) {
         if (vector_utils::contains<Severity>(severityFilter, log->getSeverity())) {

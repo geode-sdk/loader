@@ -8,68 +8,54 @@
 #include <Internal.hpp>
 #include <iomanip>
 
+std::ostream& operator<<(std::ostream& os, Mod* mod) {
+    if (mod) os << "[ null ]";
+    os << "[ " + std::string(mod->getName()) + " ]";
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, cocos2d::CCObject* obj) {
+    os << "{ " + std::string(typeid(*obj).name() + 6) + " }";
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, cocos2d::CCPoint const& pos) {
+    os << pos.x << ", " << pos.y;
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, cocos2d::CCSize const& size) {
+    os << size.width << " : " << size.height;
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, cocos2d::CCRect const& rect) {
+    os << rect.origin.x << ", " << rect.origin.y << " | " << rect.size.width << " : " << rect.size.height;
+    return os;
+}
+
 USE_GEODE_NAMESPACE();
 
-Mod* LogMod::getMod() const { return m_mod; }
 
-cocos2d::CCObject* LogCCObject::getObject() const { return m_obj; }
-
-log_clock::time_point LogMessage::getTime() const {
+log_clock::time_point LogPtr::getTime() const {
     return m_time;
 }
 
-std::string LogMessage::getTimeString() const {
+std::string LogPtr::getTimeString() const {
     return timePointAsString(m_time);
 }
 
-Mod* LogMessage::getSender() const {
+Mod* LogPtr::getSender() const {
     return m_sender;
 }
 
-Severity LogMessage::getSeverity() const {
+Severity LogPtr::getSeverity() const {
     return m_severity;
 }
 
-std::vector<Log*> const& LogMessage::getData() const {
-    return m_data;
-}
+LogPtr::~LogPtr() {}
 
-void LogMessage::add(Log* msg) {
-    this->m_data.push_back(msg);
-}
-
-Log::~Log() {}
-
-LogCCObject::LogCCObject(cocos2d::CCObject* obj) : m_obj(obj) {
-    obj->retain();
-}
-
-LogCCObject::~LogCCObject() {
-    if (this->m_obj) {
-        this->m_obj->release();
-    }
-}
-
-LogMessage::~LogMessage() {
-    for (auto const& log : this->m_data) {
-        delete log;
-    }
-}
-
-std::string LogString::toString() const {
-    return this->m_string;
-}
-
-std::string LogMod::toString() const {
-    if (!this->m_mod) return "[ null ]";
-    return "[ " + std::string(this->m_mod->getName()) + " ]";
-}
-
-std::string LogCCObject::toString() const {
-    return "{ " + std::string(typeid(*this->m_obj).name() + 6) + " }";
-}
-
-std::string LogMessage::toString(bool logTime) const {
+std::string LogPtr::toString(bool logTime) const {
     std::stringstream res;
 
     if (logTime) {
@@ -89,186 +75,71 @@ std::string LogMessage::toString(bool logTime) const {
         res << '?';
     }
     res << "]:";
-    for (auto const& log : this->m_data) {
-        res << ' ' << log->toString();
+
+    for (LogMetadata* i : this->m_data) {
+        res << ' ' << i->m_repr;
     }
 
     return res.str();
 }
 
-void LogStream::init() {
-    if (!this->m_log) {
-        this->m_log = new LogMessage;
-    }
+std::string geode::log::generateLogName() {
+    std::stringstream tmp;
+    tmp << "Geode_" 
+        << std::chrono::duration_cast<std::chrono::seconds>(log_clock::now().time_since_epoch()).count()
+        << ".log";
+    return tmp.str();
 }
 
-void LogStream::save() {
-    if (this->m_log && this->m_stream.str().size()) {
-        this->m_log->add(new LogString(this->m_stream.str()));
-        this->m_stream.str(std::string());
-    }
-}
-
-void LogStream::log() {
-    this->init();
-    this->save();
-
-    Loader::get()->log(this->m_log);
-
-    #ifdef GEODE_PLATFORM_CONSOLE
-    if (Geode::get()->platformConsoleReady()) {
-        std::cout << this->m_log->toString(true);
-    }
-    #endif
-}
-
-void LogStream::finish() {
-    this->log();
-
-    #ifdef GEODE_PLATFORM_CONSOLE
-    if (Geode::get()->platformConsoleReady()) {
-        std::cout << "\n";
-    } else {
-        Geode::get()->queueConsoleMessage(this->m_log);
-    }
-    #endif
+void Log::flush() {
+    this->m_logptr->m_data.push_back(new NoMetadata(this->m_stream.str()));
+    Loader::get()->pushLog(this->m_logptr);
 
     // Loader manages this memory now
-    this->m_log = nullptr;
-    this->m_stream.str(std::string());
+    this->m_logptr = nullptr;
+    this->m_stream.str("");
 }
 
-LogStream& LogStream::operator<<(Mod* mod) {
-    this->save();
-    if (!this->m_log) {
-        this->m_log = new LogMessage(mod);
-    } else if (!this->m_log->m_sender) {
-        this->m_log->m_sender = mod;
+Log::~Log() {
+    this->flush();
+    std::cout << std::endl;
+}
+
+CCObjectMeta::CCObjectMeta(cocos2d::CCObject* obj) : LogMetadata("") {
+    obj->retain();
+    m_obj = obj;
+}
+
+CCObjectMeta::~CCObjectMeta() {
+    m_obj->release();
+} 
+
+
+Log& Log::operator<<(Severity::type s) {
+    this->m_logptr->m_severity = s;
+    return *this;
+}
+
+Log& Log::operator<<(Severity s) {
+    this->m_logptr->m_severity = s;
+    return *this;
+}
+
+Log& Log::operator<<(ostream_fn_type t) {
+    if (t == reinterpret_cast<ostream_fn_type>(&std::endl<char, std::char_traits<char>>)) {
+        LogPtr* newlog = new LogPtr(*this->m_logptr);
+        this->flush();
+        this->m_logptr = newlog;
     } else {
-        this->m_log->add(new LogMod(mod));
+        this->m_stream << t;
     }
+
     return *this;
 }
 
-LogStream& LogStream::operator<<(cocos2d::CCObject* obj) {
-    this->save();
-    this->init();
-    this->m_log->add(new LogCCObject(obj));
-    return *this;
+Log& operator<<(Log& l, Mod* m) {
+    return l.streamMeta<ModMeta>(m);
 }
-
-LogStream& LogStream::operator<<(Severity severity) {
-    this->init();
-    this->m_log->m_severity = severity;
-    return *this;
+Log& operator<<(Log& l, cocos2d::CCObject* o) {
+    return l.streamMeta<CCObjectMeta>(o);
 }
-
-LogStream& LogStream::operator<<(Severity::type severity) {
-    this->init();
-    this->m_log->m_severity = severity;
-    return *this;
-}
-
-LogStream& LogStream::operator<<(void* p) {
-    this->init();
-    *this << as<uintptr_t>(p);
-    return *this;
-}
-
-LogStream& LogStream::operator<<(std::string const& str) {
-    this->init();
-    this->m_stream << str;
-    return *this;
-}
-
-LogStream& LogStream::operator<<(std::string_view const& str) {
-    this->init();
-    this->m_stream << str;
-    return *this;
-}
-
-LogStream& LogStream::operator<<(ghc::filesystem::path const& path) {
-    this->init();
-    this->m_stream << path;
-    return *this;
-}
-
-LogStream& LogStream::operator<<(const char* str) {
-    this->init();
-    this->m_stream << str;
-    return *this;
-}
-
-LogStream& LogStream::operator<<(uintptr_t n) {
-    this->init();
-    this->m_stream << n;
-    return *this;
-}
-
-LogStream& LogStream::operator<<(int n) {
-    this->init();
-    this->m_stream << n;
-    return *this;
-}
-
-LogStream& LogStream::operator<<(long n) {
-    this->init();
-    this->m_stream << n;
-    return *this;
-}
-
-LogStream& LogStream::operator<<(float n) {
-    this->init();
-    this->m_stream << n;
-    return *this;
-}
-
-LogStream& LogStream::operator<<(double n) {
-    this->init();
-    this->m_stream << n;
-    return *this;
-}
-
-LogStream& LogStream::operator<<(cocos2d::CCPoint const& pos) {
-    this->init();
-    this->m_stream << pos.x << ", " << pos.y;
-    return *this;
-}
-
-LogStream& LogStream::operator<<(cocos2d::CCSize const& size) {
-    this->init();
-    this->m_stream << size.width << " : " << size.height;
-    return *this;
-}
-
-LogStream& LogStream::operator<<(cocos2d::CCRect const& rect) {
-    *this << rect.origin << " | " << rect.size;
-    return *this;
-}
-
-LogStream& LogStream::operator<<(geode::endl_type) {
-    this->finish();
-    return *this;
-}
-
-LogStream& LogStream::operator<<(geode::continue_type) {
-    this->log();
-    return *this;
-}
-
-LogStream& LogStream::operator<<(geode::decimal_type) {
-    this->m_stream << std::setbase(10);
-    return *this;
-}
-
-LogStream& LogStream::operator<<(geode::hexadecimal_type) {
-    this->m_stream << std::setbase(16);
-    return *this;
-}
-
-LogStream::~LogStream() {
-    if (this->m_log) {
-        delete this->m_log;
-    }
-}
-
