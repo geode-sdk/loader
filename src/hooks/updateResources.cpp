@@ -17,10 +17,3 @@ class $modify(LoadingLayer) {
 		}
 	}
 };
-
-class $modify(CustomListView) {
-	static CustomListView* create(cocos2d::CCArray* items, float height, float width, int page, BoomListType type) {
-		Interface::mod()->log() << "CustomListView::create -> height: " << height << " width: " << width << " type: " << (int)type;
-		return CustomListView::create(items, height, width, page, type);
-	}
-};
