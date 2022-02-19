@@ -19,7 +19,7 @@ struct Modify<Derived, MyGarageLayer<I>> : ModifyBase<Modify<Derived, MyGarageLa
 			Interface::get()->addHook(
 				"MyGarageLayer<>::init", 
 				(void*)addresser::getVirtual(&Base::init), 
-				(void*)wrap::init<Derived, Base, bool()>::value
+				(void*)wrap::init<DefaultConv, Derived, Base, bool()>::value
 			);
 		}
 	}
