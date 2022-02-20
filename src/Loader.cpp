@@ -54,7 +54,7 @@ void Loader::addModResourcesPath(Mod* mod) {
 
 void Loader::updateResourcePaths() {
 	auto resDir = this->getGeodeDirectory() / geodeResourceDirectory;
-    CCFileUtils::sharedFileUtils()->addSearchPath(resDir.c_str());
+    CCFileUtils::sharedFileUtils()->addSearchPath(resDir.string().c_str());
     for (auto const& [_, mod] : this->m_mods) {
         this->addModResourcesPath(mod);
     }
