@@ -91,6 +91,10 @@ std::string geode::log::generateLogName() {
     return tmp.str();
 }
 
+Log Log::get() {
+    return Interface::get()->mod()->log();
+}
+
 void Log::flush() {
     this->m_logptr->m_data.push_back(new NoMetadata(this->m_stream.str()));
     Loader::get()->pushLog(this->m_logptr);
@@ -104,16 +108,6 @@ Log::~Log() {
     this->flush();
     std::cout << std::endl;
 }
-
-CCObjectMeta::CCObjectMeta(cocos2d::CCObject* obj) : LogMetadata("") {
-    obj->retain();
-    m_obj = obj;
-}
-
-CCObjectMeta::~CCObjectMeta() {
-    m_obj->release();
-} 
-
 
 Log& Log::operator<<(Severity::type s) {
     this->m_logptr->m_severity = s;
@@ -143,3 +137,13 @@ Log& operator<<(Log& l, Mod* m) {
 Log& operator<<(Log& l, cocos2d::CCObject* o) {
     return l.streamMeta<CCObjectMeta>(o);
 }
+
+CCObjectMeta::CCObjectMeta(cocos2d::CCObject* obj) : LogMetadata("") {
+    obj->retain();
+    m_obj = obj;
+}
+
+CCObjectMeta::~CCObjectMeta() {
+    m_obj->release();
+} 
+
