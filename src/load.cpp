@@ -98,7 +98,9 @@ Result<Mod*> Loader::loadModFromFile(std::string const& path) {
 
     } catch(nlohmann::json::exception const& e) {
         return Err<>("\"" + path + "\": Unable to parse mod.json - \"" + e.what() + "\"");
-    } catch(...) {
+    } catch(std::exception const& e) {
+	    return Err<>("\"" + path + "\": Unable to parse mod.json - \"" + e.what() + "\"");
+	} catch(...) {
         return Err<>("\"" + path + "\": Unable to parse mod.json - Unknown Error");
     }
 }
@@ -481,7 +483,7 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
 
     auto mod = new Mod(info);
 
-    mod->m_saveDirPath = Loader::get()->getGeodeSaveDirectory() / geode_mod_directory / info.m_id;
+    mod->m_saveDirPath = Loader::get()->getGeodeSaveDirectory() / geodeModDirectory / info.m_id;
 
     ghc::filesystem::create_directories(mod->m_saveDirPath);
 

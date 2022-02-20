@@ -23,21 +23,22 @@ Loader* Loader::get() {
 }
 
 void Loader::createDirectories() {
-    auto mod_dir = this->getGeodeDirectory() / geode_mod_directory;
-    auto log_dir = this->getGeodeDirectory() / geode_log_directory;
+    auto modDir = this->getGeodeDirectory() / geodeModDirectory;
+    auto logDir = this->getGeodeDirectory() / geodeLogDirectory;
+    auto resDir = this->getGeodeDirectory() / geodeResourceDirectory;
+    auto tempDir = this->getGeodeDirectory() / geodeTempDirectory;
 
-    ghc::filesystem::create_directories(this->getGeodeDirectory() / geode_resource_directory);
-    ghc::filesystem::create_directory(mod_dir);
-    ghc::filesystem::create_directory(log_dir);
-    ghc::filesystem::remove_all(this->getGeodeDirectory() / geode_temp_directory);
+    ghc::filesystem::create_directories(resDir);
+    ghc::filesystem::create_directory(modDir);
+    ghc::filesystem::create_directory(logDir);
+    ghc::filesystem::create_directory(tempDir);
 
-
-    if (!vector_utils::contains(this->m_modDirectories, mod_dir)) {
-        this->m_modDirectories.push_back(mod_dir);
+    if (!vector_utils::contains(this->m_modDirectories, modDir)) {
+        this->m_modDirectories.push_back(modDir);
     }
 
     // files too
-    this->m_logStream = std::ofstream(log_dir / log::generateLogName());
+    this->m_logStream = std::ofstream(logDir / log::generateLogName());
 }
 
 void Loader::addModResourcesPath(Mod* mod) {
@@ -52,7 +53,8 @@ void Loader::addModResourcesPath(Mod* mod) {
 }
 
 void Loader::updateResourcePaths() {
-    CCFileUtils::sharedFileUtils()->addSearchPath(const_join_path_c_str<geode_directory, geode_resource_directory>);
+	auto resDir = this->getGeodeDirectory() / geodeResourceDirectory;
+    CCFileUtils::sharedFileUtils()->addSearchPath(resDir.c_str());
     for (auto const& [_, mod] : this->m_mods) {
         this->addModResourcesPath(mod);
     }
@@ -101,7 +103,7 @@ size_t Loader::refreshMods() {
         for (auto const& entry : ghc::filesystem::directory_iterator(dir)) {
             if (
                 ghc::filesystem::is_regular_file(entry) &&
-                entry.path().extension() == geode_mod_extension
+                entry.path().extension() == geodeModExtension
             ) {
                 InternalMod::get()->log()
                     << Severity::Debug
@@ -278,7 +280,9 @@ Loader::~Loader() {
         delete log;
     }
     this->m_logs.clear();
-    ghc::filesystem::remove_all(const_join_path<geode_directory, geode_temp_directory>);
+
+    auto tempDir = this->getGeodeDirectory() / geodeTempDirectory;
+    ghc::filesystem::remove_all(tempDir);
 }
 
 void Loader::pushLog(LogPtr* logptr) {
@@ -347,9 +351,9 @@ ghc::filesystem::path Loader::getSaveDirectory() const {
 }
 
 ghc::filesystem::path Loader::getGeodeDirectory() const {
-    return geode::utils::dirs::geode_root() / geode_directory;
+    return geode::utils::dirs::geode_root() / geodeDirectory;
 }
 
 ghc::filesystem::path Loader::getGeodeSaveDirectory() const {
-    return this->getSaveDirectory() / geode_directory;
+    return this->getSaveDirectory() / geodeDirectory;
 }

@@ -38,7 +38,7 @@ Result<> Mod::createTempDir() {
         );
     }
 
-    auto tempDir = const_join_path_c_str<geode_directory, geode_temp_directory>;
+    auto tempDir = Loader::get()->getGeodeDirectory() / geodeTempDirectory;
     if (!ghc::filesystem::exists(tempDir)) {
         if (!ghc::filesystem::create_directory(tempDir)) {
             return Err<>("Unable to create temp directory for mods!");
