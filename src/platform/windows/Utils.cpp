@@ -1,4 +1,5 @@
 #include <utils/platform.hpp>
+#include <Geode.hpp>
 
 #ifdef GEODE_IS_WINDOWS
 
@@ -65,5 +66,10 @@ std::string utils::clipboard::read() {
 
     return text;
 }
+
+ghc::filesystem::path utils::dirs::geode_root() {
+    return ghc::filesystem::path(CCFileUtils::sharedFileUtils()->getWritablePath2().c_str());
+}
+
 
 #endif

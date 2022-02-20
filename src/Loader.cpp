@@ -347,15 +347,7 @@ ghc::filesystem::path Loader::getSaveDirectory() const {
 }
 
 ghc::filesystem::path Loader::getGeodeDirectory() const {
-    #if defined(GEODE_IS_MACOS)
-    char cwd[PATH_MAX];
-    getcwd(cwd, sizeof(cwd));
-    return ghc::filesystem::path(cwd) / geode_directory;
-    #elif defined(GEODE_IS_WINDOWS)
-    return this->getGameDirectory() / geode_directory;
-    #else
-    #error "impl pls"
-    #endif
+    return geode::utils::dirs::geode_root() / geode_directory;
 }
 
 ghc::filesystem::path Loader::getGeodeSaveDirectory() const {
