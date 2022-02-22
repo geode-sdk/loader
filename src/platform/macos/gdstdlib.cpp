@@ -31,7 +31,8 @@ namespace gd {
 		if (m_data == nullptr) return;
 		if (m_data == emptyInternalString()) return;
 		if (m_data[-1].m_refcount-- <= 0) {
-			reinterpret_cast<void(*)(_internal_string*)>(geode::base::get() + 0x48b03c)(&m_data[-1]);
+			void* al;
+			reinterpret_cast<void(*)(_internal_string*, void*)>(geode::base::get() + 0x48b03c)(&m_data[-1], al);
 		}
 	}
 
