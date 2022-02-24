@@ -13,7 +13,7 @@ namespace gd {
 		m_data = emptyInternalString();
 	}
 	string::string(char const* ok) : m_data(nullptr) {
-		reinterpret_cast<void(*)(string*, char const*)>(geode::base::get() + 0x48b0b4)(this, ok);
+		reinterpret_cast<void(*)(string*, char const*)>(geode::base::get() + 0x489fc0)(this, ok);
 	}
 	string::string(string const& ok) : m_data(nullptr) {
 		if (*(string**)(&ok) == nullptr) return;
