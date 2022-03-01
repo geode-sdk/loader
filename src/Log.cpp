@@ -15,7 +15,7 @@ std::ostream& operator<<(std::ostream& os, Mod* mod) {
 }
 
 std::ostream& operator<<(std::ostream& os, cocos2d::CCObject* obj) {
-    os << "{ " + std::string(typeid(*obj).name() + 6) + " }";
+    os << "{ " + std::string(typeid(*obj).name()) + ", " + utils::intToHex(obj)  + " }";
     return os;
 }
 
@@ -106,7 +106,9 @@ void Log::flush() {
 
 Log::~Log() {
     this->flush();
+    #ifdef GEODE_PLATFORM_CONSOLE
     std::cout << std::endl;
+    #endif
 }
 
 Log& Log::operator<<(Severity::type s) {
