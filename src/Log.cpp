@@ -15,7 +15,7 @@ std::ostream& operator<<(std::ostream& os, Mod* mod) {
 }
 
 std::ostream& operator<<(std::ostream& os, cocos2d::CCObject* obj) {
-    os << "{ " + std::string(typeid(*obj).name()) + ", " + (void*)obj  + " }";
+    os << "{ " + std::string(typeid(*obj).name()) + ", " + utils::intToHex(obj)  + " }";
     return os;
 }
 
