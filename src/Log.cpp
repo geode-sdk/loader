@@ -106,7 +106,9 @@ void Log::flush() {
 
 Log::~Log() {
     this->flush();
+    #ifdef GEODE_PLATFORM_CONSOLE
     std::cout << std::endl;
+    #endif
 }
 
 Log& Log::operator<<(Severity::type s) {
