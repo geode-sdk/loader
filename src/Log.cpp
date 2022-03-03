@@ -9,8 +9,8 @@
 #include <iomanip>
 
 std::ostream& operator<<(std::ostream& os, Mod* mod) {
-    if (mod) os << "[ null ]";
-    os << "[ " + std::string(mod->getName()) + " ]";
+    if (mod) os << "[ Mod ]";
+    os << "[" + std::string(mod->getName()) + "]";
     return os;
 }
 
