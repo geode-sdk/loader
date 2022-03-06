@@ -43,3 +43,7 @@ void Interface::logInfo(
 	}
 	this->m_scheduledLogs.push_back({ info, severity });
 }
+
+const char* operator"" _sprite(const char* str, size_t) {
+        return Interface::mod()->expandSpriteName(str);
+}
