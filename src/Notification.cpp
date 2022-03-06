@@ -5,8 +5,8 @@ USE_GEODE_NAMESPACE();
 
 NotificationCenter* NotificationCenter::shared = nullptr;
 
-NotificationCenter::NotificationCenter() {
-	cocos2d::CCDirector::sharedDirector()->getScheduler()->scheduleUpdateForTarget((cocos2d::CCObject*)this, 0, false);
+NotificationCenter::NotificationCenter() : m_observers() {
+	// cocos2d::CCDirector::sharedDirector()->getScheduler()->scheduleUpdateForTarget((cocos2d::CCObject*)this, 0, false);
 }
 
 NotificationCenter* NotificationCenter::get() {

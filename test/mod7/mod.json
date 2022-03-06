@@ -1,0 +1,12 @@
+{
+    "geode":        1,
+	"version":      "v1.0.0",
+	"id":           "com.geode.test_seven",
+    "name":         "Geode Test 7",
+    "developer":    "Geode Team",
+    "description":  "Test Mod #7",
+    "details":      "Test Mod #7 for making sure notifications work.",
+    "credits":      null,
+	"dependencies": null,
+    "binary":       "TestMod7"
+}
