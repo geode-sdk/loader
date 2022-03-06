@@ -20,8 +20,10 @@ std::string utils::clipboard::read() {
 }
 
 ghc::filesystem::path utils::dirs::geode_root() {
-	NSString* p = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)[0];
-	return ghc::filesystem::path(p.UTF8String) / [[NSBundle mainBundle] bundleIdentifier].UTF8String;
+	char cwd[PATH_MAX];
+	getcwd(cwd, sizeof(cwd));
+	// utils::clipboard::write(cwd);
+	return ghc::filesystem::path(cwd);
 }
 
 #endif

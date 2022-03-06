@@ -9,13 +9,24 @@
 #include <iomanip>
 
 std::ostream& operator<<(std::ostream& os, Mod* mod) {
-    if (mod) os << "[ null ]";
-    os << "[ " + std::string(mod->getName()) + " ]";
+    if (mod) os << "[ Mod ]";
+    os << "[" + std::string(mod->getName()) + "]";
     return os;
 }
 
 std::ostream& operator<<(std::ostream& os, cocos2d::CCObject* obj) {
     os << "{ " + std::string(typeid(*obj).name()) + ", " + utils::intToHex(obj)  + " }";
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, cocos2d::CCArray* arr) {
+    os << "[";
+    auto last = arr->objectAtIndex(arr->count()-1);
+    for (auto obj : ccArrayToVector<cocos2d::CCObject*>(arr)) {
+    	os << obj;
+    	if (obj != last) os << ", ";
+    }
+    os << "]";
     return os;
 }
 
@@ -139,6 +150,9 @@ Log& operator<<(Log& l, Mod* m) {
 Log& operator<<(Log& l, cocos2d::CCObject* o) {
     return l.streamMeta<CCObjectMeta>(o);
 }
+Log& operator<<(Log& l, cocos2d::CCArray* a) {
+    return l.streamMeta<CCArrayMeta>(a);
+}
 
 CCObjectMeta::CCObjectMeta(cocos2d::CCObject* obj) : LogMetadata("") {
     obj->retain();
@@ -148,4 +162,14 @@ CCObjectMeta::CCObjectMeta(cocos2d::CCObject* obj) : LogMetadata("") {
 CCObjectMeta::~CCObjectMeta() {
     m_obj->release();
 } 
+
+CCArrayMeta::CCArrayMeta(cocos2d::CCArray* arr) : LogMetadata("") {
+    arr->retain();
+    m_arr = arr;
+}
+
+CCArrayMeta::~CCArrayMeta() {
+    m_arr->release();
+} 
+
 
