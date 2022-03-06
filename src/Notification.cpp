@@ -16,61 +16,49 @@ NotificationCenter* NotificationCenter::get() {
 }
 
 void NotificationCenter::send(Notification n, Mod* m) {
-	m_queue.push({m, std::move(n)});
+	for (auto& obs : m_observers[m][n.selector()]) {
+		obs->m_callback(n);
+	}
 }
 
 void NotificationCenter::broadcast(Notification n) {
-	send(std::move(n), nullptr);
-}
-
-void NotificationCenter::sendSync(Notification n, Mod* m) {
-	for (auto& obs : m_observers) {
-		if (obs.m_selector == n.selector() && (m == nullptr || m == obs.m_mod)) {
-			obs.m_callback(n);
+	for (auto& [k, v] : m_observers) {
+		for (auto& obs : v[n.selector()]) {
+			obs->m_callback(n);
 		}
 	}
-}
-
-void NotificationCenter::broadcastSync(Notification n) {
-	sendSync(std::move(n), nullptr);
 }
 
 Observer* NotificationCenter::registerObserver(Mod* m, std::string selector, callback_t cb) {
-	Observer ob;
-	ob.m_selector = selector;
-	ob.m_callback = cb;
-	ob.m_mod = m;
+	Observer* ob = new Observer;
+	ob->m_selector = selector;
+	ob->m_callback = cb;
+	ob->m_mod = m;
 
-	m_observers.push_back(std::move(ob));
+	m_observers[m][selector].push_back(ob);
 
-	return &m_observers.back();
+	return ob;
 }
 
 void NotificationCenter::unregisterObserver(Observer* ob) {
-	for (int i = 0; i < m_observers.size(); ++i) {
-		if (&m_observers[i] == ob) {
-			m_observers.erase(m_observers.begin()+i);
-			return;
+	for (auto& [k, v] : m_observers) {
+		for (auto& [k2, v2] : v) {
+			v2.erase(std::remove(v2.begin(), v2.end(), ob), v2.end());
 		}
 	}
+
+	delete ob;
 }
 
 std::vector<Observer*> NotificationCenter::getObservers(std::string selector, Mod* m) {
-	std::vector<Observer*> filtered;
+	if (m) {
+		return m_observers[m][selector];
+	} else {
+		std::vector<Observer*> filtered;
 
-	for (auto& obs : m_observers) {
-		if (obs.m_selector == selector && (m == nullptr || m == obs.m_mod)) {
-			filtered.push_back(&obs);
+		for (auto& [k, v] : m_observers) {
+			filtered.insert(filtered.end(), v[selector].begin(), v[selector].end());
 		}
-	}
-
-	return filtered;
-}
-
-void NotificationCenter::update(float) {
-	while (!m_queue.empty()) {
-		auto n = std::move(m_queue.front());
-		m_queue.pop();
-		sendSync(std::move(n.second), n.first);
+		return filtered;
 	}
 }
