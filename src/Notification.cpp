@@ -41,12 +41,8 @@ Observer* NotificationCenter::registerObserver(Mod* m, std::string selector, cal
 }
 
 void NotificationCenter::unregisterObserver(Observer* ob) {
-	for (auto& [k, v] : m_observers) {
-		for (auto& [k2, v2] : v) {
-			v2.erase(std::remove(v2.begin(), v2.end(), ob), v2.end());
-		}
-	}
-
+	auto& v2 = m_observers[ob->m_mod][ob->m_selector];
+	v2.erase(std::remove(v2.begin(), v2.end(), ob), v2.end());
 	delete ob;
 }
 
