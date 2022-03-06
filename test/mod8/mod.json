@@ -1,0 +1,18 @@
+{
+    "geode":        1,
+	"version":      "v1.0.0",
+	"id":           "com.geode.test_eight",
+    "name":         "Geode Test 8",
+    "developer":    "Geode Team",
+    "description":  "Test Mod #8",
+    "details":      "Test Mod #8 for making sure api functions work.",
+    "credits":      null,
+	"dependencies": [
+        {
+            "id": "com.geode.test_seven",
+            "version": "v1.0.*",
+            "required": true
+        }
+    ],
+    "binary":       "TestMod8"
+}
