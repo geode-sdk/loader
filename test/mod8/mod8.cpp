@@ -1,6 +1,10 @@
-#include "../mod7/mod7.hpp"
+#include "mod8.hpp"
 
 USE_GEODE_NAMESPACE();
+
+void Mod8Log::logMessage(std::string msg) {
+    Interface::mod()->log() << "Logged using the api function: " << msg;
+}
 
 GEODE_API bool GEODE_CALL geode_load(Mod* mod) {
 	Interface::get()->init(mod);
