@@ -22,12 +22,10 @@ void Interface::init(Mod* mod) {
 
 		for (auto const& scheduled : this->m_scheduledExports) {
 			if (auto fn = static_cast<std::add_const_t<unknownmemfn_t>*>(std::get_if<0>(&scheduled.m_func))) {
-				auto exportfn = std::get<0>(scheduled.m_export);
-				(mod->*exportfn)(scheduled.m_selector, static_cast<unknownmemfn_t>(*fn));
+				mod->exportAPIFunction(scheduled.m_selector, static_cast<unknownmemfn_t>(*fn));
 			}
 			else if (auto fn = static_cast<std::add_const_t<unknownfn_t>*>(std::get_if<1>(&scheduled.m_func))) {
-				auto exportfn = std::get<1>(scheduled.m_export);
-				(mod->*exportfn)(scheduled.m_selector, static_cast<unknownfn_t>(*fn));
+				mod->exportAPIFunction(scheduled.m_selector, static_cast<unknownfn_t>(*fn));
 			}
 		}
 		this->m_scheduledExports.clear();
@@ -56,17 +54,17 @@ void Interface::logInfo(
 	this->m_scheduledLogs.push_back({ info, severity });
 }
 
-void Interface::exportAPIFunctionInternal(std::string const& selector, unknownmemfn_t fn, exportmemfn_t exportfn) {
+void Interface::exportAPIFunctionInternal(std::string const& selector, unknownmemfn_t fn) {
 	if (this->m_mod) {
-		(this->m_mod->*exportfn)(selector, fn);
+		mod->exportAPIFunction(selector, fn);
 	}
-	this->m_scheduledExports.push_back({ selector, fn, exportfn });
+	this->m_scheduledExports.push_back({ selector, fn });
 }
-void Interface::exportAPIFunctionInternal(std::string const& selector, unknownfn_t fn, exportfn_t exportfn) {
+void Interface::exportAPIFunctionInternal(std::string const& selector, unknownfn_t fn) {
 	if (this->m_mod) {
-		(this->m_mod->*exportfn)(selector, fn);
+		mod->exportAPIFunction(selector, fn);
 	}
-	this->m_scheduledExports.push_back({ selector, fn, exportfn });
+	this->m_scheduledExports.push_back({ selector, fn });
 }
 
 const char* operator"" _sprite(const char* str, size_t) {
