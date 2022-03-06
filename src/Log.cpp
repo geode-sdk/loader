@@ -21,11 +21,14 @@ std::ostream& operator<<(std::ostream& os, cocos2d::CCObject* obj) {
 
 std::ostream& operator<<(std::ostream& os, cocos2d::CCArray* arr) {
     os << "[";
-    auto last = arr->objectAtIndex(arr->count()-1);
-    for (auto obj : ccArrayToVector<cocos2d::CCObject*>(arr)) {
-    	os << obj;
-    	if (obj != last) os << ", ";
+    if (arr && arr->count() > 0) {
+    	auto last = arr->objectAtIndex(arr->count()-1);
+	    for (auto obj : ccArrayToVector<cocos2d::CCObject*>(arr)) {
+	    	os << obj;
+	    	if (obj != last) os << ", ";
+	    }
     }
+    else os << "empty";
     os << "]";
     return os;
 }
