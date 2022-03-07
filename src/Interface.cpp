@@ -70,7 +70,3 @@ void Interface::exportAPIFunctionInternal(std::string const& selector, unknownfn
 Interface* Interface::create() {
 	return new Interface;
 }
-
-const char* operator"" _sprite(const char* str, size_t) {
-        return Interface::mod()->expandSpriteName(str);
-}
