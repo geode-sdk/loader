@@ -10,7 +10,8 @@ add_library(${PROJECT_NAME} SHARED mod8.cpp)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 
-add_definitions(-DMOD8_EXPORTING)
+target_compile_definitions(${PROJECT_NAME} PUBLIC -DEXPORT_TestMod8=1)
+
 target_link_libraries(
     ${PROJECT_NAME}
     GeodeLoader

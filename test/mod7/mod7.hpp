@@ -1,18 +1,16 @@
 #include <Geode.hpp>
+#define EXPORT_NAME TestMod7
 #include <API.hpp>
 
-#ifdef MOD7_EXPORTING
-	#define MOD7_LINK GEODE_EXPORT_FUNC
-	// do we want to prepend the mod name for avioding conficts?
-#else
-	#define MOD7_LINK GEODE_IMPORT_FUNC
-#endif
+//GEODE_CONCAT(EXPORT_, PROJECT_NAME)
 
-class Mod7Log {
+class Mod7Log : geode::ModAPI {
 public:
+	API_INIT("com.geode.test_seven");
+
 	void logMessage(std::string msg) 
-		MOD7_LINK((void(Mod7Log::*)(std::string))&Mod7Log::logMessage, this, msg);
+		API_DECL((void(Mod7Log::*)(std::string))&Mod7Log::logMessage, this, msg);
 
 	static void logMessage(int msg, float msg2) 
-		MOD7_LINK((void(*)(int, float))&Mod7Log::logMessage, msg, msg2);
+		API_DECL((void(*)(int, float))&Mod7Log::logMessage, msg, msg2);
 };

@@ -1,14 +1,13 @@
 #include "../mod7/mod7.hpp"
 
-#ifdef MOD8_EXPORTING
-	#define MOD8_LINK GEODE_EXPORT_FUNC
-	// do we want to prepend the mod name for avioding conficts?
-#else
-	#define MOD8_LINK GEODE_IMPORT_FUNC
-#endif
+#define EXPORT_NAME TestMod8
+#include <API.hpp>
 
-class Mod8Log {
+
+class Mod8Log : geode::ModAPI {
 public:
+	API_INIT("com.geode.test_eight");
+
 	void logMessage(std::string msg) 
-		MOD8_LINK(&Mod8Log::logMessage, this, msg);
+		API_DECL(&Mod8Log::logMessage, this, msg);
 };

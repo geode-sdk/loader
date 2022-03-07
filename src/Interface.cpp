@@ -9,7 +9,7 @@ USE_GEODE_NAMESPACE();
 void Interface::init(Mod* mod) {
 	if (!this->m_mod) {
 		this->m_mod = mod;
-
+		printf("%p\n", mod);
 		for (auto const& hook : this->m_scheduledHooks) {
 			this->m_mod->addHook(hook.m_displayName, hook.m_address, hook.m_detour);
 		}
@@ -22,10 +22,10 @@ void Interface::init(Mod* mod) {
 
 		for (auto const& scheduled : this->m_scheduledExports) {
 			if (auto fn = static_cast<std::add_const_t<unknownmemfn_t>*>(std::get_if<0>(&scheduled.m_func))) {
-				mod->exportAPIFunction(scheduled.m_selector, static_cast<unknownmemfn_t>(*fn));
+				this->m_mod->exportAPIFunction(scheduled.m_selector, static_cast<unknownmemfn_t>(*fn));
 			}
 			else if (auto fn = static_cast<std::add_const_t<unknownfn_t>*>(std::get_if<1>(&scheduled.m_func))) {
-				mod->exportAPIFunction(scheduled.m_selector, static_cast<unknownfn_t>(*fn));
+				this->m_mod->exportAPIFunction(scheduled.m_selector, static_cast<unknownfn_t>(*fn));
 			}
 		}
 		this->m_scheduledExports.clear();
@@ -56,13 +56,13 @@ void Interface::logInfo(
 
 void Interface::exportAPIFunctionInternal(std::string const& selector, unknownmemfn_t fn) {
 	if (this->m_mod) {
-		mod->exportAPIFunction(selector, fn);
+		m_mod->exportAPIFunction(selector, fn);
 	}
 	this->m_scheduledExports.push_back({ selector, fn });
 }
 void Interface::exportAPIFunctionInternal(std::string const& selector, unknownfn_t fn) {
 	if (this->m_mod) {
-		mod->exportAPIFunction(selector, fn);
+		m_mod->exportAPIFunction(selector, fn);
 	}
 	this->m_scheduledExports.push_back({ selector, fn });
 }
