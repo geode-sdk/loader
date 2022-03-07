@@ -47,6 +47,8 @@ set(LINK_LIBRARIES
 	CCZipUtils
 )
 
+set(BINARY_NAME "Geode")
+
 if (APPLE) 
 	if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR GEODE_TARGET_PLATFORM STREQUAL "iOS")
 		set (LINK_LIBRARIES ${LINK_LIBRARIES} "-framework UIKit -framework Foundation")
@@ -63,8 +65,6 @@ add_definitions(-DGEODE_EXPORTING)
 add_compile_definitions(GEODE_PLATFORM_CONSOLE)
 
 include(sdk/Geode.cmake)
-
-set_target_properties(GeodeLoader PROPERTIES PREFIX "" OUTPUT_NAME "Geode")
 
 add_subdirectory(core)
 add_subdirectory(src/CCZipUtils)
