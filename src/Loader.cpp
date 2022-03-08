@@ -135,7 +135,7 @@ size_t Loader::refreshMods() {
     InternalMod::get()->log()
         << Severity::Debug
         << "Loaded " << count << " mods (" << unresolvedCount << "unresolved)";
-    return loaded;
+    return count;
 }
 
 Result<> Loader::saveSettings() {
