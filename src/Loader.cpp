@@ -92,7 +92,6 @@ size_t Loader::refreshMods() {
         << Severity::Debug
         << "Loading mods...";
 
-    size_t loaded = 0;
     this->createDirectories();
 
     for (auto const& dir : this->m_modDirectories) {
@@ -117,7 +116,6 @@ size_t Loader::refreshMods() {
                     auto res = this->loadModFromFile(entry.path().string());
                     if (res && res.value()) {
                         if (!res.value()->hasUnresolvedDependencies()) {
-                            loaded++;
                             InternalMod::get()->log()
                                 << "Succesfully loaded " << res.value();
                         } else {
@@ -133,9 +131,10 @@ size_t Loader::refreshMods() {
         }
     }
 
+    auto [count, unresolvedCount] = Loader::get()->getLoadedModCount();
     InternalMod::get()->log()
         << Severity::Debug
-        << "Loaded " << loaded << " new mods";
+        << "Loaded " << count << " mods (" << unresolvedCount << "unresolved)";
     return loaded;
 }
 
