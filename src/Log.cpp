@@ -105,10 +105,6 @@ std::string geode::log::generateLogName() {
     return tmp.str();
 }
 
-Log Log::get() {
-    return Interface::get()->mod()->log();
-}
-
 void Log::flush() {
     this->m_logptr->m_data.push_back(new NoMetadata(this->m_stream.str()));
     Loader::get()->pushLog(this->m_logptr);
