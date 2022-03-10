@@ -6,6 +6,6 @@ GEODE_API bool GEODE_CALL geode_load(Mod* mod) {
 }
 
 void logMessage(std::string_view const& msg) {
-    Interface::mod()->log() << "Logged by TestMod1: " << msg;
+    Log::get() << "Logged by TestMod1: " << msg;
 }
 

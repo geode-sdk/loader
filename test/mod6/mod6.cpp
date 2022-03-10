@@ -4,7 +4,7 @@ USE_GEODE_NAMESPACE();
 
 // class $modify(CustomListView) {
 // 	static CustomListView* create(cocos2d::CCArray* items, float height, float width, int page, BoomListType type) {
-// 		Interface::mod()->log() << "CustomListView::create -> height: " << height << " width: " << width << " type: " << (int)type;
+// 		Log::get() << "CustomListView::create -> height: " << height << " width: " << width << " type: " << (int)type;
 // 		return CustomListView::create(items, height, width, page, type);
 // 	}
 // };
@@ -12,7 +12,7 @@ USE_GEODE_NAMESPACE();
 
 // class $modify(BoomListView) {
 // 	bool init(cocos2d::CCArray* items, float height, float width, int page, BoomListType type) {
-// 		Interface::mod()->log() << "BoomListView::init -> height: " << height << " width: " << width << " type: " << (int)type;
+// 		Log::get() << "BoomListView::init -> height: " << height << " width: " << width << " type: " << (int)type;
 // 		return BoomListView::init(items, height, width, page, type);
 // 	}
 // };
