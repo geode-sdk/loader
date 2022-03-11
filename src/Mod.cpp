@@ -80,30 +80,34 @@ Result<> Mod::createTempDir() {
 }
 
 Result<> Mod::load() {
+    #define RETURN_LOAD_ERR(str) \
+        {m_loadErrorInfo = str; \
+        return Err<>(m_loadErrorInfo);}
+
     if (!this->m_tempDirName.string().size()) {
         auto err = this->createTempDir();
-        if (!err) return Err<>("Unable to create temp directory: " + err.error());
+        if (!err) RETURN_LOAD_ERR("Unable to create temp directory: " + err.error());
     }
     if (this->m_loaded) {
         return Ok<>();
     }
     if (this->hasUnresolvedDependencies()) {
-        return Err<>("Mod has unresolved dependencies");
+        RETURN_LOAD_ERR("Mod has unresolved dependencies");
     }
     auto err = this->loadPlatformBinary();
-    if (!err) return err;
+    if (!err) RETURN_LOAD_ERR(err);
     if (this->m_implicitLoadFunc) {
         auto r = this->m_implicitLoadFunc(this);
         if (!r) {
             this->unloadPlatformBinary();
-            return Err<>("Implicit mod entry point returned an error");
+            RETURN_LOAD_ERR("Implicit mod entry point returned an error");
         }
     }
     if (this->m_loadFunc) {
         auto r = this->m_loadFunc(this);
         if (!r) {
             this->unloadPlatformBinary();
-            return Err<>("Mod entry point returned an error");
+            RETURN_LOAD_ERR("Mod entry point returned an error");
         }
     }
     this->m_loaded = true;
@@ -452,4 +456,8 @@ const char* Mod::expandSpriteName(const char* name) {
     memcpy(exp, exps.c_str(), exps.size() + 1);
     expanded[name] = exp;
     return exp;
+}
+
+std::string Mod::getLoadErrorInfo() const {
+    return m_loadErrorInfo;
 }
