@@ -29,14 +29,14 @@ std::string getLastWinError() {
         nullptr
     );
     if (len == 0) {
-        return "Unformattable (" + std::to_string(err) + ")";
+        return "Unknown (" + std::to_string(err) + ")";
     }
     if (text != nullptr) {
         auto str = std::string(text, len) + " (" + std::to_string(err) + ")";
         LocalFree(text);
         return str;
     }
-    return "Unknown (" + std::to_string(err) + ")";
+    return "Very Unknown (" + std::to_string(err) + ")";
 }
 
 Result<> Mod::loadPlatformBinary() {
