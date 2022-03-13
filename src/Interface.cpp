@@ -9,7 +9,6 @@ USE_GEODE_NAMESPACE();
 void Interface::init(Mod* mod) {
 	if (!this->m_mod) {
 		this->m_mod = mod;
-		printf("%p\n", mod);
 		for (auto const& hook : this->m_scheduledHooks) {
 			this->m_mod->addHook(hook.m_displayName, hook.m_address, hook.m_detour);
 		}
