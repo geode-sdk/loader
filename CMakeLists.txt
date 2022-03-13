@@ -21,16 +21,26 @@ file(GLOB CORE_SOURCES
 	src/gui/mods/settings/*.cpp
 	src/platform/*.cpp
 	src/platform/windows/*.cpp
-	src/platform/macos/*.mm
 	src/platform/macos/*.cpp
-	src/platform/ios/*.mm
 	src/platform/ios/*.cpp
 	src/utils/*.cpp
 	src/utils/platform/*
 )
 
+file(GLOB OBJC_SOURCES
+	src/platform/macos/*.mm
+	src/platform/ios/*.mm
+)
+
+# not recurse because dont include platform specific headers
+file(GLOB HEADERS
+	sdk/include/*.hpp
+	build/gen/Header.hpp
+)
+
 set(SOURCE_FILES 
 	${CORE_SOURCES}
+	${OBJC_SOURCES}
 )
 set(INCLUDE_DIRECTORIES
 	src/internal/
@@ -66,9 +76,12 @@ add_compile_definitions(GEODE_PLATFORM_CONSOLE)
 
 include(sdk/Geode.cmake)
 
+set_source_files_properties(${OBJC_SOURCES} PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
+
+target_precompile_headers(${PROJECT_NAME} PUBLIC ${HEADERS})
+
 add_subdirectory(core)
 add_subdirectory(src/CCZipUtils)
-# add_subdirectory(src/addressertest)
 
 if(NOT GEODE_DONT_BUILD_TEST_MODS)
 	if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
