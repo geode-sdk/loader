@@ -12,14 +12,12 @@ jobs:
         config:
         - name: "Windows"
           os: windows-2019
-          ccache_variant: sccache
           extra_flags: '-G "Visual Studio 16 2019" -T host=x86 -A win32'
           gen_paths:  './build/gen/Address.hpp ./build/gen/Compare.hpp ./build/gen/Header.hpp ./build/gen/Modify.hpp ./build/gen/Type.hpp ./build/gen/Wrap.hpp'
           out_paths: './build/Release/geode.dll ./build/Release/geode.lib ./build/src/inject/windows/Release/XInput9_1_0.dll ./build/src/CCZipUtils/Release/CCZipUtils.lib'
         - name: "macOS"
           os: macos-latest
-          ccache_variant: ccache
-          extra_flags: ""
+          extra_flags: "-DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
           gen_paths:  './build/gen/Address.hpp ./build/gen/Compare.hpp ./build/gen/Header.hpp ./build/gen/Modify.hpp ./build/gen/Type.hpp ./build/gen/Wrap.hpp'
           out_paths: './build/Geode.dylib ./build/src/CCZipUtils/libCCZipUtils.a'
     name: ${{ matrix.config.name }}
@@ -64,11 +62,11 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1
       with:
         key: ${{ matrix.config.os }}
-        variant: ${{ matrix.config.ccache_variant }}
+      if: matrix.config.os == 'macos-latest'
     
     - name: Configure CMake
       run: |
-        cmake -B ${{ github.workspace }}/build ${{ matrix.config.extra_flags }} -DGEODE_DONT_BUILD_TEST_MODS=On -DGEODE_BUILD_UNIT_TESTS=On -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cmake -B ${{ github.workspace }}/build ${{ matrix.config.extra_flags }} -DGEODE_DONT_BUILD_TEST_MODS=On -DGEODE_BUILD_UNIT_TESTS=On
           
     - name: Build
       run: |
