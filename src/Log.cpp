@@ -97,7 +97,7 @@ std::string LogPtr::toString(bool logTime) const {
     return res.str();
 }
 
-std::string geode::log::generateLogName() {
+std::string geode::generateLogName() {
     std::stringstream tmp;
     tmp << "Geode_" 
         << std::chrono::duration_cast<std::chrono::seconds>(log_clock::now().time_since_epoch()).count()
@@ -106,7 +106,7 @@ std::string geode::log::generateLogName() {
 }
 
 void Log::flush() {
-    this->m_logptr->m_data.push_back(new NoMetadata(this->m_stream.str()));
+    this->m_logptr->m_data.push_back(new LogMetadata(this->m_stream.str()));
     Loader::get()->pushLog(this->m_logptr);
 
     // Loader manages this memory now

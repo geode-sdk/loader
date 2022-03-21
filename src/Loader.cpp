@@ -38,7 +38,7 @@ void Loader::createDirectories() {
     }
 
     // files too
-    this->m_logStream = std::ofstream(logDir / log::generateLogName());
+    this->m_logStream = std::ofstream(logDir / generateLogName());
 }
 
 void Loader::addModResourcesPath(Mod* mod) {
