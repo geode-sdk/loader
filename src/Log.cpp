@@ -158,11 +158,21 @@ CCObjectMeta::CCObjectMeta(cocos2d::CCObject* obj) : LogMetadata("") {
     m_obj = obj;
 }
 
+CCObjectMeta::CCObjectMeta(std::string const& r, cocos2d::CCObject* obj) : LogMetadata(r) {
+    obj->retain();
+    m_obj = obj;
+}
+
 CCObjectMeta::~CCObjectMeta() {
     m_obj->release();
 } 
 
 CCArrayMeta::CCArrayMeta(cocos2d::CCArray* arr) : LogMetadata("") {
+    arr->retain();
+    m_arr = arr;
+}
+
+CCArrayMeta::CCArrayMeta(std::string const& r, cocos2d::CCArray* arr) : LogMetadata(r) {
     arr->retain();
     m_arr = arr;
 }

@@ -13,9 +13,32 @@ T findSymbolOrMangled(HMODULE load, const char* name, const char* mangled) {
     return res;
 }
 
+const char* getUsefulError(int code) {
+    switch (code) {
+        case ERROR_PROC_NOT_FOUND:
+            return
+                "ERROR_PROC_NOT_FOUND; The mod tried to access "
+                "a function defined in another DLL, but the specified "
+                "function was not found. Make sure the other DLL exports "
+                "the given symbol, and that it is defined in the DLL. "
+                "If you are not the developer of this mod, report this error "
+                "to them as it is likely not your fault.";
+                
+        case ERROR_DLL_INIT_FAILED:
+            return
+                "ERROR_DLL_INIT_FAILED; Likely some global variables "
+                "in the mod threw an exception or otherwise failed. "
+                "If you are not the developer of this mod, report this error "
+                "to them as it is likely not your fault.";
+    }
+    return nullptr;
+}
+
 std::string getLastWinError() {
     auto err = GetLastError();
     if (!err) return "None (0)";
+    auto useful = getUsefulError(err);
+    if (useful) return useful;
     char* text = nullptr;
     auto len = FormatMessageA(
         FORMAT_MESSAGE_FROM_SYSTEM |
@@ -28,15 +51,18 @@ std::string getLastWinError() {
         0,
         nullptr
     );
+    std::string msg = "";
     if (len == 0) {
-        return "Unknown (" + std::to_string(err) + ")";
+        msg = "Unknown";
+    } else {
+        if (text != nullptr) {
+            msg = std::string(text, len);
+            LocalFree(text);
+        } else {
+            msg = "Very Unknown";
+        }
     }
-    if (text != nullptr) {
-        auto str = std::string(text, len) + " (" + std::to_string(err) + ")";
-        LocalFree(text);
-        return str;
-    }
-    return "Very Unknown (" + std::to_string(err) + ")";
+    return msg + " (" + std::to_string(err) + ")";
 }
 
 Result<> Mod::loadPlatformBinary() {
