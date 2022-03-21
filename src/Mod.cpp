@@ -387,15 +387,15 @@ std::vector<Hook*> Mod::getHooks() const {
     return this->m_hooks;
 }
 
-log::Log Mod::log() {
-    return log::Log(this);
+Log Mod::log() {
+    return Log(this);
 }
 
 void Mod::logInfo(
     std::string const& info,
     Severity severity
 ) {
-    log::Log l(this);
+    Log l(this);
     l << severity << info;
 }
 
