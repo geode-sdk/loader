@@ -46,19 +46,22 @@ NS_CC_BEGIN
 //
 static CCDictionary* s_pConfigurations = NULL;
 
-CCBMFontConfiguration* FNTConfigLoadFile( const char *fntFile)
+CCBMFontConfiguration* FNTConfigLoadFile( const char *fntFile )
 {
     CCBMFontConfiguration* pRet = NULL;
 
     if( s_pConfigurations == NULL )
     {
-        s_pConfigurations = new CCDictionary();
+        // s_pConfigurations = new CCDictionary();
+        // modification because uh
+        s_pConfigurations = CCDictionary::create();
+        s_pConfigurations->retain();
     }
 
     pRet = (CCBMFontConfiguration*)s_pConfigurations->objectForKey(fntFile);
     if( pRet == NULL )
     {
-        pRet = CCBMFontConfiguration::create(fntFile);
+        pRet = CCBMFontConfiguration::create(fntFile); 
         if (pRet)
         {
             s_pConfigurations->setObject(pRet, fntFile);
