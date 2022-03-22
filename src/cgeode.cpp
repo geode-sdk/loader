@@ -12,12 +12,12 @@ void geode_mod_log(void* cmod, const char* message) {
 }
 
 bool geode_mod_add_hook(void* cmod, void* address, void* detour) {
-	auto mod = reinterpret_cast<Mod*>(cmod);
-	auto res = mod->addHook(address, detour);
-	if (!res) {
-		g_lastError = res.error();
-		return false;
-	}
+	// auto mod = reinterpret_cast<Mod*>(cmod);
+	// auto res = mod->addHook(address, detour);
+	// if (!res) {
+	// 	g_lastError = res.error();
+	// 	return false;
+	// }
 	return true;
 }
 

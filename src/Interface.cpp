@@ -10,7 +10,7 @@ void Interface::init(Mod* mod) {
 	if (!this->m_mod) {
 		this->m_mod = mod;
 		for (auto const& hook : this->m_scheduledHooks) {
-			this->m_mod->addHook(hook.m_displayName, hook.m_address, hook.m_detour);
+			// this->m_mod->addHook(hook.m_displayName, hook.m_address, hook.m_detour);
 		}
 		this->m_scheduledHooks.clear();
 
@@ -37,7 +37,7 @@ Result<Hook*> Interface::addHook(void* address, void* detour) {
 
 Result<Hook*> Interface::addHook(std::string_view displayName, void* address, void* detour) {
 	if (this->m_mod) {
-		return this->m_mod->addHook(displayName, address, detour);
+		// return this->m_mod->addHook(displayName, address, detour);
 	}
 	this->m_scheduledHooks.push_back({ displayName, address, detour });
 	return Ok<Hook*>(nullptr);

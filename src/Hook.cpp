@@ -4,7 +4,8 @@
 #include <Loader.hpp>
 #include <utils/casts.hpp>
 #include <utils/vector.hpp>
-#include <hook/hook.hpp>
+// #include <hook/hook.hpp>
+#include <core/Hook.hpp>
 #include "Internal.hpp"
 #include "InternalMod.hpp"
 
@@ -24,63 +25,32 @@ struct hook_info {
 GEODE_STATIC_VAR(std::vector<hook_info>, internalHooks);
 GEODE_STATIC_VAR(bool, readyToHook);
 
-Result<Hook*> Mod::addHookBase(
-    std::string_view displayName,
-    void* addr, void* detour, Hook* hook
-) {
-    if (!hook) {
-        hook = new Hook();
-        hook->m_displayName = displayName;
-        hook->m_address = addr;
-        hook->m_detour = detour;
-        hook->m_displayName = displayName;
-    }
-    if ((hook->m_handle = const_cast<void*>(geode::core::hook::add(addr, detour)))) {
-        this->m_hooks.push_back(hook);
-        hook->m_enabled = true;
-        return Ok<Hook*>(hook);
-    } else {
-        delete hook;
-        return Err<>(
-            "Unable to create hook at " + std::to_string(as<uintptr_t>(addr))
-        );
-    }
-}
-
-Result<Hook*> Mod::addHookBase(Hook* hook) {
-    return this->addHookBase(
-    	hook->m_displayName,
-        hook->m_address,
-        hook->m_detour,
-        hook
-    );
-}
 
 Result<> Mod::enableHook(Hook* hook) {
     if (!hook->isEnabled()) {
-        if (!hook->m_handle) {
-            if ((hook->m_handle = const_cast<void*>(geode::core::hook::add(hook->m_address, hook->m_detour)))) {
-                hook->m_enabled = true;
-                return Ok<>();
-            }
-            return Err<>("Unable to create hook");
-        }
-        return Err<>("Hook already has a handle");
+    	auto res = std::invoke(hook->m_addFunction, hook->m_address);
+	    if (res) {
+	        this->m_hooks.push_back(hook);
+	        hook->m_enabled = true;
+	        hook->m_handle = res.value();
+	        return Ok<>();
+		} else {
+	        return Err<>(
+	            "Unable to create hook at " + std::to_string(as<uintptr_t>(hook->m_address))
+	        );
+	    }
+	    return Err<>("Hook already has a handle");
     }
     return Ok<>();
 }
 
 Result<> Mod::disableHook(Hook* hook) {
     if (hook->isEnabled()) {
-        if (hook->m_handle) {
-            if (geode::core::hook::remove(hook->m_handle)) {
-                hook->m_enabled = false;
-                hook->m_handle = nullptr;
-                return Ok<>();
-            }
-            return Err<>("Unable to remove hook");
+        if (geode::core::hook::remove(hook->m_handle)) {
+            hook->m_enabled = false;
+            return Ok<>();
         }
-        return Err<>("Hook lacks a handle");
+        return Err<>("Unable to remove hook");
     }
     return Ok<>();
 }
@@ -94,33 +64,25 @@ Result<> Mod::removeHook(Hook* hook) {
     return res;
 }
 
-Result<Hook*> Mod::addHook(void* addr, void* detour) {
-    return this->addHook("", addr, detour);
-}
-
-Result<Hook*> Mod::addHook(std::string_view displayName, void* addr, void* detour) {
+Result<Hook*> Mod::addHook(Hook* hook) {
     if (readyToHook()) {
-        return this->addHookBase(displayName, addr, detour);
-    } else {
-        auto hook = new Hook();
-        hook->m_address = addr;
-        hook->m_detour = detour;
-        hook->m_displayName = displayName;
-        internalHooks().push_back({ hook, this });
-        return Ok<Hook*>(hook);
+        auto res = this->enableHook(hook);
+		if (!res) {
+			delete hook;
+			return Err<>("Can't create hook");
+		}
     }
-}
-
-Result<Hook*> Mod::addHook(void* addr, void* detour, void** trampoline) {
-    *trampoline = addr;
-    return this->addHook(addr, detour);
+    else {
+    	internalHooks().push_back({ hook, this });
+    }
+    return Ok<Hook*>(hook);
 }
 
 bool Geode::loadHooks() {
     readyToHook() = true;
     auto thereWereErrors = false;
     for (auto const& hook : internalHooks()) {
-        auto res = hook.mod->addHookBase(hook.hook);
+        auto res = hook.mod->addHook(hook.hook);
         if (!res) {
             hook.mod->logInfo(
                 res.error(),
