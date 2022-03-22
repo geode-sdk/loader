@@ -5,8 +5,6 @@
     "name":         "Geode Test 2",
     "developer":    "Geode Team",
     "description":  "Test Mod #2",
-    "details":      "Test Mod #2 for making sure using shared interfaces works.",
-    "credits":      null,
     "binary": {
         "*": "TestMod2"
     },

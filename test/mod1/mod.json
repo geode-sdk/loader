@@ -5,8 +5,6 @@
     "name":         "Geode Test 1",
     "developer":    "Geode Team",
     "description":  "Test Mod #1",
-    "details":      "Test Mod #1 for making sure hooking, loading and sharing interfaces works.",
-    "credits":      null,
 	"dependencies": null,
     "binary": "TestMod1",
     "settings": null

@@ -5,8 +5,6 @@
     "name":         "Geode Test 6",
     "developer":    "Geode Team",
     "description":  "Test Mod #6",
-    "details":      "Test Mod #6 for making sure meta wrappers work.",
-    "credits":      null,
 	"dependencies": null,
     "binary":       "TestMod6"
 }

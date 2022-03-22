@@ -5,8 +5,6 @@
     "name":         "Geode Test 8",
     "developer":    "Geode Team",
     "description":  "Test Mod #8",
-    "details":      "Test Mod #8 for making sure api functions work.",
-    "credits":      null,
 	"dependencies": [
         {
             "id": "com.geode.test_seven",

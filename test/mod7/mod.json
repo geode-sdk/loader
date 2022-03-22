@@ -5,8 +5,6 @@
     "name":         "Geode Test 7",
     "developer":    "Geode Team",
     "description":  "Test Mod #7",
-    "details":      "Test Mod #7 for making sure notifications work.",
-    "credits":      null,
 	"dependencies": null,
     "binary":       "TestMod7"
 }

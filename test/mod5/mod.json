@@ -5,9 +5,6 @@
     "name":         "Geode Test 5",
     "developer":    "Geode Team",
     "description":  "Test Mod #5",
-    "details":      "Test Mod #5 for making sure custom modification classes work.",
-    "credits":      null,
-	"dependencies": null,
     "binary":       "TestMod5",
 	"dependencies": [
         {
