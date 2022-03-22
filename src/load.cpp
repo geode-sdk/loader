@@ -84,8 +84,18 @@ Result<Mod*> Loader::loadModFromFile(std::string const& path) {
         // Handle mod.json data based on target
         switch (schema) {
             case 1: {
-                return this->checkBySchema<1>(path, &json);
-            }
+                auto res = this->checkBySchema<1>(path, &json);
+                if (res && res.value() && unzip.fileExists("about.md")) {
+                    // we can just reuse this variable
+                    readSize = 0;
+                    auto aboutData = unzip.getFileData("about.md", &readSize);
+                    if (!aboutData || !readSize) {
+                        return Err<>("\"" + path + "\": Unable to read about.md");
+                    }
+                    res.value()->m_info.m_details = std::string(aboutData, aboutData + readSize);
+                }
+                return res;
+            } break;
         }
 
         return Err<>(
