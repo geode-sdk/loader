@@ -9,8 +9,8 @@ set(GEODE_IMPLICIT_ENTRY Off)
 
 file(GLOB CORE_SOURCES
 	src/*.cpp
+	src/core/*.cpp
 	src/fixes/*.cpp
-	src/helper/*.cpp
 	src/internal/*.cpp
 	src/hooks/*.cpp
 	src/gui/loading/*.cpp
