@@ -10,7 +10,7 @@ namespace geode::core {
 
 		void addJump(void* at, void* to);
 
-		void handleContext(void* context, void* original, void* current);
+		void handleContext(void* context, void* current);
 	}
 
 	namespace hook {

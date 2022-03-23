@@ -9,12 +9,6 @@
     // #include "iOS.hpp"
 #endif
 
-#include <mach/mach.h>
-#include <mach/task.h>
-#include <mach/mach_port.h>
-#include <mach/mach_vm.h>       /* mach_vm_*            */
-#include <mach/mach_init.h>     /* mach_task_self()     */
-
 namespace geode::core::impl {
 	namespace {
 		auto& originalBytes() {
@@ -62,24 +56,29 @@ namespace geode::core::impl {
 		TargetPlatform::writeMemory(at, (void*)TargetPlatform::getJump(at, to).data(), TargetPlatform::getJumpSize(at, to));
 	}
 
-	void handleContext(void* context, void* original, void* current) {
+	void handleContext(void* context, void* current) {
+		static thread_local void* original = nullptr;
+		static thread_local bool originalFlag = false;
+
 		for (auto& [k, v] : unhandledTrampolines()) {
-			if (v == original) {
+			if (v == current) {
 				// we are inside a trampoline, which means we need 
 				// to jump to the original function and add a trap
 				// instruction to the original function to mark the
 				// beginning of the instruction measuring
 				
-				const size_t jumpSize = TargetPlatform::getJumpSize(original, k);
-				TargetPlatform::writeMemory(original, (void*)TargetPlatform::getJump(original, k).data(), jumpSize);
+				const size_t jumpSize = TargetPlatform::getJumpSize(current, k);
+				TargetPlatform::writeMemory(current, (void*)TargetPlatform::getJump(current, k).data(), jumpSize);
 
 				const size_t trapSize = TargetPlatform::getTrapSize();
 				TargetPlatform::writeMemory(k, (void*)TargetPlatform::getTrap().data(), trapSize);
 
+				originalFlag = true;
+
 				return;
 			}
 		}
-		if (original == current) { 
+		if (originalFlag) { 
 			// we are at the beginning of the original function,
 			// which means we need to put back the original 
 			// instructions and enable single stepping to
@@ -87,6 +86,9 @@ namespace geode::core::impl {
 			//
 			// we can get rid of the original bytes vector since
 			// we already recovered it
+
+			original = current;
+			originalFlag = false;
 
 			auto origBytes = originalBytes()[original];
 			TargetPlatform::writeMemory(original, (void*)origBytes->data(), origBytes->size()); 

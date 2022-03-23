@@ -13,12 +13,12 @@ namespace geode::core::impl {
             return T::trap.size();
         }
 
-        static const std::vector<std::byte> getJump(const void* from, const void* to) {
+        static const std::vector<std::byte> getJump(void* from, void* to) {
 			static_assert(&T::jump, "implement jump");
             return T::jump(from, to);
         }
 
-        static const size_t getJumpSize(const void* from, const void* to) {
+        static const size_t getJumpSize(void* from, void* to) {
         	static_assert(&T::jump, "implement trap");
             return T::jump(from, to).size();
         }
@@ -28,7 +28,7 @@ namespace geode::core::impl {
             return T::allocateVM(size);
         }
 
-	    static bool writeMemory(const void* to, const void* from, const size_t size) {
+	    static bool writeMemory(void* to, void* from, size_t size) {
 	    	static_assert(&Platform<T>::writeMemory != &T::writeMemory, "implement writeMemory");
 	        return T::writeMemory(to, from, size);
 	    }

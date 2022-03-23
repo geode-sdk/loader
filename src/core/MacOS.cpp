@@ -14,24 +14,12 @@ using namespace geode::core::hook;
 using namespace geode::core::impl;
 
 namespace {
-	thread_local void* original = nullptr;
-
-    void sigtrap(int signal, siginfo_t* signal_info, void* vcontext) {
-    	std::cout << "SIGTRAP" << std::endl;
+    void signalHandler(int signal, siginfo_t* signal_info, void* vcontext) {
         auto context = reinterpret_cast<ucontext_t*>(vcontext);
 
         auto current = reinterpret_cast<void*>(context->uc_mcontext->__ss.__rip);
 
-        handleContext(vcontext, original, current);
-    }
-
-    void sigill(int signal, siginfo_t* signal_info, void* vcontext) {
-    	std::cout << "SIGILL" << std::endl;
-        ucontext_t* context = reinterpret_cast<ucontext_t*>(vcontext);
-
-        original = reinterpret_cast<void*>(context->uc_mcontext->__ss.__rip);
-
-        handleContext(vcontext, original, original);
+        handleContext(vcontext, current);
     }
 }
 
@@ -57,7 +45,7 @@ void* MacOSX::allocateVM(size_t size) {
 	return (void*)ret;
 }
 
-std::vector<std::byte> MacOSX::jump(const void* from, const void* to) {
+std::vector<std::byte> MacOSX::jump(void* from, void* to) {
 	constexpr size_t size = sizeof(int) + 1;
 	std::vector<std::byte> ret(size);
 	ret[0] = {0xe9};
@@ -70,7 +58,7 @@ std::vector<std::byte> MacOSX::jump(const void* from, const void* to) {
 }
 
 
-bool MacOSX::writeMemory(const void* to, const void* from, const size_t size) {
+bool MacOSX::writeMemory(void* to, void* from, size_t size) {
 
 	kern_return_t status; //return status
 
@@ -112,14 +100,9 @@ bool MacOSX::initialize() {
 		EXCEPTION_DEFAULT,
 		0); 
 	// first reached here
-    struct sigaction illaction = {};
-    illaction.sa_sigaction = &sigill;
-    illaction.sa_flags = SA_SIGINFO;
+    struct sigaction action = {};
+    action.sa_sigaction = &signalHandler;
+    action.sa_flags = SA_SIGINFO;
 
-    // afterwards reached here
-    struct sigaction trapaction = {};
-    trapaction.sa_sigaction = &sigtrap;
-    trapaction.sa_flags = SA_SIGINFO;
-
-    return sigaction(SIGILL, &illaction, NULL) == 0 && sigaction(SIGTRAP, &trapaction, NULL) == 0;
+    return sigaction(SIGILL, &action, NULL) == 0 && sigaction(SIGTRAP, &action, NULL) == 0;
 }
