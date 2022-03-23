@@ -10,7 +10,7 @@ namespace geode::core::impl {
         }
 
         static const size_t getTrapSize() {
-            return sizeof(T::trap);
+            return T::trap.size();
         }
 
         static const std::vector<std::byte> getJump(const void* from, const void* to) {

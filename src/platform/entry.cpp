@@ -12,14 +12,14 @@ int geodeEntry(void* platformData) {
         );
     }
 
-    // if (!geode::core::initialize()) {
-    //     Geode::platformMessageBox(
-    //         "Unable to load Geode!",
-    //         "There was an unknown fatal error setting up "
-    //         "internal tools and Geode can not be loaded. "
-    //         "(Unable to set up hook manager)"
-    //     );
-    // }
+    if (!geode::core::hook::initialize()) {
+        Geode::platformMessageBox(
+            "Unable to load Geode!",
+            "There was an unknown fatal error setting up "
+            "internal tools and Geode can not be loaded. "
+            "(Unable to set up hook manager)"
+        );
+    }
 
     Interface::get()->init(InternalMod::get());
 

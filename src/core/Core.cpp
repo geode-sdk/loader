@@ -9,14 +9,25 @@
     // #include "iOS.hpp"
 #endif
 
+#include <mach/mach.h>
+#include <mach/task.h>
+#include <mach/mach_port.h>
+#include <mach/mach_vm.h>       /* mach_vm_*            */
+#include <mach/mach_init.h>     /* mach_task_self()     */
+
 namespace geode::core::impl {
 	namespace {
-		auto originalBytes() {
-			static std::map<void*, std::vector<std::byte>> ret;
+		auto& originalBytes() {
+			static std::map<void*, std::vector<std::byte>*> ret;
 			return ret;
 		}
 
-		auto unhandledTrampolines() {
+		auto& unhandledTrampolines() {
+			static std::map<void*, void*> ret;
+			return ret;
+		}
+
+		auto& unhandledHandlers() {
 			static std::map<void*, void*> ret;
 			return ret;
 		}
@@ -26,51 +37,104 @@ namespace geode::core::impl {
 		static constexpr size_t MAX_TRAMPOLINE_SIZE = 0x40;
 		auto trampoline = TargetPlatform::allocateVM(MAX_TRAMPOLINE_SIZE);
 		unhandledTrampolines()[address] = trampoline;
+
+		// we need to add a trap instruction to the trampoline
+		// so that it will go to handleContext
+		const size_t trapSize = TargetPlatform::getTrapSize();
+		TargetPlatform::writeMemory(trampoline, (void*)TargetPlatform::getTrap().data(), trapSize);
 		return trampoline;
 	}
 
 	void addJump(void* at, void* to) {
-		if (unhandledTrampolines().find(at) != unhandledTrampolines().end()) { // trampoline not finished
-			// we d-dont have original bytes set up
-			const size_t trapSize = TargetPlatform::getTrapSize();
-			originalBytes()[at].reserve(trapSize);
+		if (unhandledTrampolines().find(at) != unhandledTrampolines().end()) {
+			// we havent set up the trampoline yet, so this means
+			// we need to preserve the original bytes to use when
+			// populating the trampoline. we need to save the handler
+			// to set a jump to it when we finish the trampoline too.
 
-			// set up the illegal trap
-			std::memcpy((void*)originalBytes()[at].data(), at, trapSize);
-			std::memcpy(at, (void*)TargetPlatform::getTrap().data(), trapSize);
+			const size_t jumpSize = TargetPlatform::getJumpSize(at, to);
+
+			originalBytes().insert( {at, new std::vector<std::byte>(jumpSize, std::byte(0x00))} );
+			TargetPlatform::writeMemory((void*)originalBytes()[at]->data(), at, jumpSize);
+
+			unhandledHandlers()[at] = to;
 		}
-		else {
-			std::memcpy(at, (void*)TargetPlatform::getJump(at, to).data(), TargetPlatform::getJumpSize(at, to));
-		}
+		TargetPlatform::writeMemory(at, (void*)TargetPlatform::getJump(at, to).data(), TargetPlatform::getJumpSize(at, to));
 	}
 
 	void handleContext(void* context, void* original, void* current) {
+		for (auto& [k, v] : unhandledTrampolines()) {
+			if (v == original) {
+				// we are inside a trampoline, which means we need 
+				// to jump to the original function and add a trap
+				// instruction to the original function to mark the
+				// beginning of the instruction measuring
+				
+				const size_t jumpSize = TargetPlatform::getJumpSize(original, k);
+				TargetPlatform::writeMemory(original, (void*)TargetPlatform::getJump(original, k).data(), jumpSize);
+
+				const size_t trapSize = TargetPlatform::getTrapSize();
+				TargetPlatform::writeMemory(k, (void*)TargetPlatform::getTrap().data(), trapSize);
+
+				return;
+			}
+		}
 		if (original == current) { 
-			//remove the trap
+			// we are at the beginning of the original function,
+			// which means we need to put back the original 
+			// instructions and enable single stepping to
+			// come back to here every instruction
+			//
+			// we can get rid of the original bytes vector since
+			// we already recovered it
+
 			auto origBytes = originalBytes()[original];
-			TargetPlatform::writeMemory(original, (void*)origBytes.data(), origBytes.size()); 
+			TargetPlatform::writeMemory(original, (void*)origBytes->data(), origBytes->size()); 
+			delete origBytes;
 			originalBytes().erase(original);
 
-			// enable single step
 			TargetPlatform::enableSingleStep(context);
 			return;
 		}
 		else {
+			// we are at an instruction somewhere after the 
+			// beginning of the original function, which
+			// means we need to check if we can fit a jump
+			// instruction 
 			auto trampoline = unhandledTrampolines()[original];
 
-			const size_t jumpSize = TargetPlatform::getJumpSize(trampoline, original);
-			const size_t difference = (size_t*)current - (size_t*)original;
+			const size_t jumpSize = TargetPlatform::getJumpSize(trampoline, unhandledHandlers()[original]);
+			const size_t difference = (size_t)current - (size_t)original;
+
 			if (difference >= jumpSize) {
-				// if the size is found, copy the contents to vm
-				std::memcpy(trampoline, original, difference);
-				std::memcpy((void*)((size_t)trampoline + difference), (void*)TargetPlatform::getJump(trampoline, original).data(), difference);
+				// we have enough space to fit a jump from the 
+				// beginning of the function to the handler
+				// now we can copy the instructions we have
+				// measured to the trampoline, add a jump back
+				// at the end of it. and also put the jump from
+				// the original function to the handler.
+				// now that we are done, we can disable single 
+				// stepping
 
-				unhandledTrampolines().erase(original);
+				TargetPlatform::writeMemory(trampoline, original, difference);
+				TargetPlatform::writeMemory(
+					(void*)((size_t)trampoline + difference), 
+					(void*)TargetPlatform::getJump(
+						(void*)((size_t)trampoline + difference), 
+						(void*)((size_t)original + difference)
+					).data(), difference);
 
-				addJump(original, trampoline);
+				TargetPlatform::writeMemory(
+					original, 
+					(void*)TargetPlatform::getJump(original, unhandledHandlers()[original]).data(), 
+					TargetPlatform::getJumpSize(original, unhandledHandlers()[original])); 
 
 				TargetPlatform::disableSingleStep(context);
+
+				unhandledTrampolines().erase(original);
+				unhandledHandlers().erase(original);
 			}
+			return;
 		}
 	}
 }

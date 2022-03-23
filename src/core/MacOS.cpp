@@ -17,6 +17,7 @@ namespace {
 	thread_local void* original = nullptr;
 
     void sigtrap(int signal, siginfo_t* signal_info, void* vcontext) {
+    	std::cout << "SIGTRAP" << std::endl;
         auto context = reinterpret_cast<ucontext_t*>(vcontext);
 
         auto current = reinterpret_cast<void*>(context->uc_mcontext->__ss.__rip);
@@ -25,6 +26,7 @@ namespace {
     }
 
     void sigill(int signal, siginfo_t* signal_info, void* vcontext) {
+    	std::cout << "SIGILL" << std::endl;
         ucontext_t* context = reinterpret_cast<ucontext_t*>(vcontext);
 
         original = reinterpret_cast<void*>(context->uc_mcontext->__ss.__rip);
@@ -35,13 +37,13 @@ namespace {
 
 bool MacOSX::enableSingleStep(void* vcontext) {
 	auto context = reinterpret_cast<ucontext_t*>(vcontext);
-	context->uc_mcontext->__ss.__rflags &= ~((unsigned long)0x100);
+	context->uc_mcontext->__ss.__rflags |= ((unsigned long)0x100);
 	return true;
 }
 
 bool MacOSX::disableSingleStep(void* vcontext) {
 	auto context = reinterpret_cast<ucontext_t*>(vcontext);
-	context->uc_mcontext->__ss.__rflags |= ((unsigned long)0x100);
+	context->uc_mcontext->__ss.__rflags &= ~((unsigned long)0x100);
 	return true;
 }
 
@@ -60,7 +62,7 @@ std::vector<std::byte> MacOSX::jump(const void* from, const void* to) {
 	std::vector<std::byte> ret(size);
 	ret[0] = {0xe9};
 
-	int offset = (int)((size_t*)to - (size_t*)from - size);
+	int offset = (int)((size_t)to - (size_t)from - size);
 	// im too lazy
 	((int*)((size_t)ret.data() + 1))[0] = offset;
 
@@ -73,26 +75,31 @@ bool MacOSX::writeMemory(const void* to, const void* from, const size_t size) {
 	kern_return_t status; //return status
 
 	mach_vm_size_t vmsize;
-    mach_vm_address_t address = (vm_address_t)to;
+    mach_vm_address_t address = (mach_vm_address_t)to;
     vm_region_basic_info_data_t info;
     mach_msg_type_number_t info_count = VM_REGION_BASIC_INFO_COUNT;
-    memory_object_name_t object;
+    mach_port_t object;
 
-    // get memory protection
-    status = mach_vm_region(mach_task_self(), &address, &vmsize, VM_REGION_BASIC_INFO, (vm_region_info_t)&info, &info_count, &object);
-    if (status != KERN_SUCCESS) return false;
+    // std::cout << "get memory protection" << std::endl;
+    // // get memory protection
+    // status = mach_vm_region(mach_task_self(), &address, &vmsize, VM_REGION_BASIC_INFO, (vm_region_info_t)&info, &info_count, &object);
+    // std::cout << status << std::endl;
+    // if (status != KERN_SUCCESS) return false;
 
+    // std::cout << "set to write protection" << std::endl;
     // set to write protection
-    status = mach_vm_protect(mach_task_self(), (mach_vm_address_t)to, size, FALSE, VM_PROT_WRITE | VM_PROT_READ);
+    status = mach_vm_protect(mach_task_self(), (mach_vm_address_t)to, size, FALSE, VM_PROT_COPY | VM_PROT_EXECUTE | VM_PROT_WRITE | VM_PROT_READ);
     if (status != KERN_SUCCESS) return false;
 
+    // std::cout << "write to memory" << std::endl;
     // write to memory
     status = mach_vm_write(mach_task_self(), (mach_vm_address_t)to, (vm_offset_t)from, (mach_msg_type_number_t)size);
     if (status != KERN_SUCCESS) return false;
 
-    // revert to old protection
-    status = mach_vm_protect(mach_task_self(), (mach_vm_address_t)to, size, FALSE, info.protection);
-    if (status != KERN_SUCCESS) return false;
+    // std::cout << "revert to old protection" << std::endl;
+    // // revert to old protection
+    // status = mach_vm_protect(mach_task_self(), (mach_vm_address_t)to, size, FALSE, info.protection);
+    // if (status != KERN_SUCCESS) return false;
 
     return status == KERN_SUCCESS;
 }
