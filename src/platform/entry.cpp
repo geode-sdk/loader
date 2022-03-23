@@ -12,7 +12,7 @@ int geodeEntry(void* platformData) {
         );
     }
 
-    // if (!geode::core::hook::initialize()) {
+    // if (!geode::core::initialize()) {
     //     Geode::platformMessageBox(
     //         "Unable to load Geode!",
     //         "There was an unknown fatal error setting up "

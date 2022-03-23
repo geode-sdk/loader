@@ -1,6 +1,6 @@
 #include <core/Hook.hpp>
 #include <unordered_map>
-#include "Inline.hpp"
+#include "Core.hpp"
 
 namespace geode::core::impl {
 	namespace {
@@ -38,7 +38,9 @@ namespace geode::core::impl {
 		if (mappedTrampolines().find(address) == mappedTrampolines().end()) {
 	        std::cout << "allocate trampoline vector for " << address << std::endl;
 	        mappedTrampolines().insert({address, new std::vector<void*>});
-			generatedTrampolines()[address] = generateRawTrampoline(address);
+	        if (generatedTrampolines().find(address) == generatedTrampolines().end()) {
+	        	generatedTrampolines()[address] = generateRawTrampoline(address);
+	        }
 	    }
 	    auto puretramp = generatedTrampolines()[address];
 	    mappedTrampolines()[address]->push_back(generatedTrampoline); 
