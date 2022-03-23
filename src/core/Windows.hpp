@@ -4,9 +4,15 @@
 #include "Platform.hpp"
 
 namespace geode::core::impl {
-    class MacOSX : public Platform<MacOSX> {
+    class Windows : public Platform<Windows> {
     public:
-    	static inline auto trap = { std::byte(0x0f), std::byte(0x0b) };
+    #if defined(NDEBUG)
+        static inline auto trap = { std::byte(0xcc) };
+    #else
+        static inline auto trap = { std::byte(0x0f), std::byte(0x0b) };
+    #endif
+
+    public:
 
         static bool writeMemory(void* to, void* from, size_t size);
         static std::vector<std::byte> jump(void* from, void* to);
@@ -16,5 +22,5 @@ namespace geode::core::impl {
         static void* allocateVM(size_t size);
     };
 
-    using TargetPlatform = Platform<MacOSX>;
+    using TargetPlatform = Platform<WindowsX86>;
 }

@@ -1,6 +1,8 @@
 #include "MacOS.hpp"
 #include "Core.hpp"
 
+#ifdef GEODE_IS_MACOS
+
 #include <mach/mach.h>
 #include <mach/task.h>
 #include <mach/mach_port.h>
@@ -106,3 +108,5 @@ bool MacOSX::initialize() {
 
     return sigaction(SIGILL, &action, NULL) == 0 && sigaction(SIGTRAP, &action, NULL) == 0;
 }
+
+#endif
