@@ -23,7 +23,7 @@ namespace geode::core::impl {
 	}
 
 	void* generateRawTrampoline(void* address) {
-		static constexpr MAX_TRAMPOLINE_SIZE = 0x40;
+		static constexpr size_t MAX_TRAMPOLINE_SIZE = 0x40;
 		auto trampoline = TargetPlatform::allocateVM(MAX_TRAMPOLINE_SIZE);
 		unhandledTrampolines()[address] = trampoline;
 		return trampoline;
@@ -36,15 +36,15 @@ namespace geode::core::impl {
 			originalBytes()[at].reserve(trapSize);
 
 			// set up the illegal trap
-			std::memcpy((void*)originalBytes().data(), at, trapSize);
+			std::memcpy((void*)originalBytes()[at].data(), at, trapSize);
 			std::memcpy(at, (void*)TargetPlatform::getTrap().data(), trapSize);
 		}
 		else {
-			std::memcpy(at, (void*)TargetPlatform::getJump(at, to), TargetPlatform::getJumpSize(at, to));
+			std::memcpy(at, (void*)TargetPlatform::getJump(at, to).data(), TargetPlatform::getJumpSize(at, to));
 		}
 	}
 
-	void handleContext(void* context, const void* original, const void* current) {
+	void handleContext(void* context, void* original, void* current) {
 		if (original == current) { 
 			//remove the trap
 			auto origBytes = originalBytes()[original];
@@ -56,13 +56,14 @@ namespace geode::core::impl {
 			return;
 		}
 		else {
-			auto trampoline = unhandledTrampolines[original];
+			auto trampoline = unhandledTrampolines()[original];
 
 			const size_t jumpSize = TargetPlatform::getJumpSize(trampoline, original);
-			if (current - original >= jumpSize) {
+			const size_t difference = (size_t*)current - (size_t*)original;
+			if (difference >= jumpSize) {
 				// if the size is found, copy the contents to vm
-				std::memcpy(trampoline, original, current - original);
-				std::memcpy((void*)((size_t)trampoline + (current - original)), TargetPlatform::getJump(trampoline, original), current - original);
+				std::memcpy(trampoline, original, difference);
+				std::memcpy((void*)((size_t)trampoline + difference), (void*)TargetPlatform::getJump(trampoline, original).data(), difference);
 
 				unhandledTrampolines().erase(original);
 
@@ -72,4 +73,8 @@ namespace geode::core::impl {
 			}
 		}
 	}
+}
+
+bool geode::core::hook::initialize() {
+	return geode::core::impl::TargetPlatform::initialize();
 }

@@ -11,16 +11,17 @@
 #include <sys/ucontext.h>       /* ucontext_t           */
 
 using namespace geode::core::hook;
+using namespace geode::core::impl;
 
 namespace {
 	thread_local void* original = nullptr;
 
     void sigtrap(int signal, siginfo_t* signal_info, void* vcontext) {
-        ucontext_t* context = reinterpret_cast<ucontext_t*>(vcontext);
+        auto context = reinterpret_cast<ucontext_t*>(vcontext);
 
-        const void* current = reinterpret_cast<const void*>(context->uc_mcontext->__ss.__rip);
+        auto current = reinterpret_cast<void*>(context->uc_mcontext->__ss.__rip);
 
-        impl::handleContext(vcontext, original, current);
+        handleContext(vcontext, original, current);
     }
 
     void sigill(int signal, siginfo_t* signal_info, void* vcontext) {
@@ -28,16 +29,38 @@ namespace {
 
         original = reinterpret_cast<void*>(context->uc_mcontext->__ss.__rip);
 
-        impl::handleContext(vcontext, original, original);
+        handleContext(vcontext, original, original);
     }
 }
 
-std::vector<std::byte> jump(const void* from, const void* to) {
+bool MacOSX::enableSingleStep(void* vcontext) {
+	auto context = reinterpret_cast<ucontext_t*>(vcontext);
+	context->uc_mcontext->__ss.__rflags &= ~((unsigned long)0x100);
+	return true;
+}
+
+bool MacOSX::disableSingleStep(void* vcontext) {
+	auto context = reinterpret_cast<ucontext_t*>(vcontext);
+	context->uc_mcontext->__ss.__rflags |= ((unsigned long)0x100);
+	return true;
+}
+
+void* MacOSX::allocateVM(size_t size) {
+	mach_vm_address_t ret;
+
+	kern_return_t status; //return status
+
+	status = mach_vm_allocate(mach_task_self(), &ret, (mach_vm_size_t)size, VM_FLAGS_ANYWHERE);
+
+	return (void*)ret;
+}
+
+std::vector<std::byte> MacOSX::jump(const void* from, const void* to) {
 	constexpr size_t size = sizeof(int) + 1;
 	std::vector<std::byte> ret(size);
 	ret[0] = {0xe9};
 
-	int offset = (int)(to - from - size_of_jump);
+	int offset = (int)((size_t*)to - (size_t*)from - size);
 	// im too lazy
 	((int*)((size_t)ret.data() + 1))[0] = offset;
 
@@ -49,8 +72,8 @@ bool MacOSX::writeMemory(const void* to, const void* from, const size_t size) {
 
 	kern_return_t status; //return status
 
-	vm_size_t vmsize;
-    vm_address_t address = (vm_address_t)to;
+	mach_vm_size_t vmsize;
+    mach_vm_address_t address = (vm_address_t)to;
     vm_region_basic_info_data_t info;
     mach_msg_type_number_t info_count = VM_REGION_BASIC_INFO_COUNT;
     memory_object_name_t object;
@@ -82,12 +105,12 @@ bool MacOSX::initialize() {
 		EXCEPTION_DEFAULT,
 		0); 
 	// first reached here
-    sigaction illaction = {};
+    struct sigaction illaction = {};
     illaction.sa_sigaction = &sigill;
     illaction.sa_flags = SA_SIGINFO;
 
     // afterwards reached here
-    sigaction trapaction = {};
+    struct sigaction trapaction = {};
     trapaction.sa_sigaction = &sigtrap;
     trapaction.sa_flags = SA_SIGINFO;
 

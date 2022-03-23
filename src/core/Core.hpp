@@ -10,12 +10,10 @@ namespace geode::core {
 
 		void addJump(void* at, void* to);
 
-		void handleContext(void* context, const void* current);
+		void handleContext(void* context, void* original, void* current);
 	}
 
 	namespace hook {
-		inline bool initialize() {
-			return TargetPlatform::initialize();
-		}
+		bool initialize();
 	}
 }
