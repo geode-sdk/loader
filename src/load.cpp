@@ -26,6 +26,11 @@ bool Mod::validateID(std::string const& id) {
     return true;
 }
 
+std::string sanitizeDetailsData(unsigned char* start, unsigned char* end) {
+    // delete CRLF
+    return string_utils::replace(std::string(start, end), "\r", "");
+}
+
 template<> Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData);
 
 Result<Mod*> Loader::loadModFromFile(std::string const& path) {
@@ -92,7 +97,7 @@ Result<Mod*> Loader::loadModFromFile(std::string const& path) {
                     if (!aboutData || !readSize) {
                         return Err<>("\"" + path + "\": Unable to read about.md");
                     }
-                    res.value()->m_info.m_details = std::string(aboutData, aboutData + readSize);
+                    res.value()->m_info.m_details = sanitizeDetailsData(aboutData, aboutData + readSize);
                 }
                 return res;
             } break;
