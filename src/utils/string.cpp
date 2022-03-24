@@ -156,8 +156,7 @@ std::vector<std::string> string_utils::split(
             res.push_back(s.substr(0, pos));
             s.erase(0, pos + split.length());
         }
-        if (s.size())
-            res.push_back(s);
+        res.push_back(s);
     }
     return res;
 }
@@ -174,8 +173,7 @@ std::vector<std::wstring> string_utils::split(
             res.push_back(s.substr(0, pos));
             s.erase(0, pos + split.length());
         }
-        if (s.size())
-            res.push_back(s);
+        res.push_back(s);
     }
     return res;
 }
