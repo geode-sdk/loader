@@ -68,6 +68,38 @@ std::wstring string_utils::toLower(std::wstring const& str) {
     return string_utils::toLowerIP(ret);
 }
 
+std::string& string_utils::toUpperIP(std::string& str) {
+    std::transform(
+        str.begin(), str.end(),
+        str.begin(),
+        [](auto c) {
+            return std::toupper(c);
+        }
+    );
+    return str;
+}
+
+std::wstring& string_utils::toUpperIP(std::wstring& str) {
+    std::transform(
+        str.begin(), str.end(),
+        str.begin(),
+        [](auto c) {
+            return std::towupper(c);
+        }
+    );
+    return str;
+}
+
+std::string string_utils::toUpper(std::string const& str) {
+    std::string ret = str;
+    return string_utils::toUpperIP(ret);
+}
+
+std::wstring string_utils::toUpper(std::wstring const& str) {
+    std::wstring ret = str;
+    return string_utils::toUpperIP(ret);
+}
+
 std::string& string_utils::replaceIP(
     std::string & str,
     std::string const& orig,
