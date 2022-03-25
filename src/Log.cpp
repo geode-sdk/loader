@@ -9,13 +9,20 @@
 #include <iomanip>
 
 std::ostream& operator<<(std::ostream& os, Mod* mod) {
-    if (mod) os << "[ Mod ]";
-    os << "[" + std::string(mod->getName()) + "]";
+    if (mod) {
+        os << "{ Mod, " + std::string(mod->getName()) + " }";
+    } else {
+        os << "{ Mod, null }";
+    }
     return os;
 }
 
 std::ostream& operator<<(std::ostream& os, cocos2d::CCObject* obj) {
-    os << "{ " + std::string(typeid(*obj).name()) + ", " + utils::intToHex(obj)  + " }";
+    if (obj) {
+        os << "{ " + std::string(typeid(*obj).name()) + ", " + utils::intToHex(obj)  + " }";
+    } else {
+        os << "{ CCObject, null }";
+    }
     return os;
 }
 
@@ -154,31 +161,31 @@ Log& operator<<(Log& l, cocos2d::CCArray* a) {
 }
 
 CCObjectMeta::CCObjectMeta(cocos2d::CCObject* obj) : LogMetadata("") {
-    obj->retain();
+    CC_SAFE_RETAIN(obj);
     m_obj = obj;
 }
 
 CCObjectMeta::CCObjectMeta(std::string const& r, cocos2d::CCObject* obj) : LogMetadata(r) {
-    obj->retain();
+    CC_SAFE_RETAIN(obj);
     m_obj = obj;
 }
 
 CCObjectMeta::~CCObjectMeta() {
-    m_obj->release();
+    CC_SAFE_RELEASE(m_obj);
 } 
 
 CCArrayMeta::CCArrayMeta(cocos2d::CCArray* arr) : LogMetadata("") {
-    arr->retain();
+    CC_SAFE_RETAIN(arr);
     m_arr = arr;
 }
 
 CCArrayMeta::CCArrayMeta(std::string const& r, cocos2d::CCArray* arr) : LogMetadata(r) {
-    arr->retain();
+    CC_SAFE_RETAIN(arr);
     m_arr = arr;
 }
 
 CCArrayMeta::~CCArrayMeta() {
-    m_arr->release();
+    CC_SAFE_RELEASE(m_arr);
 } 
 
 
