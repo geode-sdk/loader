@@ -25,6 +25,19 @@ std::wstring string_utils::utf8ToWide(std::string const& str) {
 
 #endif
 
+bool string_utils::startsWith(std::string const& str, std::string const& prefix) {
+	return str.rfind(prefix, 0) == 0;
+}
+bool string_utils::startsWith(std::wstring const& str, std::wstring const& prefix) {
+	return str.rfind(prefix, 0) == 0;
+}
+bool string_utils::endsWith(std::string const& str, std::string const& suffix) {
+	return str.find(prefix, str.size()-suffix.size()) == 0;
+}
+bool string_utils::endsWith(std::wstring const& str, std::wstring const& suffix) {
+	return str.find(prefix, str.size()-suffix.size()) == 0;
+}
+
 bool string_utils::endsWith(std::string const& str, std::string const& substr) {
     // https://stackoverflow.com/questions/874134/find-out-if-string-ends-with-another-string-in-c
     if (substr.size() > str.size()) return false;
