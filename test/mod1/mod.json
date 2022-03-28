@@ -6,6 +6,5 @@
     "developer":    "Geode Team",
     "description":  "Test Mod #1",
 	"dependencies": null,
-    "binary": "TestMod1",
-    "settings": null
+    "binary": "TestMod1"
 }

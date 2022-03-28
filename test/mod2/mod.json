@@ -5,9 +5,7 @@
     "name":         "Geode Test 2",
     "developer":    "Geode Team",
     "description":  "Test Mod #2",
-    "binary": {
-        "*": "TestMod2"
-    },
+    "binary": "TestMod2",
 	"dependencies": [
         {
             "id": "com.geode.test_one",
