@@ -32,21 +32,10 @@ bool string_utils::startsWith(std::wstring const& str, std::wstring const& prefi
 	return str.rfind(prefix, 0) == 0;
 }
 bool string_utils::endsWith(std::string const& str, std::string const& suffix) {
-	return str.find(prefix, str.size()-suffix.size()) == 0;
+	return str.find(suffix, str.size()-suffix.size()) == 0;
 }
 bool string_utils::endsWith(std::wstring const& str, std::wstring const& suffix) {
-	return str.find(prefix, str.size()-suffix.size()) == 0;
-}
-
-bool string_utils::endsWith(std::string const& str, std::string const& substr) {
-    // https://stackoverflow.com/questions/874134/find-out-if-string-ends-with-another-string-in-c
-    if (substr.size() > str.size()) return false;
-    return std::equal(substr.rbegin(), substr.rend(), str.rbegin());
-}
-
-bool string_utils::endsWith(std::wstring const& str, std::wstring const& substr) {
-    if (substr.size() > str.size()) return false;
-    return std::equal(substr.rbegin(), substr.rend(), str.rbegin());
+	return str.find(suffix, str.size()-suffix.size()) == 0;
 }
 
 std::string& string_utils::toLowerIP(std::string& str) {
