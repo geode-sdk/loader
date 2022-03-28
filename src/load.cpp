@@ -344,9 +344,13 @@ struct json_check_unknown {
     json_check_unknown(nlohmann::json& json, std::string const& hierarchy) {
         for (auto& [key, _] : json.items()) {
             if (!json_check::s_knownKeys.count(key)) {
-                throw json_check_failure(
-                    "[mod.json]" + hierarchy + " contains unknown key \"" + std::string(key) + "\""
-                );
+                // throw json_check_failure(
+                //     "[mod.json]" + hierarchy + " contains unknown key \"" + std::string(key) + "\""
+                // );
+                InternalMod::get()->log() << Severity::Warning
+                    << "[mod.json]" << hierarchy
+                    << " contains unknown key \"" << key << "\"";
+                // todo: log as warning for mod
             }
         }
     }
