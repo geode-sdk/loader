@@ -37,6 +37,8 @@ http://www.angelcode.com/products/bmfont/ (Free, Windows only)
 #include <label_nodes/CCLabelBMFont.h>
 #include <cocoa/CCDictionary.h>
 
+#if CC_TARGET_PLATFORM != CC_PLATFORM_WIN32
+
 using namespace std;
 
 NS_CC_BEGIN
@@ -82,3 +84,5 @@ void FNTConfigRemoveCache( void )
 }
 
 NS_CC_END
+
+#endif
