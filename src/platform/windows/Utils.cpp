@@ -71,5 +71,8 @@ ghc::filesystem::path utils::dirs::geode_root() {
     return ghc::filesystem::path(CCFileUtils::sharedFileUtils()->getWritablePath2().c_str());
 }
 
+void geode::utils::web::openLinkInBrowser(std::string const& url) {
+    ShellExecuteA(0, 0, url.c_str(), 0, 0, SW_SHOW);
+}
 
 #endif
