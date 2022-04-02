@@ -2,14 +2,6 @@
 #include <unistd.h>
 #include <syslog.h>
 
-__attribute__((constructor)) static void ctor() {
-  DLOG(-1, "================================");
-  DLOG(-1, "Dobby");
-  DLOG(-1, "================================");
-
-  DLOG(-1, "dobby in debug log mode, disable with cmake flag \"-DDOBBY_DEBUG=OFF\"");
-}
-
 #endif
 
 #include "dobby_internal.h"
