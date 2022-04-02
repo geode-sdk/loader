@@ -46,14 +46,13 @@ set(INCLUDE_DIRECTORIES
 	src/internal/
 	src/platform/
 	src/gui/
-	# core/include/
-	# core/include/geode/core
+	dobby/include/
 )
 set(LINK_DIRECTORIES
-	# PRIVATE core
+	PRIVATE dobby
 )
 set(LINK_LIBRARIES
-	# geode_core_hook
+	dobby
 	CCZipUtils
 )
 
@@ -80,7 +79,7 @@ set_source_files_properties(${OBJC_SOURCES} PROPERTIES SKIP_PRECOMPILE_HEADERS O
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${HEADERS})
 
-# add_subdirectory(core)
+add_subdirectory(dobby)
 add_subdirectory(src/CCZipUtils)
 
 if(NOT GEODE_DONT_BUILD_TEST_MODS)
