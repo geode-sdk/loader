@@ -20,7 +20,7 @@ std::mutex g_unloadMutex;
 Loader* Loader::get() {
     static auto g_loader = new Loader;
     return g_loader;
-}
+} 
 
 void Loader::createDirectories() {
     auto modDir = this->getGeodeDirectory() / geodeModDirectory;
