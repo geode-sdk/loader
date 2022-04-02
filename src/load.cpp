@@ -26,6 +26,11 @@ bool Mod::validateID(std::string const& id) {
     return true;
 }
 
+std::string sanitizeDetailsData(unsigned char* start, unsigned char* end) {
+    // delete CRLF
+    return string_utils::replace(std::string(start, end), "\r", "");
+}
+
 template<> Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData);
 
 Result<Mod*> Loader::loadModFromFile(std::string const& path) {
@@ -84,8 +89,18 @@ Result<Mod*> Loader::loadModFromFile(std::string const& path) {
         // Handle mod.json data based on target
         switch (schema) {
             case 1: {
-                return this->checkBySchema<1>(path, &json);
-            }
+                auto res = this->checkBySchema<1>(path, &json);
+                if (res && res.value() && unzip.fileExists("about.md")) {
+                    // we can just reuse this variable
+                    readSize = 0;
+                    auto aboutData = unzip.getFileData("about.md", &readSize);
+                    if (!aboutData || !readSize) {
+                        return Err<>("\"" + path + "\": Unable to read about.md");
+                    }
+                    res.value()->m_info.m_details = sanitizeDetailsData(aboutData, aboutData + readSize);
+                }
+                return res;
+            } break;
         }
 
         return Err<>(
@@ -122,6 +137,7 @@ struct json_check {
     std::string m_key = "";
     std::string m_hierarchy = "";
     std::string m_types = "";
+    static std::set<std::string_view> s_knownKeys;
 
     nlohmann::json const& get_json() {
         return m_key.size() ? m_json[m_key] : m_json;
@@ -131,6 +147,7 @@ struct json_check {
 
     json_check& has(std::string_view const& key) {
         if (!m_continue) return *this;
+        s_knownKeys.insert(key);
         m_continue = m_json.contains(key);
         m_key = key;
         return *this;
@@ -141,6 +158,7 @@ struct json_check {
             throw json_check_failure(
                 "[mod.json]" + m_hierarchy + " is missing required key \"" + std::string(key) + "\""
             );
+        s_knownKeys.insert(key);
         m_key = key;
         m_required = true;
         return *this;
@@ -306,6 +324,8 @@ struct json_check {
     }
 };
 
+std::set<std::string_view> json_check::s_knownKeys = {};
+
 template<typename T>
 struct json_assign_required : json_check {
     json_assign_required(nlohmann::json& json, std::string_view const& key, T& var) : json_check(json) {
@@ -317,6 +337,22 @@ template<typename T>
 struct json_assign_optional : json_check {
     json_assign_optional(nlohmann::json& json, std::string_view const& key, T& var) : json_check(json) {
         this->has(key).template as<T>().into(var);
+    }
+};
+
+struct json_check_unknown {
+    json_check_unknown(nlohmann::json& json, std::string const& hierarchy) {
+        for (auto& [key, _] : json.items()) {
+            if (!json_check::s_knownKeys.count(key)) {
+                // throw json_check_failure(
+                //     "[mod.json]" + hierarchy + " contains unknown key \"" + std::string(key) + "\""
+                // );
+                InternalMod::get()->log() << Severity::Warning
+                    << "[mod.json]" << hierarchy
+                    << " contains unknown key \"" << key << "\"";
+                // todo: log as warning for mod
+            }
+        }
     }
 };
 
@@ -345,60 +381,7 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
     json_assign_required(json, "name", info.m_name);
     json_assign_required(json, "developer", info.m_developer);
     json_assign_optional(json, "description", info.m_description);
-    json_assign_optional(json, "details", info.m_details);
     json_assign_optional(json, "repository", info.m_repository);
-
-    json_check(json)
-        .has("credits")
-        .into_if<std::string>(info.m_creditsString)
-        .is<nlohmann::json::object_t>([&info](nlohmann::json const& jobj) -> void {
-            json_check(jobj)
-                .has("people")
-                .as<nlohmann::json::object_t>()
-                .each([&](auto key, auto val) -> void {
-                    auto credit = Credits::Person();
-                    credit.m_name = key;
-
-                    json_check(val)
-                        .has("gd")
-                        .into_if<std::string>(credit.m_gdAccountName)
-                        .into_if<int>(credit.m_gdAccountID)
-                        .is_ok();
-
-                    json_check(val)
-                        .has("role").into(credit.m_reason);
-
-                    json_check(val)
-                        .has("links")
-                        .as<nlohmann::json::object_t>()
-                        .each([&](auto site, auto url) -> void {
-                            json_check(url).into_as(credit.m_links[string_utils::toLower(site)]);
-                        });
-                });
-            
-            json_check(jobj)
-                .has("thanks")
-                .as<nlohmann::json::array_t>()
-                .each([&](auto json) -> void {
-                    json_check(json)
-                        .as<std::string>()
-                        .into([&info](auto item) -> void {
-                            info.m_credits.m_thanks.push_back(item.template get<std::string>());
-                        });
-                });
-            
-            json_check(jobj)
-                .has("libraries")
-                .as<nlohmann::json::object_t>()
-                .each([&](auto name, json_check url) -> void {
-                    url
-                        .as<std::string>()
-                        .into([&](auto item) -> void {
-                            info.m_credits.m_libraries.push_back({ name, url.template get<std::string>() });
-                        });
-                });
-        })
-        .is_ok();
 
     json_check(json)
         .has("dependencies")
@@ -413,6 +396,7 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
                 .validate([&](auto t) -> bool { return VersionInfo::validate(t.template get<std::string>()); })
                 .into([&info](auto json) -> void { info.m_version = VersionInfo(json.template get<std::string>()); });
             json_check(dep).has("required").as<bool>().into(depobj.m_required);
+            json_check_unknown(dep.m_json, dep.m_hierarchy);
             info.m_dependencies.push_back(depobj);
         });
     
@@ -440,6 +424,11 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
         });
     
     json_assign_optional(json, "toggleable", info.m_supportsDisabling);
+
+    json_check::s_knownKeys.insert("geode");
+    json_check::s_knownKeys.insert("binary");
+    json_check::s_knownKeys.insert("userdata");
+    json_check_unknown(json, "");
 
     } catch(std::exception& e) {
         return Err<>(e.what());

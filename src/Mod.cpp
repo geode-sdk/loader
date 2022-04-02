@@ -95,7 +95,7 @@ Result<> Mod::load() {
         RETURN_LOAD_ERR("Mod has unresolved dependencies");
     }
     auto err = this->loadPlatformBinary();
-    if (!err) RETURN_LOAD_ERR(err);
+    if (!err) RETURN_LOAD_ERR(err.error());
     if (this->m_implicitLoadFunc) {
         auto r = this->m_implicitLoadFunc(this);
         if (!r) {
@@ -117,6 +117,7 @@ Result<> Mod::load() {
             this->logInfo("Mod load data function returned false", Severity::Error);
         }
     }
+    m_loadErrorInfo = "";
     Loader::get()->updateAllDependencies();
     return Ok<>();
 }
@@ -257,10 +258,16 @@ bool Mod::updateDependencyStates() {
 		}
 	}
     if (!hasUnresolved && !this->m_resolved) {
+        Log::get() << Severity::Debug << "All dependencies for " << m_info.m_id << " found";
         this->m_resolved = true;
         if (this->m_enabled) {
+            Log::get() << Severity::Debug << "Resolved & loading " << m_info.m_id;
             auto r = this->load();
-            if (!r) this->logInfo(r.error(), Severity::Error);
+            if (!r) {
+                Log::get() << Severity::Error << this << "Error loading: " << r.error();
+            }
+        } else {
+            Log::get() << Severity::Debug << "Resolved " << m_info.m_id << ", however not loading it as it is disabled";
         }
     }
     return hasUnresolved;

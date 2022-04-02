@@ -26,4 +26,9 @@ ghc::filesystem::path utils::dirs::geode_root() {
 	return ghc::filesystem::path(cwd);
 }
 
+
+void utils::web::openLinkInBrowser(std::string const& url) {
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:[NSString stringWithUTF8String: url.c_str()]]];
+}
+
 #endif

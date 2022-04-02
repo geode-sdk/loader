@@ -25,15 +25,17 @@ std::wstring string_utils::utf8ToWide(std::string const& str) {
 
 #endif
 
-bool string_utils::endsWith(std::string const& str, std::string const& substr) {
-    // https://stackoverflow.com/questions/874134/find-out-if-string-ends-with-another-string-in-c
-    if (substr.size() > str.size()) return false;
-    return std::equal(substr.rbegin(), substr.rend(), str.rbegin());
+bool string_utils::startsWith(std::string const& str, std::string const& prefix) {
+	return str.rfind(prefix, 0) == 0;
 }
-
-bool string_utils::endsWith(std::wstring const& str, std::wstring const& substr) {
-    if (substr.size() > str.size()) return false;
-    return std::equal(substr.rbegin(), substr.rend(), str.rbegin());
+bool string_utils::startsWith(std::wstring const& str, std::wstring const& prefix) {
+	return str.rfind(prefix, 0) == 0;
+}
+bool string_utils::endsWith(std::string const& str, std::string const& suffix) {
+	return str.find(suffix, str.size()-suffix.size()) == 0;
+}
+bool string_utils::endsWith(std::wstring const& str, std::wstring const& suffix) {
+	return str.find(suffix, str.size()-suffix.size()) == 0;
 }
 
 std::string& string_utils::toLowerIP(std::string& str) {
@@ -66,6 +68,38 @@ std::string string_utils::toLower(std::string const& str) {
 std::wstring string_utils::toLower(std::wstring const& str) {
     std::wstring ret = str;
     return string_utils::toLowerIP(ret);
+}
+
+std::string& string_utils::toUpperIP(std::string& str) {
+    std::transform(
+        str.begin(), str.end(),
+        str.begin(),
+        [](auto c) {
+            return std::toupper(c);
+        }
+    );
+    return str;
+}
+
+std::wstring& string_utils::toUpperIP(std::wstring& str) {
+    std::transform(
+        str.begin(), str.end(),
+        str.begin(),
+        [](auto c) {
+            return std::towupper(c);
+        }
+    );
+    return str;
+}
+
+std::string string_utils::toUpper(std::string const& str) {
+    std::string ret = str;
+    return string_utils::toUpperIP(ret);
+}
+
+std::wstring string_utils::toUpper(std::wstring const& str) {
+    std::wstring ret = str;
+    return string_utils::toUpperIP(ret);
 }
 
 std::string& string_utils::replaceIP(
@@ -124,8 +158,7 @@ std::vector<std::string> string_utils::split(
             res.push_back(s.substr(0, pos));
             s.erase(0, pos + split.length());
         }
-        if (s.size())
-            res.push_back(s);
+        res.push_back(s);
     }
     return res;
 }
@@ -142,8 +175,7 @@ std::vector<std::wstring> string_utils::split(
             res.push_back(s.substr(0, pos));
             s.erase(0, pos + split.length());
         }
-        if (s.size())
-            res.push_back(s);
+        res.push_back(s);
     }
     return res;
 }
