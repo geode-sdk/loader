@@ -2,10 +2,6 @@
 #include <unistd.h>
 #include <syslog.h>
 
-#include "dobby_internal.h"
-
-#include "Interceptor.h"
-
 __attribute__((constructor)) static void ctor() {
   DLOG(-1, "================================");
   DLOG(-1, "Dobby");
@@ -13,6 +9,12 @@ __attribute__((constructor)) static void ctor() {
 
   DLOG(-1, "dobby in debug log mode, disable with cmake flag \"-DDOBBY_DEBUG=OFF\"");
 }
+
+#endif
+
+#include "dobby_internal.h"
+
+#include "Interceptor.h"
 
 PUBLIC const char *DobbyBuildVersion() {
   return __DOBBY_BUILD_VERSION__;
@@ -35,4 +37,3 @@ PUBLIC int DobbyDestroy(void *address) {
   return RT_FAILED;
 }
 
-#endif
