@@ -20,7 +20,7 @@ if(0)
 endif()
 
 # ===== Handle Option =====
-option(DOBBY_GENERATE_SHARED "Build shared library" ON)
+option(DOBBY_GENERATE_SHARED "Build shared library" OFF)
 
 option(DOBBY_DEBUG "Enable debug logging" OFF)
 
