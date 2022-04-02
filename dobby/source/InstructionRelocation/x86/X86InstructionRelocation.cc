@@ -22,8 +22,8 @@ static int GenRelocateCodeFixed(void *buffer, AssemblyCodeChunk *origin, Assembl
 #define _ turbo_assembler_.
 #define __ turbo_assembler_.GetCodeBuffer()->
 
-  addr64_t curr_orig_ip = origin->raw_instruction_start();
-  addr64_t curr_relo_ip = relocated->raw_instruction_start();
+  addr32_t curr_orig_ip = origin->raw_instruction_start();
+  addr32_t curr_relo_ip = relocated->raw_instruction_start();
 
   addr_t buffer_cursor = (addr_t)buffer;
 

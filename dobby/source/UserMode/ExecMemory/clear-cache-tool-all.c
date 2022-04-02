@@ -161,5 +161,5 @@ void __clear_cache(void *start, void *end) {
 }
 
 void ClearCache(void *start, void *end) {
-  return __clear_cache(start, end);
+    __clear_cache(start, end);
 }
