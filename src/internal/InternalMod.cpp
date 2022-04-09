@@ -1,4 +1,5 @@
 #include "InternalMod.hpp"
+#include "about.hpp"
 
 ModInfo getInternalModInfo() {
     ModInfo info;
@@ -7,7 +8,7 @@ ModInfo getInternalModInfo() {
     info.m_name        = "Geode";
     info.m_developer   = "Geode Team";
     info.m_description = "Internal representation";
-    info.m_details     = "Internal representation of Geode.";
+    info.m_details     = loader_about_md;
     info.m_creditsString = "";
     info.m_version     = { 1, 0, 0 };
     info.m_supportsDisabling = false;

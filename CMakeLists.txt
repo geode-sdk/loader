@@ -7,6 +7,9 @@ set(GEODE_BUILD_CODEGEN On)
 set(GEODE_NO_LINK_LOADER On)
 set(GEODE_NO_IMPLICIT_ENTRY On)
 
+file(READ about.md LOADER_ABOUT_MD)
+configure_file(src/internal/about.hpp.in ${CMAKE_SOURCE_DIR}/src/internal/about.hpp)
+
 file(GLOB CORE_SOURCES
 	src/*.cpp
 	src/fixes/*.cpp
