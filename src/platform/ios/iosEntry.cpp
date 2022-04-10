@@ -11,6 +11,8 @@ __attribute__((constructor)) void _entry() {
     uint32_t out = PATH_MAX;
     _NSGetExecutablePath(gddir, &out);
 
+    _geode_ios_base();
+
     ghc::filesystem::path gdpath = gddir;
 
     ghc::filesystem::current_path(gdpath.parent_path().parent_path());
