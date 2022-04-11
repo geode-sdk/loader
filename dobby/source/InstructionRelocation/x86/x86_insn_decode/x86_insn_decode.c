@@ -47,10 +47,17 @@
 #define OP_EMPTY_8 OP_EMPTY_4, OP_EMPTY_4
 #endif
 
+// #define op3_flag(x, f, o0, o1, o2)                                                                                     \
+//   {                                                                                                                    \
+//     .name = #x, .flags = (f), .operands[0] = {.data = #o0}, .operands[1] = {.data = #o1},                              \
+//     .operands[2] = {.data = #o2},                                                                                      \
+//   }
+
+
+// alk
 #define op3_flag(x, f, o0, o1, o2)                                                                                     \
   {                                                                                                                    \
-    .name = #x, .flags = (f), .operands[0] = {.data = #o0}, .operands[1] = {.data = #o1},                              \
-    .operands[2] = {.data = #o2},                                                                                      \
+    #x, { {(#o0)[0], (#o0)[1]}, {(#o1)[0], (#o1)[1]}, {(#o2)[0], (#o2)[1]} }, (f)                                                                                   \
   }
 #define op2_flag(x, f, o0, o1) op3_flag(x, f, o0, o1, __)
 #define op1_flag(x, f, o0) op2_flag(x, f, o0, __)

@@ -193,6 +193,7 @@ extern "C" {
 
 void x86_insn_decode(x86_insn_decode_t *insn, uint8_t *buffer, x86_options_t *conf);
 
+
 #ifdef __cplusplus
 }
 #endif
