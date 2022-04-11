@@ -10,6 +10,7 @@
 
 void CodeBuffer::Emit32(int32_t data) {
 	std::cout << std::hex << "Emit32: " << +data << std::endl;
+	std::cout << "cursor: " << (size_t)buffer_cursor << std::endl;
   ensureCapacity(getSize() + sizeof(int32_t));
   *reinterpret_cast<int32_t *>(getCursor()) = data;
   buffer_cursor += sizeof(int32_t);
