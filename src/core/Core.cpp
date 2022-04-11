@@ -12,6 +12,7 @@ namespace geode::core::impl {
 
 	void* generateRawTrampoline(void* address) {
         std::cout << "address: " << address << std::endl;
+        std::cout << "trampoline address is : " << trampolines()[address] << std::endl;
         return trampolines()[address];
 	}
 
