@@ -446,6 +446,9 @@ static void x86_insn_decode_opcode(x86_insn_reader_t *rd, x86_insn_decode_t *ins
     insn_spec = x86_opcode_map_one_byte[opcode];
   }
 
+  DLOG(0, "[x86 insn] opcode operands code %c %c %c", insn_spec.operands[0].code, insn_spec.operands[1].code, insn_spec.operands[2].code);
+  DLOG(0, "[x86 insn] opcode operands type %c %c %c", insn_spec.operands[0].type, insn_spec.operands[1].type, insn_spec.operands[2].type);
+
   // check sse group
   if (X86_INSN_FLAG_GET_GROUP(insn_spec.flags) > X86_INSN_SSE_GROUP_START) {
     UNIMPLEMENTED();
@@ -544,11 +547,13 @@ void x86_insn_decode(x86_insn_decode_t *insn, uint8_t *buffer, x86_options_t *co
   x86_insn_decode_opcode(&rd, insn, conf);
 
   if (x86_insn_has_modrm_byte(&insn->insn_spec)) {
+  	DLOG(0, "[x86 insn] %s has modrm", insn->insn_spec.name);
     // decode insn modrm sib (operand register, disp)
     x86_insn_decode_modrm_sib(&rd, insn, conf);
   }
 
   if (x86_insn_has_immediate(&insn->insn_spec)) {
+  	DLOG(0, "[x86 insn] %s has immediate", insn->insn_spec.name);
     // decode insn immeidate
     x86_insn_decode_immediate(&rd, insn, conf);
   }
