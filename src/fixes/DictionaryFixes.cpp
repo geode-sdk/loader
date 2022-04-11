@@ -12,7 +12,7 @@
 // 	const CCString* valueForKey(const gd::string& key) {
 // 		CCString* pStr = dynamic_cast<CCString*>(objectForKey(key));
 // 	    if (pStr == nullptr) {
-// 	        pStr = const_cast<CCString*>($CCDictionary::valueForKey(key));
+// 	        pStr = const_cast<CCString*>(CCDictionary::valueForKey(key));
 // 	    }
 // 	    return pStr;
 // 	}
@@ -20,7 +20,7 @@
 // 	const CCString* valueForKey(intptr_t key) {
 // 		CCString* pStr = dynamic_cast<CCString*>(objectForKey(key));
 // 	    if (pStr == nullptr) {
-// 	        pStr = const_cast<CCString*>($CCDictionary::valueForKey(key));
+// 	        pStr = const_cast<CCString*>(CCDictionary::valueForKey(key));
 // 	    }
 // 	    return pStr;
 // 	}

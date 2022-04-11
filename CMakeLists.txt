@@ -12,8 +12,8 @@ configure_file(src/internal/about.hpp.in ${CMAKE_SOURCE_DIR}/src/internal/about.
 
 file(GLOB CORE_SOURCES
 	src/*.cpp
+	src/core/*.cpp
 	src/fixes/*.cpp
-	src/helper/*.cpp
 	src/internal/*.cpp
 	src/hooks/*.cpp
 	src/gui/loading/*.cpp
@@ -49,14 +49,13 @@ set(INCLUDE_DIRECTORIES
 	src/internal/
 	src/platform/
 	src/gui/
-	core/include/
-	core/include/geode/core
+	dobby/include/
 )
 set(LINK_DIRECTORIES
-	PRIVATE core
+	PRIVATE dobby
 )
 set(LINK_LIBRARIES
-	geode_core_hook
+	dobby
 	CCZipUtils
 )
 
@@ -83,12 +82,12 @@ set_source_files_properties(${OBJC_SOURCES} PROPERTIES SKIP_PRECOMPILE_HEADERS O
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${HEADERS})
 
-add_subdirectory(core)
+add_subdirectory(dobby)
 add_subdirectory(src/CCZipUtils)
 
 if(NOT GEODE_DONT_BUILD_TEST_MODS)
 	if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
-		#add_subdirectory(test)
+		add_subdirectory(test)
 	endif()
 endif()
 
