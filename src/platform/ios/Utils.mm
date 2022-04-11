@@ -18,8 +18,11 @@ std::string utils::clipboard::read() {
 }
 
 ghc::filesystem::path utils::dirs::geode_root() {
-	#error IDK	
+	return ghc::filesystem::path([[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject].path.UTF8String);
 }
 
+void utils::web::openLinkInBrowser(std::string const& url) {
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithUTF8String: url.c_str()]]];
+}
 
 #endif

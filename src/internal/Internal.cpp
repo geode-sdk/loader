@@ -247,7 +247,7 @@ void Geode::platformMessageBox(const char* title, const char* info) {
 
 void Geode::setupPlatformConsole() {
     ghc::filesystem::path(getpwuid(getuid())->pw_dir);
-    freopen((ghc::filesystem::path(getpwuid(getuid())->pw_dir) / "geode_log.txt").string().c_str(),"w",stdout);
+    freopen(ghc::filesystem::path(utils::dirs::geode_root() / "geode_log.txt").string().c_str(),"w",stdout);
     Geode::
     m_platformConsoleReady = true;
 }

@@ -20,7 +20,7 @@ std::mutex g_unloadMutex;
 Loader* Loader::get() {
     static auto g_loader = new Loader;
     return g_loader;
-}
+} 
 
 void Loader::createDirectories() {
     auto modDir = this->getGeodeDirectory() / geodeModDirectory;
@@ -44,10 +44,10 @@ void Loader::createDirectories() {
 void Loader::addModResourcesPath(Mod* mod) {
     if (mod->m_addResourcesToSearchPath) {
         CCFileUtils::sharedFileUtils()->addSearchPath(
-            fs::absolute(mod->m_tempDirName).string().c_str()
+            mod->m_tempDirName.string().c_str()
         );
         CCFileUtils::sharedFileUtils()->addSearchPath(
-            fs::absolute(mod->m_tempDirName / "resources").string().c_str()
+            (mod->m_tempDirName / "resources").string().c_str()
         );
     }
 }

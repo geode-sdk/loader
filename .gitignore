@@ -56,3 +56,5 @@ fods-catgirl-hideout.txt
 .vs/
 out/
 bin/
+
+src/internal/about.hpp

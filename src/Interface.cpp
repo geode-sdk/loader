@@ -28,6 +28,11 @@ void Interface::init(Mod* mod) {
 			}
 		}
 		this->m_scheduledExports.clear();
+
+		for (auto const& fn : this->m_scheduledFunctions) {
+			fn(this->m_mod);
+		}
+		this->m_scheduledFunctions.clear();
 	}
 }
 
@@ -52,6 +57,10 @@ void Interface::exportAPIFunctionInternal(std::string const& selector, unknownfn
 		m_mod->exportAPIFunction(selector, fn);
 	}
 	this->m_scheduledExports.push_back({ selector, fn });
+}
+
+void Interface::scheduleOnLoad(loadfn_t fn) {
+	this->m_scheduledFunctions.push_back(fn);
 }
 
 Interface* Interface::create() {
