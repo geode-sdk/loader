@@ -4,7 +4,7 @@
 #include <Loader.hpp>
 #include <utils/casts.hpp>
 #include <utils/vector.hpp>
-#include <hook/hook.hpp>
+// #include <hook/hook.hpp>
 #include "Internal.hpp"
 
 USE_GEODE_NAMESPACE();
@@ -13,10 +13,10 @@ Result<Patch*> Mod::patch(void* address, byte_array data) {
     auto p = new Patch;
     p->m_address = address;
     p->m_original = byte_array(data.size());
-    if (!geode::core::hook::read_memory(address, p->m_original.data(), data.size())) {
-        delete p;
-        return Err<>("Unable to read memory at " + std::to_string(p->getAddress()));
-    }
+    // if (!geode::core::hook::read_memory(address, p->m_original.data(), data.size())) {
+    //     delete p;
+    //     return Err<>("Unable to read memory at " + std::to_string(p->getAddress()));
+    // }
     p->m_owner = this;
     p->m_patch = data;
     if (!p->apply()) {
@@ -37,13 +37,15 @@ Result<> Mod::unpatch(Patch* patch) {
 }
 
 bool Patch::apply() {
-    return geode::core::hook::write_memory(
-        this->m_address, this->m_patch.data(), this->m_patch.size()
-    );
+	return true;
+    // return geode::core::hook::write_memory(
+    //     this->m_address, this->m_patch.data(), this->m_patch.size()
+    // );
 }
 
 bool Patch::restore() {
-    return geode::core::hook::write_memory(
-        this->m_address, this->m_original.data(), this->m_original.size()
-    );
+	return true;
+    // return geode::core::hook::write_memory(
+    //     this->m_address, this->m_original.data(), this->m_original.size()
+    // );
 }

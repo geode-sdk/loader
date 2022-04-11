@@ -4,7 +4,7 @@
 #include <InternalMod.hpp>
 #include <Log.hpp>
 #include <Interface.hpp>
-#include <hook/hook.hpp>
+#include "../core/Core.hpp"
 
 USE_GEODE_NAMESPACE();
 
