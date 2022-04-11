@@ -78,12 +78,11 @@ extern "C" {
   } while (0)
 
 
-// alk
-// #if defined(LOGGING_DEBUG)
+#if defined(LOGGING_DEBUG)
 #define DLOG(level, fmt, ...) LOG(level, fmt, ##__VA_ARGS__)
-// #else
-// #define DLOG(level, fmt, ...)
-// #endif
+#else
+#define DLOG(level, fmt, ...)
+#endif
 
 #define UNIMPLEMENTED() FATAL("%s\n", "unimplemented code!!!")
 #define UNREACHABLE() FATAL("%s\n", "unreachable code!!!")

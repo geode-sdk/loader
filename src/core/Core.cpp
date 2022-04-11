@@ -11,13 +11,13 @@ namespace geode::core::impl {
 	}
 
 	void* generateRawTrampoline(void* address) {
-        std::cout << "address: " << address << std::endl;
-        std::cout << "trampoline address is : " << trampolines()[address] << std::endl;
+        // std::cout << "address: " << address << std::endl;
+        // std::cout << "trampoline address is : " << trampolines()[address] << std::endl;
         return trampolines()[address];
 	}
 
 	void addJump(void* at, void* to) {
-        std::cout << "at: " << at << " to: " << to << std::endl;
+        // std::cout << "at: " << at << " to: " << to << std::endl;
         DobbyDestroy(at);
         DobbyHook(at, to, &trampolines()[at]);
 	}

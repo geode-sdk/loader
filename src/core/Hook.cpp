@@ -38,7 +38,7 @@ namespace geode::core::impl {
 		
 
 	    if (mappedHandlers().find(address) == mappedHandlers().end()) {
-	        std::cout << "allocate handler vector for " << address << std::endl;
+	        // std::cout << "allocate handler vector for " << address << std::endl;
 	        mappedHandlers().insert({address, new std::vector<void*>});
 	        currentHandlers()[address] = generatedHandler;
 	        addJump(address, generatedHandler);
@@ -46,7 +46,7 @@ namespace geode::core::impl {
 	    mappedHandlers()[address]->push_back(generatedHandler);
 
         if (mappedTrampolines().find(address) == mappedTrampolines().end()) {
-	        std::cout << "allocate trampoline vector for " << address << std::endl;
+	        // std::cout << "allocate trampoline vector for " << address << std::endl;
 	        mappedTrampolines().insert({address, new std::vector<void*>});
 	        if (generatedTrampolines().find(address) == generatedTrampolines().end()) {
 	        	generatedTrampolines()[address] = generateRawTrampoline(address);
@@ -57,14 +57,14 @@ namespace geode::core::impl {
 	    *originalTrampolineAddress = puretramp;
 
 	    if (mappedDetours().find(address) == mappedDetours().end()) {
-	        std::cout << "allocate detour vector for " << address << std::endl;
+	        // std::cout << "allocate detour vector for " << address << std::endl;
 	        mappedDetours().insert({address, new std::vector<void*>});
 	    }
 	    auto detours = mappedDetours().at(address);
 	    *detourVectorAddress = detours;
 
 	    if (detours->size() == 0) {
-	        std::cout << "add trampoline to the detour vector (it will not get deallocated now)" << std::endl;
+	        // std::cout << "add trampoline to the detour vector (it will not get deallocated now)" << std::endl;
 	        detours->push_back(mappedTrampolines()[address]->front());
 	    }
 	    detours->insert(detours->end()-1, detour);
