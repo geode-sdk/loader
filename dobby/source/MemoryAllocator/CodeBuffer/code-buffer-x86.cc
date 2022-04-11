@@ -9,7 +9,7 @@
 #include "MemoryAllocator/CodeBuffer/code-buffer-x86.h"
 
 void CodeBuffer::Emit32(int32_t data) {
-	std::cout << std::hex << "Emit32: " << +value << std::endl;
+	std::cout << std::hex << "Emit32: " << +data << std::endl;
   ensureCapacity(getSize() + sizeof(int32_t));
   *reinterpret_cast<int32_t *>(getCursor()) = data;
   buffer_cursor += sizeof(int32_t);
