@@ -1,6 +1,8 @@
 
 // clang-format off
-static x86_insn_spec_t x86_opcode_map_two_byte[256] = {
+static x86_insn_spec_t x86_opcode_map_two_byte[256];
+void set_x86_opcode_map_two_byte() {
+	static x86_insn_spec_t ret[256] = {
     /* 0x00 */
     op0f(modrm_group_6, X86_INSN_FLAG_MODRM_REG_GROUP_6),
     op0f(modrm_group_7, X86_INSN_FLAG_MODRM_REG_GROUP_7),
@@ -246,4 +248,8 @@ static x86_insn_spec_t x86_opcode_map_two_byte[256] = {
     op0f(bad, X86_INSN_FLAG_SSE_GROUP_f8),
 };
 
+	memcpy((void *) x86_opcode_map_two_byte,
+       (void *) ret,
+       sizeof(ret));
+}
 // clang-format on

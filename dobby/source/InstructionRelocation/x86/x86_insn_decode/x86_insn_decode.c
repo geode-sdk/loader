@@ -543,6 +543,10 @@ void x86_insn_decode_immediate(x86_insn_reader_t *rd, x86_insn_decode_t *insn, x
 }
 
 void x86_insn_decode(x86_insn_decode_t *insn, uint8_t *buffer, x86_options_t *conf) {
+	set_x86_insn_modrm_reg_groups();
+	set_x86_opcode_map_two_byte();
+	set_x86_insn_sse_groups_repz();
+	set_x86_opcode_map_one_byte();
   // init reader
   x86_insn_reader_t rd;
   init_reader(&rd, buffer, buffer + 15);

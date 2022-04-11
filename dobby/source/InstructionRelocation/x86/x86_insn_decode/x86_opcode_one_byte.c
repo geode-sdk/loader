@@ -1,5 +1,7 @@
 // clang-format off
-static x86_insn_spec_t x86_opcode_map_one_byte[256] = {
+static x86_insn_spec_t x86_opcode_map_one_byte[256];
+void set_x86_opcode_map_one_byte() {
+	static x86_insn_spec_t ret[256] = {
     /* 0x00 */
     foreach_x86_operand_combine(add, op_dst, op_src),
     op0(push_es),
@@ -211,5 +213,11 @@ static x86_insn_spec_t x86_opcode_map_one_byte[256] = {
     op1f(modrm_group_4, X86_INSN_FLAG_MODRM_REG_GROUP_4, Eb),
     op0f(modrm_group_5, X86_INSN_FLAG_MODRM_REG_GROUP_5),
 };
+
+
+	memcpy((void *) x86_opcode_map_one_byte,
+       (void *) ret,
+       sizeof(ret));
+}
 
 // clang-format on
