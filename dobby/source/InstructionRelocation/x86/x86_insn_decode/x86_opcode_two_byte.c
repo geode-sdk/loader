@@ -248,8 +248,6 @@ void set_x86_opcode_map_two_byte() {
     op0f(bad, X86_INSN_FLAG_SSE_GROUP_f8),
 };
 
-	memcpy((void *) x86_opcode_map_two_byte,
-       (void *) ret,
-       sizeof(ret));
+	memcpy((void*)x86_opcode_map_two_byte, (void*)ret, sizeof(ret));
 }
 // clang-format on

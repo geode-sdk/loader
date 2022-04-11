@@ -215,9 +215,7 @@ void set_x86_opcode_map_one_byte() {
 };
 
 
-	memcpy((void *) x86_opcode_map_one_byte,
-       (void *) ret,
-       sizeof(ret));
+	memcpy((void*) x86_opcode_map_one_byte, (void*)ret, sizeof(ret));
 }
 
 // clang-format on

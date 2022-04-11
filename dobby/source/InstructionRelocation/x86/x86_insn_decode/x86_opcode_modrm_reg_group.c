@@ -220,7 +220,5 @@ void set_x86_insn_modrm_reg_groups() {
 };
 
 
-	memcpy((void *) x86_insn_modrm_reg_groups,
-       (void *) ret,
-       sizeof(ret));
+	memcpy((void*)x86_insn_modrm_reg_groups, (void*)ret, sizeof(ret));
 }

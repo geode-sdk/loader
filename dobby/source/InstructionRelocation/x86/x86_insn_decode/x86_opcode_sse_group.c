@@ -1,6 +1,8 @@
 static x86_insn_group8_t x86_insn_sse_groups_repz[256];
+static x86_insn_group8_t x86_insn_sse_groups_operand_size[256];
+static x86_insn_group8_t x86_insn_sse_groups_repnz[256];
 void set_x86_insn_sse_groups_repz() {
-	x86_insn_group8_t ret[] = {
+	x86_insn_group8_t ret1[] = {
     [X86_INSN_SSE_GROUP_10].insns =
         {
             op2(movss, Gx, Ex),
@@ -182,7 +184,7 @@ void set_x86_insn_sse_groups_repz() {
         },
 };
 
-static x86_insn_group8_t x86_insn_sse_groups_operand_size[] = {
+	x86_insn_group8_t ret2[] = {
     [X86_INSN_SSE_GROUP_10].insns =
         {
             op2(movupd, Gx, Ex),
@@ -364,7 +366,7 @@ static x86_insn_group8_t x86_insn_sse_groups_operand_size[] = {
         },
 };
 
-static x86_insn_group8_t x86_insn_sse_groups_repnz[] = {
+	x86_insn_group8_t ret3[] = {
     [X86_INSN_SSE_GROUP_10].insns =
         {
             op2(movsd, Gx, Ex),
@@ -546,7 +548,8 @@ static x86_insn_group8_t x86_insn_sse_groups_repnz[] = {
         },
 };
 
-	memcpy((void *) x86_insn_sse_groups_repz,
-       (void *) ret,
-       sizeof(ret));
+	memcpy((void*)x86_insn_sse_groups_repz, (void*)ret1, sizeof(ret1));
+	memcpy((void*)x86_insn_sse_groups_operand_size, (void*)ret2, sizeof(ret2));
+	memcpy((void*)x86_insn_sse_groups_repnz, (void*)ret3, sizeof(ret3));
+
 }
