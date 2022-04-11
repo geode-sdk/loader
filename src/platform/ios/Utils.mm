@@ -25,4 +25,8 @@ void utils::web::openLinkInBrowser(std::string const& url) {
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithUTF8String: url.c_str()]]];
 }
 
+extern "C" void geode_nslog(uintptr_t c) {
+	NSLog(@"cock %lx", c);
+}
+
 #endif
