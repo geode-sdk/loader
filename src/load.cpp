@@ -50,7 +50,7 @@ Result<Mod*> Loader::loadModFromFile(std::string const& path) {
         return Err<>("\"" + path + "\": Unable to read mod.json");
     }
     nlohmann::json json;
-    try {
+    //try {
         json = nlohmann::json::parse(std::string(read, read + readSize));
 
         // Free up memory
@@ -85,7 +85,7 @@ Result<Mod*> Loader::loadModFromFile(std::string const& path) {
                 "this mod."
             );
         }
-        
+
         // Handle mod.json data based on target
         switch (schema) {
             case 1: {
@@ -111,13 +111,13 @@ Result<Mod*> Loader::loadModFromFile(std::string const& path) {
             "schema is invalid."
         );
 
-    } catch(nlohmann::json::exception const& e) {
+    /*} catch(nlohmann::json::exception const& e) {
         return Err<>("\"" + path + "\": Unable to parse mod.json - \"" + e.what() + "\"");
     } catch(std::exception const& e) {
-	    return Err<>("\"" + path + "\": Unable to parse mod.json - \"" + e.what() + "\"");
+	    return Err<>("\"" + path + "\": Unable to open mod.json - \"" + e.what() + "\"");
 	} catch(...) {
-        return Err<>("\"" + path + "\": Unable to parse mod.json - Unknown Error");
-    }
+        return Err<>("\"" + path + "\": Unable to open mod.json - Unknown Error");
+    }*/
 }
 
 struct json_check_failure : public std::exception {
