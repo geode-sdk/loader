@@ -2,7 +2,3 @@
 	path = sdk
 	url = https://github.com/geode-sdk/sdk
 	update = merge
-[submodule "core"]
-	path = core
-	url = https://github.com/geode-sdk/core
-	update = merge
