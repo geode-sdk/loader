@@ -1,7 +1,7 @@
 // clang-format off
 static x86_insn_spec_t x86_opcode_map_one_byte[256];
 void set_x86_opcode_map_one_byte() {
-	static x86_insn_spec_t ret[256] = {
+	x86_insn_spec_t ret[256] = {
     /* 0x00 */
     foreach_x86_operand_combine(add, op_dst, op_src),
     op0(push_es),

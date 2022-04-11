@@ -2,7 +2,7 @@
 // clang-format off
 static x86_insn_spec_t x86_opcode_map_two_byte[256];
 void set_x86_opcode_map_two_byte() {
-	static x86_insn_spec_t ret[256] = {
+	x86_insn_spec_t ret[256] = {
     /* 0x00 */
     op0f(modrm_group_6, X86_INSN_FLAG_MODRM_REG_GROUP_6),
     op0f(modrm_group_7, X86_INSN_FLAG_MODRM_REG_GROUP_7),

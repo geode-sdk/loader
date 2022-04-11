@@ -1,7 +1,7 @@
 /* Escape groups are indexed by modrm reg field. */
 static x86_insn_group8_t x86_insn_modrm_reg_groups[256];
 void set_x86_insn_modrm_reg_groups() {
-	static x86_insn_group8_t ret[] = {
+	x86_insn_group8_t ret[] = {
     [X86_INSN_MODRM_REG_GROUP_1].insns =
         {
             op0(add),

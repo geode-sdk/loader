@@ -1,6 +1,6 @@
 static x86_insn_group8_t x86_insn_sse_groups_repz[256];
 void set_x86_insn_sse_groups_repz() {
-	static x86_insn_group8_t ret[] = {
+	x86_insn_group8_t ret[] = {
     [X86_INSN_SSE_GROUP_10].insns =
         {
             op2(movss, Gx, Ex),
