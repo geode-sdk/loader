@@ -77,11 +77,13 @@ extern "C" {
     RAW_LOG(-1, "[%s] %s:%d:%s\n", __TIME__, __FILE_NAME__, __LINE__, __func__);                                       \
   } while (0)
 
-#if defined(LOGGING_DEBUG)
+
+// alk
+// #if defined(LOGGING_DEBUG)
 #define DLOG(level, fmt, ...) LOG(level, fmt, ##__VA_ARGS__)
-#else
-#define DLOG(level, fmt, ...)
-#endif
+// #else
+// #define DLOG(level, fmt, ...)
+// #endif
 
 #define UNIMPLEMENTED() FATAL("%s\n", "unimplemented code!!!")
 #define UNREACHABLE() FATAL("%s\n", "unreachable code!!!")

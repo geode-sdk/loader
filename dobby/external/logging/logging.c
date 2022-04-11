@@ -60,8 +60,8 @@ static int check_log_file_available() {
 }
 
 PUBLIC int log_internal_impl(unsigned int level, const char *fmt, ...) {
-  if (level < _log_level)
-    return 0;
+  // if (level < _log_level)
+  //   return 0;
 
   va_list ap;
   va_start(ap, fmt);
