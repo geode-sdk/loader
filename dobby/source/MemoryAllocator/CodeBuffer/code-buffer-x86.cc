@@ -1,6 +1,11 @@
 #include "platform_macro.h"
 #if defined(TARGET_ARCH_IA32)
 
+// alk
+#include <iomanip>
+#include <iostream>
+
+
 #include "MemoryAllocator/CodeBuffer/code-buffer-x86.h"
 
 void CodeBuffer::Emit32(int32_t data) {
