@@ -13,7 +13,7 @@ CodeBufferBase *CodeBufferBase::Copy() {
 }
 
 void CodeBufferBase::Emit8(uint8_t value) {
-	std::cout << std::hex << "Emit8: " << value << std::endl;
+	std::cout << std::hex << "Emit8: " << +value << std::endl;
   // Ensure the free space enough for the template T value
   this->ensureCapacity(sizeof(uint8_t) + this->getSize());
 
@@ -22,7 +22,7 @@ void CodeBufferBase::Emit8(uint8_t value) {
 }
 
 void CodeBufferBase::Emit16(uint16_t value) {
-	std::cout << std::hex << "Emit16: " << value << std::endl;
+	std::cout << std::hex << "Emit16: " << +value << std::endl;
   // Ensure the free space enough for the template T value
   this->ensureCapacity(sizeof(uint16_t) + this->getSize());
 
@@ -31,7 +31,7 @@ void CodeBufferBase::Emit16(uint16_t value) {
 }
 
 void CodeBufferBase::Emit32(uint32_t value) {
-	std::cout << std::hex << "Emit32: " << value << std::endl;
+	std::cout << std::hex << "Emit32: " << +value << std::endl;
   // Ensure the free space enough for the template T value
   this->ensureCapacity(sizeof(uint32_t) + this->getSize());
 
@@ -40,7 +40,7 @@ void CodeBufferBase::Emit32(uint32_t value) {
 }
 
 void CodeBufferBase::Emit64(uint64_t value) {
-	std::cout << std::hex << "Emit64: " << value << std::endl;
+	std::cout << std::hex << "Emit64: " << +value << std::endl;
   // Ensure the free space enough for the template T value
   this->ensureCapacity(sizeof(uint64_t) + this->getSize());
 
