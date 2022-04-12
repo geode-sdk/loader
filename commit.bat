@@ -10,26 +10,13 @@ if "%1"=="pull" (
     cd ..
     git pull origin main
 
-    cd ../core
-    git pull origin main
-
 ) else (
-
-    cd core
-
-    echo ""
-    echo "==== geode/core ===="
-    echo ""
-
-    git add --all
-    git commit -a
-    git push origin main
 
     echo ""
     echo "==== geode/sdk ===="
     echo ""
 
-    cd ../sdk
+    cd sdk
 
     git add --all
     git commit -a
