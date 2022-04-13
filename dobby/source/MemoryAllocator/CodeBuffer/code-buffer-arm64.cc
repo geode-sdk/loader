@@ -13,6 +13,7 @@ void CodeBuffer::FixBindLabel(int offset, arm64_inst_t instr) {
 }
 
 void CodeBuffer::EmitInst(arm64_inst_t instr) {
+	DLOG(0, "[code buffer] EmitInst from arm64 with %x, cursor %x", instr, buffer_cursor);
   ensureCapacity(getSize() + sizeof(arm64_inst_t));
   *reinterpret_cast<arm64_inst_t *>(getCursor()) = instr;
   buffer_cursor += sizeof(arm64_inst_t);
@@ -20,6 +21,7 @@ void CodeBuffer::EmitInst(arm64_inst_t instr) {
 }
 
 void CodeBuffer::Emit64(int64_t data) {
+	DLOG(0, "[code buffer] Emit64 from arm64 with %x, cursor %x", data, buffer_cursor);
   ensureCapacity(getSize() + sizeof(int64_t));
   *reinterpret_cast<int64_t *>(getCursor()) = data;
   buffer_cursor += sizeof(int64_t);

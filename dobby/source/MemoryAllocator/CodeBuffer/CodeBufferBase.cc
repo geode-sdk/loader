@@ -13,6 +13,7 @@ CodeBufferBase *CodeBufferBase::Copy() {
 }
 
 void CodeBufferBase::Emit8(uint8_t value) {
+	DLOG(0, "[code buffer] Emit8 with %x, cursor %x", value, buffer_cursor);
   // Ensure the free space enough for the template T value
   this->ensureCapacity(sizeof(uint8_t) + this->getSize());
 
@@ -21,6 +22,7 @@ void CodeBufferBase::Emit8(uint8_t value) {
 }
 
 void CodeBufferBase::Emit16(uint16_t value) {
+	DLOG(0, "[code buffer] Emit16 with %x, cursor %x", value, buffer_cursor);
   // Ensure the free space enough for the template T value
   this->ensureCapacity(sizeof(uint16_t) + this->getSize());
 
@@ -29,6 +31,7 @@ void CodeBufferBase::Emit16(uint16_t value) {
 }
 
 void CodeBufferBase::Emit32(uint32_t value) {
+	DLOG(0, "[code buffer] Emit32 with %x, cursor %x", value, buffer_cursor);
   // Ensure the free space enough for the template T value
   this->ensureCapacity(sizeof(uint32_t) + this->getSize());
 
@@ -37,6 +40,7 @@ void CodeBufferBase::Emit32(uint32_t value) {
 }
 
 void CodeBufferBase::Emit64(uint64_t value) {
+	DLOG(0, "[code buffer] Emit64 with %x, cursor %x", value, buffer_cursor);
   // Ensure the free space enough for the template T value
   this->ensureCapacity(sizeof(uint64_t) + this->getSize());
 

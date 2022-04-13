@@ -46,6 +46,7 @@ void CodeBuffer::RewriteThumb2Inst(int offset, thumb2_inst_t instr) {
 }
 
 void CodeBuffer::EmitARMInst(arm_inst_t instr) {
+	DLOG(0, "[code buffer] EmitARMInst from arm32 with %x, cursor %x", instr, buffer_cursor);
   ensureCapacity(getSize() + sizeof(arm_inst_t));
   *reinterpret_cast<arm_inst_t *>(buffer_cursor) = instr;
   buffer_cursor += sizeof(arm_inst_t);
@@ -53,6 +54,7 @@ void CodeBuffer::EmitARMInst(arm_inst_t instr) {
 }
 
 void CodeBuffer::EmitThumb1Inst(thumb1_inst_t instr) {
+	DLOG(0, "[code buffer] EmitThumb1Inst from arm32 with %x, cursor %x", instr, buffer_cursor);
   ensureCapacity(getSize() + sizeof(thumb1_inst_t));
   *reinterpret_cast<thumb1_inst_t *>(buffer_cursor) = instr;
   buffer_cursor += sizeof(thumb1_inst_t);
@@ -60,6 +62,7 @@ void CodeBuffer::EmitThumb1Inst(thumb1_inst_t instr) {
 }
 
 void CodeBuffer::EmitThumb2Inst(thumb2_inst_t instr) {
+	DLOG(0, "[code buffer] EmitThumb2Inst from arm32 with %x, cursor %x", instr, buffer_cursor);
   ensureCapacity(getSize() + sizeof(thumb2_inst_t));
   memcpy(buffer_cursor, &instr, sizeof(instr));
 #if 0
@@ -71,6 +74,7 @@ void CodeBuffer::EmitThumb2Inst(thumb2_inst_t instr) {
 }
 
 void CodeBuffer::Emit32(int32_t data) {
+	DLOG(0, "[code buffer] Emit32 from arm32 with %x, cursor %x", data, buffer_cursor);
   ensureCapacity(getSize() + sizeof(int32_t));
   memcpy(buffer_cursor, &data, sizeof(data));
 #if 0
