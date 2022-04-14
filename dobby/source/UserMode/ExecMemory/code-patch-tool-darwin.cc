@@ -70,7 +70,16 @@ int code_remap_with_substrated(uint8_t *buffer, uint32_t buffer_size, addr_t add
 }
 #endif
 
+extern void geode_nslog(uintptr_t);
+
 PUBLIC MemoryOperationError CodePatch(void *address, uint8_t *buffer, uint32_t buffer_size) {
+  //314
+  geode_nslog((uintptr_t)address);
+  for (int i = 0; i < buffer_size; ++i) {
+    geode_nslog(buffer[i]);
+  }
+  geode_nslog(6969);
+
   kern_return_t kr;
 
   int page_size = (int)sysconf(_SC_PAGESIZE);

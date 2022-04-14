@@ -5,31 +5,34 @@
 
 static constexpr const auto notifyAttributes = FILE_NOTIFY_CHANGE_LAST_WRITE | FILE_NOTIFY_CHANGE_ATTRIBUTES | FILE_NOTIFY_CHANGE_SIZE;
 
-FileWatcherWin::FileWatcherWin(ghc::filesystem::path const& file, FileWatchCallback callback, ErrorCallback error) {
+FileWatcher::FileWatcher(ghc::filesystem::path const& file, FileWatchCallback callback, ErrorCallback error) {
 	this->m_filemode = ghc::filesystem::is_regular_file(file);
-	this->m_handle =  FindFirstChangeNotificationW(
+	auto handle =  FindFirstChangeNotificationW(
 		(this->m_filemode ? file.parent_path() : file).wstring().c_str(),
 		false,
 		notifyAttributes
 	);
+	this->m_platform_handle = (void*)handle;
+
 	this->m_file = file;
 	this->m_callback = callback;
 	this->m_error = error;
-	if (this->m_handle != INVALID_HANDLE_VALUE) {
-		this->m_watch = std::thread(&FileWatcherWin::watch, this);
+	if (handle != INVALID_HANDLE_VALUE) {
+		std::thread(&FileWatcher::watch, this).detach();
 	} else {
 		if (this->m_error) this->m_error("Invalid handle");
 	}
 }
 
-FileWatcherWin::~FileWatcherWin() {
-	FindCloseChangeNotification(this->m_handle);
+FileWatcher::~FileWatcher() {
+	HANDLE handle = (HANDLE)this->m_platform_handle;
+	FindCloseChangeNotification(handle);
 	this->m_exiting = true;
-	this->m_watch.detach();
 }
 
-void FileWatcherWin::watch() {
-	while (WaitForSingleObject(this->m_handle, 10000) == WAIT_OBJECT_0) {
+void FileWatcher::watch() {
+	HANDLE handle = (HANDLE)this->m_platform_handle;
+	while (WaitForSingleObject(handle, 10000) == WAIT_OBJECT_0) {
 		if (this->m_exiting) return;
 		if (this->m_callback) {
 			if (this->m_filemode) {
@@ -43,7 +46,7 @@ void FileWatcherWin::watch() {
 					nullptr
 				);
 				if (file == INVALID_HANDLE_VALUE) {
-					this->m_handle = nullptr;
+					handle = nullptr;
 					if (this->m_error) this->m_error("Reading dir failed");
 					return;
 				}
@@ -56,13 +59,13 @@ void FileWatcherWin::watch() {
 					notifyAttributes,
 					nullptr, &overlapped, nullptr
 				)) {
-					this->m_handle = nullptr;
+					handle = nullptr;
 					if (this->m_error) this->m_error("Reading dir changes failed");
 					return;
 				}
 				DWORD result = WaitForSingleObject(overlapped.hEvent, 500);
 				if (result != WAIT_OBJECT_0 && result != WAIT_TIMEOUT) {
-					this->m_handle = nullptr;
+					handle = nullptr;
 					if (this->m_error) this->m_error("Overlap hEvent was not WAIT_OBJECT_0");
 					return;
 				}
@@ -84,19 +87,19 @@ void FileWatcherWin::watch() {
 				this->m_callback(this->m_file);
 			}
 		}
-		if (!FindNextChangeNotification(this->m_handle)) {
-			this->m_handle = nullptr;
+		if (!FindNextChangeNotification(handle)) {
+			handle = nullptr;
 			if (this->m_error) this->m_error("FindNextChangeNotification failed");
 			return;
 		}
 	}
-	this->m_handle = nullptr;
+	handle = nullptr;
 	if (this->m_error) this->m_error("WaitForSingleObject failed");
 }
 
-bool FileWatcherWin::watching() const {
-	return this->m_handle != INVALID_HANDLE_VALUE &&
-		   this->m_handle != nullptr;
+bool FileWatcher::watching() const {
+	return handle != INVALID_HANDLE_VALUE &&
+		   handle != nullptr;
 }
 
 #endif

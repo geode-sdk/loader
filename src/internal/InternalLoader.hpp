@@ -4,26 +4,26 @@
 #include <vector>
 #include <unordered_map>
 #include <utils/Result.hpp>
+#include <Loader.hpp>
 #include "FileWatcher.hpp"
 
 USE_GEODE_NAMESPACE();
 
 /**
- * For internal state management.
+ * Internal extension of Loader for private information
  * @class Geode
  */
-class Geode {
+class InternalLoader : public Loader {
 protected:
 	std::vector<LogPtr*> m_logQueue;
 	std::unordered_map<Mod*, FileWatcher*> m_hotReloads;
 	std::vector<std::function<void(void)>> m_gdThreadQueue;
 	bool m_platformConsoleReady = false;
 
-	Geode();
-
+	InternalLoader();
+	~InternalLoader();
 public:
-	static Geode* get();
-	~Geode();
+	static InternalLoader* get();
 
 	bool setup();
 

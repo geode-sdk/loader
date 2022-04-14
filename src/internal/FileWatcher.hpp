@@ -6,8 +6,7 @@
 #include <Macros.hpp>
 #include <utils/types.hpp>
 
-template<class Impl>
-class FileWatcherBase {
+class FileWatcher {
 public:
 	using FileWatchCallback = std::function<void(ghc::filesystem::path)>;
 	using ErrorCallback = std::function<void(std::string)>;
@@ -18,6 +17,10 @@ protected:
 	ErrorCallback m_error;
 	bool m_filemode = false;
 
+	void* m_platform_handle;
+	bool m_exiting = false;
+	void watch();
+
 public:
 	bool watching() const {
 		return Impl::watching();
@@ -26,14 +29,7 @@ public:
 	ghc::filesystem::path path() {
 		return m_file;
 	}
-};
 
-#ifdef GEODE_IS_WINDOWS
-#include <windows/FileWatcherWin.hpp>
-#endif
-#ifdef GEODE_IS_MACOS
-#include <macos/FileWatcherMac.hpp>
-#endif
-#ifdef GEODE_IS_IOS
-#include <ios/FileWatcheriOS.hpp>
-#endif
+	FileWatcher(ghc::filesystem::path const& file, FileWatchCallback callback, ErrorCallback error = nullptr);
+	~FileWatcher();
+};

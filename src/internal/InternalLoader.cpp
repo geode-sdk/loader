@@ -1,4 +1,4 @@
-#include "Internal.hpp"
+#include "InternalLoader.hpp"
 #include <vector>
 #include <string>
 #include <sstream>
@@ -9,24 +9,24 @@
 #include <Geode.hpp>
 // #include <HotReloadLayer.hpp>
 
-Geode::Geode() {
+InternalLoader::InternalLoader() {
 
     #ifdef GEODE_PLATFORM_CONSOLE
     this->setupPlatformConsole();
     #endif
 }
 
-Geode::~Geode() {
+InternalLoader::~InternalLoader() {
     this->closePlatformConsole();
     delete Loader::get();
 }
 
-Geode* Geode::get() {
-    static auto g_geode = new Geode;
+InternalLoader* InternalLoader::get() {
+    static auto g_geode = new InternalLoader;
     return g_geode;
 }
 
-bool Geode::setup() {
+bool InternalLoader::setup() {
     InternalMod::get()->log()
         << Severity::Debug << "Set up internal mod representation";
 
@@ -45,18 +45,18 @@ bool Geode::setup() {
     return true;
 }
 
-void Geode::queueInGDThread(std::function<void GEODE_CALL()> func) {
+void InternalLoader::queueInGDThread(std::function<void GEODE_CALL()> func) {
     this->m_gdThreadQueue.push_back(func);
 }
 
-void Geode::executeGDThreadQueue() {
+void InternalLoader::executeGDThreadQueue() {
     for (auto const& func : this->m_gdThreadQueue) {
         func();
     }
     this->m_gdThreadQueue.clear();
 }
 
-Result<> Geode::enableHotReload(Mod* mod, ghc::filesystem::path const& path) {
+Result<> InternalLoader::enableHotReload(Mod* mod, ghc::filesystem::path const& path) {
     if (this->m_hotReloads.count(mod)) {
         return Ok<>();
     }
@@ -98,32 +98,32 @@ Result<> Geode::enableHotReload(Mod* mod, ghc::filesystem::path const& path) {
     return Ok<>();
 }
 
-void Geode::disableHotReload(Mod* mod) {
+void InternalLoader::disableHotReload(Mod* mod) {
     if (this->m_hotReloads.count(mod)) {
         delete this->m_hotReloads[mod];
         this->m_hotReloads.erase(mod);
     }
 }
 
-bool Geode::isHotReloadEnabled(Mod* mod) const {
+bool InternalLoader::isHotReloadEnabled(Mod* mod) const {
     return this->m_hotReloads.count(mod);
 }
 
-void Geode::queueConsoleMessage(LogPtr* msg) {
+void InternalLoader::queueConsoleMessage(LogPtr* msg) {
     this->m_logQueue.push_back(msg);
 }
 
-bool Geode::platformConsoleReady() const {
+bool InternalLoader::platformConsoleReady() const {
     return m_platformConsoleReady;
 }
 
 #if defined(GEODE_IS_WINDOWS)
 
-void Geode::platformMessageBox(const char* title, const char* info) {
+void InternalLoader::platformMessageBox(const char* title, const char* info) {
     MessageBoxA(nullptr, title, info, MB_OK);
 }
 
-void Geode::setupPlatformConsole() {
+void InternalLoader::setupPlatformConsole() {
     if (m_platformConsoleReady) return;
     if (AllocConsole() == 0)    return;
     // redirect console output
@@ -133,7 +133,7 @@ void Geode::setupPlatformConsole() {
     m_platformConsoleReady = true;
 }
 
-void Geode::awaitPlatformConsole() {
+void InternalLoader::awaitPlatformConsole() {
     if (!m_platformConsoleReady) return;
 
     for (auto const& log : this->m_logQueue) {
@@ -210,7 +210,7 @@ void Geode::awaitPlatformConsole() {
     if (inp != "e") this->awaitPlatformConsole();
 }
 
-void Geode::closePlatformConsole() {
+void InternalLoader::closePlatformConsole() {
     if (!m_platformConsoleReady) return;
 
     fclose(stdin);
@@ -221,18 +221,18 @@ void Geode::closePlatformConsole() {
 #elif defined(GEODE_IS_MACOS)
 #include <iostream>
 
-void Geode::platformMessageBox(const char* title, const char* info) {
+void InternalLoader::platformMessageBox(const char* title, const char* info) {
 	std::cout << title << ": " << info << std::endl;
 }
 
-void Geode::setupPlatformConsole() {
+void InternalLoader::setupPlatformConsole() {
     m_platformConsoleReady = true;
 }
 
-void Geode::awaitPlatformConsole() {
+void InternalLoader::awaitPlatformConsole() {
 }
 
-void Geode::closePlatformConsole() {
+void InternalLoader::closePlatformConsole() {
 }
 
 #elif defined(GEODE_IS_IOS)
@@ -241,21 +241,21 @@ void Geode::closePlatformConsole() {
 #include <sys/types.h>
 #include <pwd.h>
 
-void Geode::platformMessageBox(const char* title, const char* info) {
+void InternalLoader::platformMessageBox(const char* title, const char* info) {
     std::cout << title << ": " << info << std::endl;
 }
 
-void Geode::setupPlatformConsole() {
+void InternalLoader::setupPlatformConsole() {
     ghc::filesystem::path(getpwuid(getuid())->pw_dir);
     freopen(ghc::filesystem::path(utils::dirs::geode_root() / "geode_log.txt").string().c_str(),"w",stdout);
-    Geode::
+    InternalLoader::
     m_platformConsoleReady = true;
 }
 
-void Geode::awaitPlatformConsole() {
+void InternalLoader::awaitPlatformConsole() {
 }
 
-void Geode::closePlatformConsole() {
+void InternalLoader::closePlatformConsole() {
 }
 #endif
 

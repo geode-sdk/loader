@@ -1,4 +1,53 @@
+#include <Mod.hpp>
+#include <Loader.hpp>
+#include <Internal.hpp>
+#include <InternalMod.hpp>
+#include <Log.hpp>
+#include <Interface.hpp>
+#include "../core/Core.hpp"
 #include "entry.hpp"
+
+// platform-specific entry points
+
+#if defined(GEODE_IS_IOS) || defined(GEODE_IS_MACOS)
+#include <mach-o/dyld.h>
+#include <unistd.h>
+__attribute__((constructor)) void _entry() {
+    char gddir[PATH_MAX];
+    uint32_t out = PATH_MAX;
+    _NSGetExecutablePath(gddir, &out);
+
+    ghc::filesystem::path gdpath = gddir;
+    ghc::filesystem::current_path(gdpath.parent_path().parent_path());
+
+    geodeEntry(nullptr);
+}
+#elif defined(GEODE_IS_WINDOWS)
+#include <Windows.h>
+
+DWORD WINAPI loadThread(void* arg) {
+    return geodeEntry(arg);
+}
+
+BOOL WINAPI DllMain(HINSTANCE lib, DWORD reason, LPVOID) {
+    switch (reason) {
+        case DLL_PROCESS_ATTACH:
+            // Prevents threads from notifying this DLL on creation or destruction.
+            // Kind of redundant for a game that isn't multi-threaded but will provide
+            // some slight optimizations if a mod frequently creates and deletes threads.
+            DisableThreadLibraryCalls(lib);
+
+            // loading thread
+            HANDLE _ = CreateThread(0, 0, loadThread, lib, 0, nullptr);
+            if (_) CloseHandle(_);
+
+            break;
+    }
+    return TRUE;
+}
+#endif
+
+
 
 int geodeEntry(void* platformData) {
     // setup internals

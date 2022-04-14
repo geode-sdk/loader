@@ -78,6 +78,15 @@ add_compile_definitions(GEODE_PLATFORM_CONSOLE)
 
 include(sdk/Geode.cmake)
 
+if (APPLE) 
+	if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR GEODE_TARGET_PLATFORM STREQUAL "iOS")
+		add_custom_command(TARGET GeodeLoader
+		    POST_BUILD COMMAND 
+		    ${CMAKE_INSTALL_NAME_TOOL} -id \"/Library/MobileSubstrate/DynamicLibraries/Geode.dylib\"
+		    $<TARGET_FILE:GeodeLoader>)
+	endif()
+endif()
+
 set_source_files_properties(${OBJC_SOURCES} PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${HEADERS})
