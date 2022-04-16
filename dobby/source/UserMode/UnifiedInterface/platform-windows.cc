@@ -12,6 +12,7 @@ int GetProtectionFromMemoryPermission(MemoryPermission access) {
     return PAGE_EXECUTE_READWRITE;
   else if (kReadExecute == access)
     return PAGE_EXECUTE_READ;
+  return 0;
 }
 
 int OSMemory::AllocPageSize() {
