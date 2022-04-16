@@ -25,7 +25,7 @@ jobs:
         workflow: build.yml
         workflow_conclusion: success
         branch: main
-        name: "Windows Binary"
+        name: Windows Binary
         path: '${{ github.workspace }}/windows'
         
     - name: Download MacOS artifact
@@ -35,7 +35,7 @@ jobs:
         workflow: build.yml
         workflow_conclusion: success
         branch: main
-        name: "macOS Binary"
+        name: macOS Binary
         path: '${{ github.workspace }}/macos'
       
     - name: Move files to bin
