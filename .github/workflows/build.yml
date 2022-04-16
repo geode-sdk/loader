@@ -87,5 +87,5 @@ jobs:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ matrix.config.name }} Loader Binary + Libraries
+        name: ${{ matrix.config.name }} Binary
         path: ./out/
