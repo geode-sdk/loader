@@ -18,6 +18,21 @@ jobs:
         submodules: recursive
         token: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
 
+    - name: Test Download All Artifacts
+      uses: dawidd6/action-download-artifact@v2
+      with:
+        github_token: ${{secrets.GEODE_BOT_PUSH_BIN_TOKEN}}
+        workflow: build.yml
+        workflow_conclusion: success
+        branch: main
+        path: '${{ github.workspace }}/files'
+    
+    - name: Log test
+      shell: bash
+      working-directory: ${{ github.workspace }}/files
+      run: |
+        ls
+
     - name: Download Windows artifact
       uses: dawidd6/action-download-artifact@v2
       with:
