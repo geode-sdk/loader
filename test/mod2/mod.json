@@ -12,57 +12,5 @@
             "version": "v1.0.*",
             "required": true
         }
-    ],
-    "settings": {
-        "wow-a-toggle": {
-            "name": "Wow! A toggle!",
-            "type": "bool",
-            "value": {
-                "default": false
-            }
-        },
-        "awesome-setting": {
-            "name": "Awesome Setting",
-            "description": "This is an awesome setting",
-            "type": "int",
-            "value": {
-                "default": 5,
-                "min": 0,
-                "max": 20
-            },
-            "control": {
-                "slider": false,
-                "input": true
-            }
-        },
-        "other-setting": {
-            "type": "string",
-            "value": {
-                "default": "",
-                "filter": "letters"
-            }
-        },
-        "float-setting": {
-            "type": "float",
-            "value": {
-                "default": 65.7,
-                "precision": 2,
-                "min": 25,
-                "max": 500
-            }
-        },
-        "array-setting": {
-            "type": "string[]",
-            "value": {
-                "default": 0,
-                "options": [
-                    "Option #1",
-                    "Option #2",
-                    "Option #3",
-                    "Option #4"
-                ]
-            }
-        },
-        "custom-setting": "custom"
-    }
+    ]
 }
