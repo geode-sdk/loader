@@ -38,7 +38,6 @@ file(GLOB OBJC_SOURCES
 # not recurse because dont include platform specific headers
 file(GLOB HEADERS
 	sdk/include/*.hpp
-	build/gen/Header.hpp
 )
 
 set(SOURCE_FILES 

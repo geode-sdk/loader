@@ -1,4 +1,4 @@
-#include <Notification.hpp>
+#include <loader/Notification.hpp>
 #include <Geode.hpp>
 
 USE_GEODE_NAMESPACE();

@@ -1,6 +1,6 @@
 #pragma warning(disable: 4067)
 
-#include <Setting.hpp>
+#include <loader/Setting.hpp>
 #include <InternalMod.hpp>
 #include <utils/string.hpp>
 #include <utils/general.hpp>

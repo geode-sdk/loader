@@ -1,7 +1,7 @@
-#include <Hook.hpp>
-#include <Mod.hpp>
-#include <Log.hpp>
-#include <Loader.hpp>
+#include <loader/Hook.hpp>
+#include <loader/Mod.hpp>
+#include <loader/Log.hpp>
+#include <loader/Loader.hpp>
 #include <Internal.hpp>
 #include <ZipUtils.h>
 #include <utils/file.hpp>

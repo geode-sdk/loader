@@ -1,7 +1,7 @@
-#include <Loader.hpp>
-#include <Mod.hpp>
+#include <loader/Loader.hpp>
+#include <loader/Mod.hpp>
 #include <InternalMod.hpp>
-#include <Log.hpp>
+#include <loader/Log.hpp>
 #undef snprintf
 #include <utils/json.hpp>
 #include <ZipUtils.h>

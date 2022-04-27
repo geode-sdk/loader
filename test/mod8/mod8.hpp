@@ -1,7 +1,7 @@
 #include "../mod7/mod7.hpp"
 
 #define EXPORT_NAME TestMod8
-#include <API.hpp>
+#include <Geode.hpp>
 
 
 class Mod8Log : geode::ModAPI {
