@@ -100,7 +100,7 @@ static addr_t search_near_blank_page(addr_t pos, size_t alloc_range) {
       return resultPageAddr;
   }
 
-  for (int i = 0; i < process_memory_layout.size(); ++i) {
+  for (int i = 0; i < static_cast<int>(process_memory_layout.size()); ++i) {
     MemoryRegion region = process_memory_layout[i];
     // check if assume-page-addr in memory-layout
     addr_t region_end = (addr_t)region.address + region.length;
@@ -125,7 +125,7 @@ static addr_t search_near_blank_page(addr_t pos, size_t alloc_range) {
           }
         }
 
-        if (i <= process_memory_layout.size() - 2) {
+        if (i <= static_cast<int>(process_memory_layout.size() - 2)) {
           // right-blank
           MemoryRegion next_region = process_memory_layout[i + 1];
           // check if have blank cave page

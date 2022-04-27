@@ -435,7 +435,7 @@ void x86_insn_decode_modrm_sib(x86_insn_reader_t *rd, x86_insn_decode_t *insn, x
 
     int64_t disp;
     x86_insn_decode_number(rd, disp_bits, &disp);
-    mem_op->mem.disp = disp;
+    mem_op->mem.disp = (uint32_t)disp;
   }
 }
 

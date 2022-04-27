@@ -60,12 +60,14 @@ static int check_log_file_available() {
 }
 
 PUBLIC int log_internal_impl(unsigned int level, const char *fmt, ...) {
-  if (level < _log_level)
+  if ((int)level < _log_level)
     return 0;
 
   va_list ap;
   va_start(ap, fmt);
+#if defined(__clang__)
 #pragma clang diagnostic ignored "-Wformat"
+#endif
 #if defined(_POSIX_VERSION) || defined(__APPLE__)
   if (_syslog_enabled) {
     vsyslog(LOG_ERR, fmt, ap);
@@ -100,7 +102,9 @@ PUBLIC int log_internal_impl(unsigned int level, const char *fmt, ...) {
 #endif
   }
 
+#if defined(__clang__)
 #pragma clang diagnostic warning "-Wformat"
+#endif
   va_end(ap);
   return 0;
 }

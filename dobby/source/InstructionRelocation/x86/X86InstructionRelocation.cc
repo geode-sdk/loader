@@ -43,7 +43,7 @@ static int GenRelocateCodeFixed(void *buffer, AssemblyCodeChunk *origin, Assembl
     if (insn.primary_opcode >= 0x70 && insn.primary_opcode <= 0x7F) { // jc rel8
       DLOG(0, "[x86 relo] jc rel8, %p", buffer_cursor);
 
-      int8_t orig_offset = insn.immediate;
+      int8_t orig_offset = (int8_t)insn.immediate;
       int new_offset = (int)(curr_orig_ip + orig_offset - curr_relo_ip);
       uint8_t opcode = 0x80 | (insn.primary_opcode & 0x0f);
 
@@ -53,7 +53,7 @@ static int GenRelocateCodeFixed(void *buffer, AssemblyCodeChunk *origin, Assembl
     } else if (insn.primary_opcode == 0xEB) { // jmp rel8
       DLOG(0, "[x86 relo] jmp rel8, %p", buffer_cursor);
 
-      int8_t orig_offset = insn.immediate;
+      int8_t orig_offset = (int8_t)insn.immediate;
       int8_t new_offset = (int8_t)(curr_orig_ip + orig_offset - curr_relo_ip);
 
       __ Emit8(0xE9);
@@ -61,7 +61,7 @@ static int GenRelocateCodeFixed(void *buffer, AssemblyCodeChunk *origin, Assembl
     } else if (insn.primary_opcode == 0xE8 || insn.primary_opcode == 0xE9) { // call or jmp rel32
       DLOG(0, "[x86 relo] jmp or call rel32, %p", buffer_cursor);
 
-      dword orig_offset = insn.immediate;
+      dword orig_offset = (dword)insn.immediate;
       dword offset = (dword)(curr_orig_ip + orig_offset - curr_relo_ip);
 
       __ EmitBuffer((void *)buffer_cursor, insn.immediate_offset);
@@ -102,7 +102,7 @@ static int GenRelocateCodeFixed(void *buffer, AssemblyCodeChunk *origin, Assembl
   origin->re_init_region_range(origin->raw_instruction_start(), new_origin_len);
 
   int relo_len = turbo_assembler_.GetCodeBuffer()->getSize();
-  if (relo_len > relocated->raw_instruction_size()) {
+  if (relo_len > (int)relocated->raw_instruction_size()) {
     DLOG(0, "pre-alloc code chunk not enough");
     return RT_FAILED;
   }

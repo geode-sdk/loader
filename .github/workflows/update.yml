@@ -24,8 +24,7 @@ jobs:
         github_token: ${{secrets.GEODE_BOT_PUSH_BIN_TOKEN}}
         workflow: build.yml
         workflow_conclusion: success
-        branch: main
-        name: "Windows Loader Binary + Libraries"
+        name: Windows Binary
         path: '${{ github.workspace }}/windows'
         
     - name: Download MacOS artifact
@@ -34,8 +33,7 @@ jobs:
         github_token: ${{secrets.GEODE_BOT_PUSH_BIN_TOKEN}}
         workflow: build.yml
         workflow_conclusion: success
-        branch: main
-        name: "macOS Loader Binary + Libraries"
+        name: macOS Binary
         path: '${{ github.workspace }}/macos'
       
     - name: Move files to bin

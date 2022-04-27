@@ -420,7 +420,7 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
         .has("spritesheets")
         .as<nlohmann::json::object_t>()
         .each([&info](auto key, auto) -> void {
-            info.m_spritesheets.push_back(key);
+            info.m_spritesheets.push_back(info.m_id + "_" + key);
         });
     
     json_assign_optional(json, "toggleable", info.m_supportsDisabling);
