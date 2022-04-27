@@ -2,7 +2,7 @@
 
 class InternalMod;
 
-#include <Mod.hpp>
+#include <loader/Mod.hpp>
 
 USE_GEODE_NAMESPACE();
 

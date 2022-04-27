@@ -1,5 +1,5 @@
 #include <utils/node.hpp>
-#include <WackyGeodeMacros.hpp>
+#include <utils/WackyGeodeMacros.hpp>
 
 USE_GEODE_NAMESPACE();
 

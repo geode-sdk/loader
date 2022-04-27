@@ -1,7 +1,7 @@
-#include <Hook.hpp>
+#include <loader/Hook.hpp>
 #include <vector>
-#include <Mod.hpp>
-#include <Loader.hpp>
+#include <loader/Mod.hpp>
+#include <loader/Loader.hpp>
 #include <utils/casts.hpp>
 #include <utils/vector.hpp>
 // #include <hook/hook.hpp>

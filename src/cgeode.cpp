@@ -1,6 +1,6 @@
-#include <cgeode.h>
-#include <Mod.hpp>
-#include <Log.hpp>
+#include <loader/cgeode.h>
+#include <loader/Mod.hpp>
+#include <loader/Log.hpp>
 
 USE_GEODE_NAMESPACE();
 

@@ -1,7 +1,7 @@
 #include <Geode.hpp>
-#include <Log.hpp>
-#include <Mod.hpp>
-#include <Loader.hpp>
+#include <loader/Log.hpp>
+#include <loader/Mod.hpp>
+#include <loader/Loader.hpp>
 #include <utils/general.hpp>
 #include <utils/stream.hpp>
 #include <utils/casts.hpp>

@@ -1,6 +1,6 @@
-#include <Geode.hpp>
 #define EXPORT_NAME TestMod7
-#include <API.hpp>
+#include <Geode.hpp>
+
 
 //GEODE_CONCAT(EXPORT_, PROJECT_NAME)
 
