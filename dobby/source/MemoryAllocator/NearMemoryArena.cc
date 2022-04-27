@@ -210,12 +210,14 @@ AssemblyCodeChunk *NearMemoryArena::AllocateCodeChunk(addr_t position, size_t al
 MemoryChunk *NearMemoryArena::AllocateChunk(addr_t position, size_t alloc_range, int alloc_size,
                                             MemoryPermission permission) {
 
+                                                DLOG(0, "AllocateChunk 1");
   if (page_chunks == NULL) {
     page_chunks = new LiteMutableArray(NEAR_PAGE_ARRAYLEN);
   }
   MemoryChunk *result = NULL;
 
 search_once_more:
+ DLOG(0, "AllocateChunk 2");
   LiteCollectionIterator iter(NearMemoryArena::page_chunks);
   PageChunk *page = NULL;
   while ((page = reinterpret_cast<PageChunk *>(iter.getNextObject())) != NULL) {
@@ -227,7 +229,7 @@ search_once_more:
       }
     }
   }
-
+ DLOG(0, "AllocateChunk 3");
   MemoryChunk *chunk = NULL;
   if (page) {
     chunk = new MemoryChunk;
@@ -239,29 +241,35 @@ search_once_more:
     page->page_cursor += alloc_size;
     return chunk;
   }
-
+ DLOG(0, "AllocateChunk 4");
   addr_t blank_page_addr = 0;
   blank_page_addr = search_near_blank_page(position, alloc_range);
   if (blank_page_addr) {
+       DLOG(0, "AllocateChunk 5");
     OSMemory::SetPermission((void *)blank_page_addr, OSMemory::PageSize(), permission);
+     DLOG(0, "AllocateChunk 6");
     NearMemoryArena::PushPage(blank_page_addr, permission);
+     DLOG(0, "AllocateChunk 7");
     goto search_once_more;
   }
 
   // TODO: fix up
   if (permission == kReadWrite) {
+       DLOG(0, "AllocateChunk 8");
     return NULL;
   }
 
   addr_t blank_chunk_addr = 0;
+   DLOG(0, "AllocateChunk 9");
   blank_chunk_addr = search_near_blank_memory_chunk(position, alloc_range, alloc_size);
   if (blank_chunk_addr) {
+       DLOG(0, "AllocateChunk 10");
     MemoryChunk *chunk = NULL;
     chunk = new MemoryChunk;
     chunk->address = (void *)blank_chunk_addr;
     chunk->length = alloc_size;
     return chunk;
   }
-
+ DLOG(0, "AllocateChunk 11");
   return NULL;
 }

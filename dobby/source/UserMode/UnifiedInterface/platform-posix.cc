@@ -29,6 +29,8 @@
 #include <dlfcn.h>
 #include <mach/mach.h>
 #include <mach/vm_statistics.h>
+#include <mach/mach_vm.h>
+#include <mach/mach_init.h>  
 #endif
 
 #if defined(ANDROID) && !defined(ANDROID_LOG_STDOUT)
@@ -112,9 +114,17 @@ static int GetProtectionFromMemoryPermission(MemoryPermission access) {
   case MemoryPermission::kRead:
     return PROT_READ;
   case MemoryPermission::kReadWrite:
-    return PROT_READ | PROT_WRITE;
+    return PROT_READ | PROT_WRITE
+    #if defined(__APPLE__)
+     | VM_PROT_COPY
+    #endif
+    ;
   case MemoryPermission::kReadWriteExecute:
-    return PROT_READ | PROT_WRITE | PROT_EXEC;
+    return PROT_READ | PROT_WRITE | PROT_EXEC
+    #if defined(__APPLE__)
+     | VM_PROT_COPY
+    #endif
+    ;
   case MemoryPermission::kReadExecute:
     return PROT_READ | PROT_EXEC;
   }
@@ -159,11 +169,20 @@ bool OSMemory::Release(void *address, int size) {
 
 // static
 bool OSMemory::SetPermission(void *address, int size, MemoryPermission access) {
+    DLOG(0, "SetPermission 1");
   DCHECK_EQ(0, reinterpret_cast<uintptr_t>(address) % PageSize());
+  DLOG(0, "SetPermission 2");
   DCHECK_EQ(0, size % PageSize());
 
+DLOG(0, "SetPermission 3");
   int prot = GetProtectionFromMemoryPermission(access);
+  DLOG(0, "SetPermission 4 %p %d %d", address, size, prot);
+  #if defined(__APPLE__)
+  int ret = mach_vm_protect(mach_task_self(), (mach_vm_address_t)address, size, FALSE, prot);
+    #else
   int ret = mprotect(address, size, prot);
+  #endif
+  DLOG(0, "SetPermission 4.5");
   if (ret == 0 && access == MemoryPermission::kNoAccess) {
     // This is advisory; ignore errors and continue execution.
     // ReclaimInaccessibleMemory(address, size);
@@ -180,10 +199,11 @@ bool OSMemory::SetPermission(void *address, int size, MemoryPermission access) {
 // TODO(erikchen): Fix this to only call MADV_FREE_REUSE when necessary.
 // https://crbug.com/823915
 #if defined(OS_MACOSX)
+DLOG(0, "SetPermission 5");
   if (access != MemoryPermission::kNoAccess)
     madvise(address, size, MADV_FREE_REUSE);
 #endif
-
+DLOG(0, "SetPermission 6");
   return ret == 0;
 }
 
