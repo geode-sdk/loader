@@ -15,12 +15,12 @@ jobs:
         - name: "Windows"
           os: windows-2019
           extra_flags: '-G "Visual Studio 16 2019" -T host=x86 -A win32'
-          gen_paths:  './build/gen/Address.hpp ./build/gen/Compare.hpp ./build/gen/Header.hpp ./build/gen/Modify.hpp ./build/gen/Type.hpp ./build/gen/Wrap.hpp'
+          gen_paths:  './build/gen/*.hpp'
           out_paths: './build/Release/geode.dll ./build/Release/geode.lib ./build/src/inject/windows/Release/XInput9_1_0.dll ./build/src/CCZipUtils/Release/CCZipUtils.lib'
         - name: "macOS"
           os: macos-latest
           extra_flags: "-DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
-          gen_paths:  './build/gen/Address.hpp ./build/gen/Compare.hpp ./build/gen/Header.hpp ./build/gen/Modify.hpp ./build/gen/Type.hpp ./build/gen/Wrap.hpp'
+          gen_paths:  './build/gen/*.hpp'
           out_paths: './build/Geode.dylib ./build/src/CCZipUtils/libCCZipUtils.a'
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
