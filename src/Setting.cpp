@@ -350,6 +350,15 @@ Result<IntSetting*> GeodeSetting<IntSetting>::parse(nlohmann::json const& json) 
 				}
 			}
 
+			if (value.contains("step")) {
+				if (value["step"].is_number_integer()) {
+					res->m_step = value["step"];
+				} else {
+					delete res;
+					return Err<>("Setting has \"value.step\" but it is not an int");
+				}
+			}
+
 			if (value.contains("max")) {
 				if (value["max"].is_number_integer()) {
 					res->m_max = value["max"];
@@ -436,6 +445,15 @@ Result<FloatSetting*> GeodeSetting<FloatSetting>::parse(nlohmann::json const& js
 				} else {
 					delete res;
 					return Err<>("Setting has \"value.max\" but it is not a float");
+				}
+			}
+
+			if (value.contains("step")) {
+				if (value["step"].is_number()) {
+					res->m_step = value["step"];
+				} else {
+					delete res;
+					return Err<>("Setting has \"value.step\" but it is not a float");
 				}
 			}
 

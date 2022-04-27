@@ -15,21 +15,29 @@ T findSymbolOrMangled(HMODULE load, const char* name, const char* mangled) {
 
 const char* getUsefulError(int code) {
     switch (code) {
-        case ERROR_PROC_NOT_FOUND:
-            return
-                "ERROR_PROC_NOT_FOUND; The mod tried to access "
-                "a function defined in another DLL, but the specified "
-                "function was not found. Make sure the other DLL exports "
-                "the given symbol, and that it is defined in the DLL. "
-                "If you are not the developer of this mod, report this error "
-                "to them as it is likely not your fault.";
+        case ERROR_MOD_NOT_FOUND: return
+            "ERROR_MOD_NOT_FOUND; The mod is either missing the DLL "
+            "file or some of its dependencies. Make sure to list all "
+            "other mods you depend on under dependencies and include "
+            "other DLLs under resources in mod.json. "
+            "If you are not the developer of this mod, report this error "
+            "to them as it is likely not your fault.";
+
+        case ERROR_PROC_NOT_FOUND: return
+            "ERROR_PROC_NOT_FOUND; The mod tried to access "
+            "a function defined in another DLL, but the specified "
+            "function was not found. Make sure the other DLL exports "
+            "the given symbol, and that it is defined in the DLL. "
+            "If you are not the developer of this mod, report this error "
+            "to them as it is likely not your fault.";
                 
-        case ERROR_DLL_INIT_FAILED:
-            return
-                "ERROR_DLL_INIT_FAILED; Likely some global variables "
-                "in the mod threw an exception or otherwise failed. "
-                "If you are not the developer of this mod, report this error "
-                "to them as it is likely not your fault.";
+        case ERROR_DLL_INIT_FAILED: return
+            "ERROR_DLL_INIT_FAILED; Likely some global variables "
+            "in the mod threw an exception or otherwise failed. "
+            "If you are not the developer of this mod, report this error "
+            "to them as it is likely not your fault.";
+        
+        default: break;
     }
     return nullptr;
 }
