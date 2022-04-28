@@ -4,8 +4,8 @@
 #include <loader/Loader.hpp>
 #include <utils/casts.hpp>
 #include <utils/vector.hpp>
-// #include <hook/hook.hpp>
 #include "Internal.hpp"
+#include <dobby.h>
 
 USE_GEODE_NAMESPACE();
 
@@ -37,15 +37,9 @@ Result<> Mod::unpatch(Patch* patch) {
 }
 
 bool Patch::apply() {
-	return true;
-    // return geode::core::hook::write_memory(
-    //     this->m_address, this->m_patch.data(), this->m_patch.size()
-    // );
+	return CodePatch(m_address, m_patch.data(), m_patch.size()) == kMemoryOperationSuccess;
 }
 
 bool Patch::restore() {
-	return true;
-    // return geode::core::hook::write_memory(
-    //     this->m_address, this->m_original.data(), this->m_original.size()
-    // );
+	return CodePatch(m_address, m_original.data(), m_original.size()) == kMemoryOperationSuccess;
 }
