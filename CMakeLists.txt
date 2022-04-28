@@ -81,6 +81,8 @@ set_source_files_properties(${OBJC_SOURCES} PROPERTIES SKIP_PRECOMPILE_HEADERS O
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${HEADERS})
 
+SET(DOBBY_GENERATE_SHARED OFF CACHE BOOL "Build dobby shared library" FORCE)
+# SET(DOBBY_DEBUG ON CACHE BOOL "Build dobby shared library" FORCE)
 add_subdirectory(dobby)
 add_subdirectory(src/CCZipUtils)
 

@@ -34,7 +34,8 @@ Result<> Mod::loadPlatformBinary() {
 
 		return Ok<>();
 	}
-	return Err<>("Unable to load the DYLIB");
+	std::string err = (char const*)dlerror();
+	return Err<>("Unable to load the DYLIB: dlerror returned (" + err + ")");
 }
 
 Result<> Mod::unloadPlatformBinary() {
@@ -47,6 +48,7 @@ Result<> Mod::unloadPlatformBinary() {
 		this->m_implicitLoadFunc = nullptr;
 		return Ok<>();
 	} else {
+		
 		return Err<>("Unable to free library");
 	}
 }

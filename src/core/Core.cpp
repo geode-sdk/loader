@@ -17,9 +17,11 @@ namespace geode::core::impl {
 	}
 
 	void addJump(void* at, void* to) {
-        // std::cout << "at: " << at << " to: " << to << std::endl;
+        Log() << "Add jump";
         DobbyDestroy(at);
+        Log() << "middle";
         DobbyHook(at, to, &trampolines()[at]);
+        Log() << "Added jump";
 	}
 }
 

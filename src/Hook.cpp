@@ -28,7 +28,9 @@ GEODE_STATIC_VAR(bool, readyToHook);
 
 Result<> Mod::enableHook(Hook* hook) {
     if (!hook->isEnabled()) {
+        Log() << "Add function";
     	auto res = std::invoke(hook->m_addFunction, hook->m_address);
+        Log() << "Added function";
 	    if (res) {
 	        this->m_hooks.push_back(hook);
 	        hook->m_enabled = true;
@@ -82,6 +84,7 @@ bool Geode::loadHooks() {
     readyToHook() = true;
     auto thereWereErrors = false;
     for (auto const& hook : internalHooks()) {
+        Log() << "Loading hook for " << hook.hook->getDisplayName() << " at " << hook.hook->getAddress();
         auto res = hook.mod->addHook(hook.hook);
         if (!res) {
             hook.mod->logInfo(
