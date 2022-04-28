@@ -1,0 +1,3 @@
+#pragma once
+
+static constexpr const char* loader_about_md = R"MD_SEPARATOR(@LOADER_ABOUT_MD@)MD_SEPARATOR";
