@@ -1,12 +1,12 @@
 #include <Mod.hpp>
 #include <Loader.hpp>
-#include <InternalLoader.hpp>
+#include <Internal.hpp>
 #include <InternalMod.hpp>
 #include <Log.hpp>
 #include <Interface.hpp>
-#include "core/Core.hpp"
+#include "../core/Core.hpp"
+#include "entry.hpp"
 
-int geodeEntry(void* platformData);
 // platform-specific entry points
 
 #if defined(GEODE_IS_IOS) || defined(GEODE_IS_MACOS)
@@ -52,17 +52,17 @@ BOOL WINAPI DllMain(HINSTANCE lib, DWORD reason, LPVOID) {
 int geodeEntry(void* platformData) {
     // setup internals
 
-    if (!InternalLoader::get()) {
-        InternalLoader::platformMessageBox(
+    if (!Geode::get()) {
+        Geode::platformMessageBox(
             "Unable to Load Geode!",
             "There was an unknown fatal error setting up "
             "internal tools and Geode can not be loaded. "
-            "(InternalLoader::get returned nullptr)"
+            "(Geode::get returned nullptr)"
         );
     }
 
     if (!geode::core::hook::initialize()) {
-        InternalLoader::platformMessageBox(
+        Geode::platformMessageBox(
             "Unable to load Geode!",
             "There was an unknown fatal error setting up "
             "internal tools and Geode can not be loaded. "
@@ -72,16 +72,16 @@ int geodeEntry(void* platformData) {
 
     Interface::get()->init(InternalMod::get());
 
-    if (!InternalLoader::get()->setup()) {
+    if (!Geode::get()->setup()) {
         // if we've made it here, Geode will 
         // be gettable (otherwise the call to 
         // setup would've immediately crashed)
 
-        InternalLoader::platformMessageBox(
+        Geode::platformMessageBox(
             "Unable to Load Geode!",
             "There was an unknown fatal error setting up "
             "internal tools and Geode can not be loaded. "
-            "(InternalLoader::setup) returned false"
+            "(Geode::setup) returned false"
         );
         return 1;
     }
@@ -92,12 +92,12 @@ int geodeEntry(void* platformData) {
 
     // set up loader, load mods, etc.
     if (!Loader::get()->setup()) {
-        InternalLoader::get()->platformMessageBox(
+        Geode::get()->platformMessageBox(
             "Unable to Load Geode!",
             "There was an unknown fatal error setting up "
             "the loader and Geode can not be loaded."
         );
-        delete InternalLoader::get();
+        delete Geode::get();
         return 1;
     }
 
@@ -111,15 +111,15 @@ int geodeEntry(void* platformData) {
         << Severity::Debug
         << "Loading Console...";
 
-    InternalLoader::get()->setupPlatformConsole();
-    InternalLoader::get()->awaitPlatformConsole();
-    InternalLoader::get()->closePlatformConsole();
+    Geode::get()->setupPlatformConsole();
+    Geode::get()->awaitPlatformConsole();
+    Geode::get()->closePlatformConsole();
 
     InternalMod::get()->log()
         << Severity::Debug
         << "Cleaning up...";
 
-    //delete InternalLoader::get();
+    //delete Geode::get();
     #endif
 
     InternalMod::get()->log()
