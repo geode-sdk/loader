@@ -1,4 +1,4 @@
-#include <utils/node.hpp>
+#include <utils/cocos.hpp>
 #include <utils/WackyGeodeMacros.hpp>
 
 USE_GEODE_NAMESPACE();
@@ -79,4 +79,9 @@ bool geode::cocos::nodeIsVisible(cocos2d::CCNode* node) {
     if (!node->isVisible()) return false;
     if (node->getParent()) return nodeIsVisible(node->getParent());
     return true;
+}
+
+bool geode::cocos::fileExistsInSearchPaths(const char* filename) {
+    auto utils = CCFileUtils::sharedFileUtils();
+    return utils->isFileExist(utils->fullPathForFilename(filename, false));
 }
