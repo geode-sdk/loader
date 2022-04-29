@@ -472,6 +472,10 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
 
     auto mod = new Mod(info);
 
+    for (auto& [_, setting] : mod->m_info.m_settings) {
+        setting->m_mod = mod;
+    }
+
     mod->m_saveDirPath = Loader::get()->getGeodeSaveDirectory() / geodeModDirectory / info.m_id;
 
     ghc::filesystem::create_directories(mod->m_saveDirPath);

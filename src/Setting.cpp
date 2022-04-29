@@ -722,6 +722,12 @@ Result<Setting*> Setting::parseFromJSON(nlohmann::json const& json) {
 	return Err<>("Setting is neither a string nor an object");
 }
 
+void Setting::update()  {
+	if (m_mod && m_mod->m_settingUpdatedFunc) {
+		m_mod->m_settingUpdatedFunc(m_key.c_str(), this);
+	}
+}
+
 #define GEODE_DECL_BASIC_SAVE_LOAD(_sett_, _type_, _jsontype_) \
 	Result<> _sett_::save(nlohmann::json& json) const {				\
 		json["value"] = this->m_value;								\
