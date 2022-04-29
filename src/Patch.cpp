@@ -9,14 +9,18 @@
 
 USE_GEODE_NAMESPACE();
 
+byte_array readMemory(void* address, size_t amount) {
+    byte_array ret;
+    for (size_t i = 0; i < amount; i++) {
+        ret.push_back(*as<uint8_t*>(as<uintptr_t>(address) + i));
+    }
+    return ret;
+}
+
 Result<Patch*> Mod::patch(void* address, byte_array data) {
     auto p = new Patch;
     p->m_address = address;
-    p->m_original = byte_array(data.size());
-    // if (!geode::core::hook::read_memory(address, p->m_original.data(), data.size())) {
-    //     delete p;
-    //     return Err<>("Unable to read memory at " + std::to_string(p->getAddress()));
-    // }
+    p->m_original = readMemory(address, data.size());
     p->m_owner = this;
     p->m_patch = data;
     if (!p->apply()) {
