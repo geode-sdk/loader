@@ -3,7 +3,6 @@
 #include <loader/Mod.hpp>
 #include <loader/Loader.hpp>
 #include <utils/general.hpp>
-#include <utils/stream.hpp>
 #include <utils/casts.hpp>
 #include <Internal.hpp>
 #include <iomanip>
@@ -52,6 +51,16 @@ std::ostream& operator<<(std::ostream& os, cocos2d::CCSize const& size) {
 
 std::ostream& operator<<(std::ostream& os, cocos2d::CCRect const& rect) {
     os << rect.origin.x << ", " << rect.origin.y << " | " << rect.size.width << " : " << rect.size.height;
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, cocos2d::ccColor3B const& color) {
+    os << color.r << ", " << color.g << ", " << color.b;
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, cocos2d::ccColor4B const& color) {
+    os << color.r << ", " << color.g << ", " << color.b << ", " << color.a;
     return os;
 }
 
