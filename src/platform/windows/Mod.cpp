@@ -34,6 +34,7 @@ const char* getUsefulError(int code) {
         case ERROR_DLL_INIT_FAILED: return
             "ERROR_DLL_INIT_FAILED; Likely some global variables "
             "in the mod threw an exception or otherwise failed. "
+            "ALSO MAKE SURE YOU ARE COMPILING IN RELEASE MODE. "
             "If you are not the developer of this mod, report this error "
             "to them as it is likely not your fault.";
         
