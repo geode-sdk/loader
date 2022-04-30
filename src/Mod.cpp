@@ -390,6 +390,10 @@ bool Mod::supportsDisabling() const {
     return this->m_info.m_supportsDisabling;
 }
 
+bool Mod::supportsUnloading() const {
+    return this->m_info.m_supportsUnloading;
+}
+
 bool Mod::wasSuccesfullyLoaded() const {
     return !this->isEnabled() || this->isLoaded();
 }

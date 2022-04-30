@@ -449,6 +449,7 @@ Result<ModInfo> Loader::checkBySchema<1>(std::string const& path, void* jsonData
         });
     
     json_assign_optional(json, "toggleable", info.m_supportsDisabling);
+    json_assign_optional(json, "unloadable", info.m_supportsUnloading);
 
     json_check::s_knownKeys.insert("geode");
     json_check::s_knownKeys.insert("binary");
