@@ -241,7 +241,7 @@ Result<> Mod::uninstall() {
 }
 
 bool Mod::isUninstalled() const {
-    return !ghc::filesystem::exists(m_info.m_path);
+    return this != InternalMod::get() && !ghc::filesystem::exists(m_info.m_path);
 }
 
 bool Dependency::isUnresolved() const {
