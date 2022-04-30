@@ -149,6 +149,7 @@ Result<> Loader::saveSettings() {
     auto json = nlohmann::json::object();
     json["mods"] = nlohmann::json::object();
     for (auto [id, mod] : this->m_mods) {
+        if (mod->isUninstalled()) continue;
         auto value = nlohmann::json::object();
         value["enabled"] = mod->m_enabled;
         json["mods"][id] = value;

@@ -126,6 +126,10 @@ Result<> Mod::unload() {
     if (!this->m_loaded) {
         return Ok<>();
     }
+
+    if (!m_info.m_supportsUnloading) {
+        return Err<>("Mod does not support unloading");
+    }
     
     if (this->m_saveDataFunc) {
         if (!this->m_saveDataFunc(this->m_saveDirPath.string().c_str())) {
@@ -191,6 +195,10 @@ Result<> Mod::enable() {
 }
 
 Result<> Mod::disable() {
+    if (!m_info.m_supportsDisabling) {
+        return Err<>("Mod does not support disabling");
+    }
+
     if (this->m_disableFunc) {
         if (!this->m_disableFunc()) {
             return Err<>("Mod disable function returned false");
@@ -211,6 +219,29 @@ Result<> Mod::disable() {
     this->m_enabled = false;
 
     return Ok<>();
+}
+
+Result<> Mod::uninstall() {
+    if (m_info.m_supportsDisabling) {
+        auto r = this->disable();
+        if (!r) return r;
+        if (m_info.m_supportsUnloading) {
+            auto ur = this->unload();
+            if (!ur) return ur;
+        }
+    }
+    if (!ghc::filesystem::remove(m_info.m_path)) {
+        return Err<>(
+            "Unable to delete mod's .geode file! "
+            "This might be due to insufficient permissions - "
+            "try running GD as administrator."
+        );
+    }
+    return Ok<>();
+}
+
+bool Mod::isUninstalled() const {
+    return !ghc::filesystem::exists(m_info.m_path);
 }
 
 bool Dependency::isUnresolved() const {
