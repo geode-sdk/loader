@@ -32,10 +32,12 @@ bool string_utils::startsWith(std::wstring const& str, std::wstring const& prefi
 	return str.rfind(prefix, 0) == 0;
 }
 bool string_utils::endsWith(std::string const& str, std::string const& suffix) {
-	return str.find(suffix, str.size()-suffix.size()) == 0;
+    if (suffix.size() > str.size()) return false;
+    return std::equal(suffix.rbegin(), suffix.rend(), str.rbegin());
 }
 bool string_utils::endsWith(std::wstring const& str, std::wstring const& suffix) {
-	return str.find(suffix, str.size()-suffix.size()) == 0;
+    if (suffix.size() > str.size()) return false;
+    return std::equal(suffix.rbegin(), suffix.rend(), str.rbegin());
 }
 
 std::string& string_utils::toLowerIP(std::string& str) {
