@@ -9,6 +9,7 @@
 #include <utils/map.hpp>
 #include <utils/conststring.hpp>
 #include <utils/string.hpp>
+#include <InternalMod.hpp>
 
 USE_GEODE_NAMESPACE();
 
