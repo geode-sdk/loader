@@ -49,7 +49,7 @@ elseif("${GEODE_TARGET_PLATFORM}" STREQUAL "Win32")
 	    "${CMAKE_CURRENT_LIST_DIR}/zlib.lib"
 	)
 
-	add_definitions(-DGEODE_EXPORTING)
+	# add_definitions(-DGEODE_EXPORTING)
 elseif("${GEODE_TARGET_PLATFORM}" STREQUAL "iOS")
 	target_include_directories(CCZipUtils PUBLIC
 		"${CMAKE_CURRENT_LIST_DIR}/../../sdk/include/"
