@@ -81,9 +81,10 @@ Result<Mod*> Loader::loadModFromFile(std::string const& path) {
             unsigned long readSize = 0;
             auto aboutData = unzip.getFileData("about.md", &readSize);
             if (!aboutData || !readSize) {
-                return Err<>("\"" + path + "\": Unable to read about.md");
+                mod->logInfo("Unable to read about.md", Severity::Error);
+            } else {
+                mod->m_info.m_details = sanitizeDetailsData(aboutData, aboutData + readSize);
             }
-            mod->m_info.m_details = sanitizeDetailsData(aboutData, aboutData + readSize);
         }
 
         return Ok<>(mod);

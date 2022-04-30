@@ -81,6 +81,13 @@ void Loader::updateModResources(Mod* mod) {
     }
 }
 
+bool Loader::isModInstalled(std::string const& id) const {
+    for (auto& [mod, _] : m_mods) {
+        if (mod == id) return true;
+    }
+    return false;
+}
+
 void Loader::updateResources() {
     for (auto const& [_, mod] : this->m_mods) {
         this->updateModResources(mod);
