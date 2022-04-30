@@ -82,8 +82,8 @@ void Loader::updateModResources(Mod* mod) {
 }
 
 bool Loader::isModInstalled(std::string const& id) const {
-    for (auto& [mod, _] : m_mods) {
-        if (mod == id) return true;
+    for (auto& [mid, mod] : m_mods) {
+        if (mid == id && !mod->isUninstalled()) return true;
     }
     return false;
 }
