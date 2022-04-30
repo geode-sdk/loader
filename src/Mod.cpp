@@ -320,6 +320,10 @@ decltype(ModInfo::m_details) Mod::getDetails() const {
     return this->m_info.m_details;
 }
 
+ModInfo Mod::getModInfo() const {
+    return m_info;
+}
+
 Result<> Mod::saveData() {
     bool savedmod = true;
     if (this->m_saveDataFunc) {
