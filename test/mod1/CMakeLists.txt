@@ -6,7 +6,7 @@ set(PROJECT_NAME TestMod1)
 
 project(${PROJECT_NAME} VERSION 1.0.0)
 
-add_library(${PROJECT_NAME} SHARED mod1.cpp ../../sdk/include/implicitEntry.cpp)
+add_library(${PROJECT_NAME} SHARED mod1.cpp)
 
 add_compile_definitions(EXPORTING_MOD)
 

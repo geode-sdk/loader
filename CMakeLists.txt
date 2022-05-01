@@ -94,6 +94,6 @@ add_subdirectory(dobby)
 
 if(NOT GEODE_DONT_BUILD_TEST_MODS)
 	if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
-		#add_subdirectory(test)
+		add_subdirectory(test)
 	endif()
 endif()
