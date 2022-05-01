@@ -49,6 +49,7 @@ void CodeBufferBase::Emit64(uint64_t value) {
 }
 
 void CodeBufferBase::EmitBuffer(void *buffer, int buffer_size) {
+	DLOG(0, "[code buffer] EmitBuffer with size %d, cursor %x", buffer_size, buffer_cursor);
   // Ensure the free space enough for the template T value
   this->ensureCapacity(buffer_size + this->getSize());
 

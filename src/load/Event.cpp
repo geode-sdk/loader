@@ -1,27 +1,27 @@
-#include <Notification.hpp>
+#include <loader/Event.hpp>
 #include <Geode.hpp>
 
 USE_GEODE_NAMESPACE();
 
-NotificationCenter* NotificationCenter::shared = nullptr;
+EventCenter* EventCenter::shared = nullptr;
 
-NotificationCenter::NotificationCenter() : m_observers() {
+EventCenter::EventCenter() : m_observers() {
 	// cocos2d::CCDirector::sharedDirector()->getScheduler()->scheduleUpdateForTarget((cocos2d::CCObject*)this, 0, false);
 }
 
-NotificationCenter* NotificationCenter::get() {
-	if (NotificationCenter::shared == nullptr)
-		NotificationCenter::shared = new NotificationCenter;
-	return NotificationCenter::shared;
+EventCenter* EventCenter::get() {
+	if (EventCenter::shared == nullptr)
+		EventCenter::shared = new EventCenter;
+	return EventCenter::shared;
 }
 
-/*void NotificationCenter::send(Notification n, Mod* m) {
+/*void EventCenter::send(Event n, Mod* m) {
 	for (auto& obs : m_observers[m][n.selector()]) {
 		obs->m_callback(n);
 	}
 }
 
-void NotificationCenter::broadcast(Notification n) {
+void EventCenter::broadcast(Event n) {
 	for (auto& [k, v] : m_observers) {
 		for (auto& obs : v[n.selector()]) {
 			obs->m_callback(n);
@@ -29,7 +29,7 @@ void NotificationCenter::broadcast(Notification n) {
 	}
 }
 
-Observer* NotificationCenter::registerObserver(Mod* m, std::string selector, callback_t cb) {
+Observer* EventCenter::registerObserver(Mod* m, std::string selector, callback_t cb) {
 	Observer* ob = new Observer;
 	ob->m_selector = selector;
 	ob->m_callback = cb;
@@ -40,7 +40,7 @@ Observer* NotificationCenter::registerObserver(Mod* m, std::string selector, cal
 	return ob;
 }*/
 
-void NotificationCenter::unregisterObserver(Observer<std::monostate>* ob) {
+void EventCenter::unregisterObserver(Observer<std::monostate>* ob) {
 	auto& v2 = m_observers[ob->m_mod][ob->m_info.selector];
 	v2.erase(std::remove(v2.begin(), v2.end(), ob), v2.end());
 
@@ -49,7 +49,7 @@ void NotificationCenter::unregisterObserver(Observer<std::monostate>* ob) {
 	delete ob;
 }
 
-std::vector<Observer<std::monostate>*> NotificationCenter::getObservers(std::string selector, Mod* m) {
+std::vector<Observer<std::monostate>*> EventCenter::getObservers(std::string selector, Mod* m) {
 	if (m) {
 		return m_observers[m][selector];
 	} else {

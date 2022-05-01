@@ -16,29 +16,35 @@ using namespace zz::x64;
 static void **AllocIndirectStub(addr_t branch_address) {
   WritableDataChunk *forwardStub = NULL;
 
+    DLOG(0, "AllocIndirectStub");
   forwardStub =
       NearMemoryArena::AllocateDataChunk((addr_t)branch_address, (size_t)2 * 1024 * 1024 * 1024, (int)sizeof(void *));
   if (forwardStub == nullptr) {
     ERROR_LOG("Not found near forward stub");
     return NULL;
   }
+  DLOG(0, "AllocedIndirectStub");
 
   return (void **)forwardStub->address;
 }
 
 CodeBufferBase *GenerateNormalTrampolineBuffer(addr_t from, addr_t to) {
+    DLOG(0, "GenerateNormalTrampolineBuffer");
   TurboAssembler turbo_assembler_((void *)from);
 #define _ turbo_assembler_.
 
   // branch
+  DLOG(0, "sfd");
   void **branch_stub = AllocIndirectStub(from);
   *branch_stub = (void *)to;
 
   CodeGen codegen(&turbo_assembler_);
   codegen.JmpNearIndirect((uint64_t)branch_stub);
+  DLOG(0, "sss");
 
   CodeBufferBase *result = NULL;
   result = turbo_assembler_.GetCodeBuffer()->Copy();
+  DLOG(0, "a");
   return result;
 }
 

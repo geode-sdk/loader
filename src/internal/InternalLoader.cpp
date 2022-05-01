@@ -4,8 +4,8 @@
 #include <sstream>
 #include <iostream>
 #include "InternalMod.hpp"
-#include <Log.hpp>
-#include <Loader.hpp>
+#include <loader/Log.hpp>
+#include <loader/Loader.hpp>
 #include <Geode.hpp>
 // #include <HotReloadLayer.hpp>
 

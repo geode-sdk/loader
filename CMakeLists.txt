@@ -42,7 +42,6 @@ file(GLOB OBJC_SOURCES
 # not recurse because dont include platform specific headers
 file(GLOB HEADERS
 	sdk/include/*.hpp
-	build/gen/Header.hpp
 )
 
 add_library(${PROJECT_NAME} SHARED
@@ -90,6 +89,8 @@ set_source_files_properties(${OBJC_SOURCES} PROPERTIES SKIP_PRECOMPILE_HEADERS O
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${HEADERS})
 
+SET(DOBBY_GENERATE_SHARED OFF CACHE BOOL "Build dobby shared library" FORCE)
+# SET(DOBBY_DEBUG ON CACHE BOOL "Build dobby shared library" FORCE)
 add_subdirectory(dobby)
 
 if(NOT GEODE_DONT_BUILD_TEST_MODS)

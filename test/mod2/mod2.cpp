@@ -1,5 +1,4 @@
 #include "mod2.hpp"
-#include <InterfaceBase.hpp>
 
 class $modify(GJGarageLayer) {
 	bool init() {

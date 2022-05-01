@@ -1,6 +1,6 @@
 #pragma warning(disable: 4067)
 
-#include <Setting.hpp>
+#include <loader/Setting.hpp>
 #include <InternalMod.hpp>
 #include <utils/string.hpp>
 #include <utils/general.hpp>
@@ -350,6 +350,15 @@ Result<IntSetting*> GeodeSetting<IntSetting>::parse(nlohmann::json const& json) 
 				}
 			}
 
+			if (value.contains("step")) {
+				if (value["step"].is_number_integer()) {
+					res->m_step = value["step"];
+				} else {
+					delete res;
+					return Err<>("Setting has \"value.step\" but it is not an int");
+				}
+			}
+
 			if (value.contains("max")) {
 				if (value["max"].is_number_integer()) {
 					res->m_max = value["max"];
@@ -436,6 +445,15 @@ Result<FloatSetting*> GeodeSetting<FloatSetting>::parse(nlohmann::json const& js
 				} else {
 					delete res;
 					return Err<>("Setting has \"value.max\" but it is not a float");
+				}
+			}
+
+			if (value.contains("step")) {
+				if (value["step"].is_number()) {
+					res->m_step = value["step"];
+				} else {
+					delete res;
+					return Err<>("Setting has \"value.step\" but it is not a float");
 				}
 			}
 
@@ -702,6 +720,12 @@ Result<Setting*> Setting::parseFromJSON(nlohmann::json const& json) {
 		}
 	}
 	return Err<>("Setting is neither a string nor an object");
+}
+
+void Setting::update()  {
+	if (m_mod && m_mod->m_settingUpdatedFunc) {
+		m_mod->m_settingUpdatedFunc(m_key.c_str(), this);
+	}
 }
 
 #define GEODE_DECL_BASIC_SAVE_LOAD(_sett_, _type_, _jsontype_) \

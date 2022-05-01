@@ -1,7 +1,7 @@
-#include <Hook.hpp>
-#include <Mod.hpp>
-#include <Log.hpp>
-#include <Loader.hpp>
+#include <loader/Hook.hpp>
+#include <loader/Mod.hpp>
+#include <loader/Log.hpp>
+#include <loader/Loader.hpp>
 #include <InternalLoader.hpp>
 #include <InternalMod.hpp>
 #include <utils/file.hpp>
@@ -81,6 +81,13 @@ void Loader::updateModResources(Mod* mod) {
     }
 }
 
+bool Loader::isModInstalled(std::string const& id) const {
+    for (auto& [mid, mod] : m_mods) {
+        if (mid == id && !mod->isUninstalled()) return true;
+    }
+    return false;
+}
+
 void Loader::updateResources() {
     for (auto const& [_, mod] : this->m_mods) {
         this->updateModResources(mod);
@@ -142,6 +149,7 @@ Result<> Loader::saveSettings() {
     auto json = nlohmann::json::object();
     json["mods"] = nlohmann::json::object();
     for (auto [id, mod] : this->m_mods) {
+        if (mod->isUninstalled()) continue;
         auto value = nlohmann::json::object();
         value["enabled"] = mod->m_enabled;
         json["mods"][id] = value;

@@ -1,7 +1,7 @@
-#include <Loader.hpp>
-#include <Mod.hpp>
+#include <loader/Loader.hpp>
+#include <loader/Mod.hpp>
 #include <InternalMod.hpp>
-#include <Log.hpp>
+#include <loader/Log.hpp>
 #undef snprintf
 #include <utils/json.hpp>
 #include <ZipUtils.h>
@@ -31,7 +31,7 @@ std::string sanitizeDetailsData(unsigned char* start, unsigned char* end) {
     return string_utils::replace(std::string(start, end), "\r", "");
 }
 
-template<> Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData);
+template<> Result<ModInfo> Loader::checkBySchema<1>(std::string const& path, void* jsonData);
 
 Result<Mod*> Loader::loadModFromFile(std::string const& path) {
     // Unzip file
@@ -55,62 +55,39 @@ Result<Mod*> Loader::loadModFromFile(std::string const& path) {
 
         // Free up memory
         delete[] read;
-        if (!json.is_object()) {
-            return Err<>(
-                "\"" + path + "/mod.json\" does not have an "
-                "object at root despite expected"
-            );
+
+        auto res = this->parseModJson(path, json);
+
+        if (!res) {
+            return Err<>(res.error());
+        }
+        
+        auto mod = new Mod(res.value());
+        for (auto& [_, setting] : mod->m_info.m_settings) {
+            setting->m_mod = mod;
+        }
+        mod->m_saveDirPath = Loader::get()->getGeodeSaveDirectory() / geodeModDirectory / res.value().m_id;
+        ghc::filesystem::create_directories(mod->m_saveDirPath);
+
+        auto r = mod->loadData();
+        if (!r) mod->logInfo(r.error(), Severity::Error);
+
+        mod->m_enabled = Loader::get()->shouldLoadMod(mod->m_info.m_id);
+        this->m_mods.insert({ res.value().m_id, mod });
+        mod->updateDependencyStates();
+
+        if (unzip.fileExists("about.md")) {
+            // we can just reuse this variable
+            unsigned long readSize = 0;
+            auto aboutData = unzip.getFileData("about.md", &readSize);
+            if (!aboutData || !readSize) {
+                mod->logInfo("Unable to read about.md", Severity::Error);
+            } else {
+                mod->m_info.m_details = sanitizeDetailsData(aboutData, aboutData + readSize);
+            }
         }
 
-        // Check mod.json target version
-        auto schema = 1;
-        if (json.contains("geode") && json["geode"].is_number_integer()) {
-            schema = json["geode"];
-        }
-        if (schema < Loader::s_supportedSchemaMin) {
-            return Err<>(
-                "\"" + path + "\" has a lower target version (" + 
-                std::to_string(schema) + ") than this version of "
-                "geode supports (" + std::to_string(Loader::s_supportedSchemaMin) +
-                "). You may need to downdate geode in order to use "
-                "this mod."
-            );
-        }
-        if (schema > Loader::s_supportedSchemaMax) {
-            return Err<>(
-                "\"" + path + "\" has a higher target version (" + 
-                std::to_string(schema) + ") than this version of "
-                "geode supports (" + std::to_string(Loader::s_supportedSchemaMax) +
-                "). You may need to update geode in order to use "
-                "this mod."
-            );
-        }
-
-        // Handle mod.json data based on target
-        switch (schema) {
-            case 1: {
-                auto res = this->checkBySchema<1>(path, &json);
-                if (res && res.value() && unzip.fileExists("about.md")) {
-                    // we can just reuse this variable
-                    readSize = 0;
-                    auto aboutData = unzip.getFileData("about.md", &readSize);
-                    if (!aboutData || !readSize) {
-                        return Err<>("\"" + path + "\": Unable to read about.md");
-                    }
-                    res.value()->m_info.m_details = sanitizeDetailsData(aboutData, aboutData + readSize);
-                }
-                return res;
-            } break;
-        }
-
-        return Err<>(
-            "\"" + path + "\" has a version schema (" +
-            std::to_string(schema) + ") that isn't "
-            "supported by this version of geode. "
-            "This may be a bug, or the given version "
-            "schema is invalid."
-        );
-
+        return Ok<>(mod);
     /*} catch(nlohmann::json::exception const& e) {
         return Err<>("\"" + path + "\": Unable to parse mod.json - \"" + e.what() + "\"");
     } catch(std::exception const& e) {
@@ -356,8 +333,56 @@ struct json_check_unknown {
     }
 };
 
+Result<ModInfo> Loader::parseModJson(std::string const& path, nlohmann::json const& json) {
+    if (!json.is_object()) {
+        return Err<>(
+            "\"" + path + "/mod.json\" does not have an "
+            "object at root despite expected"
+        );
+    }
+
+    // Check mod.json target version
+    auto schema = 1;
+    if (json.contains("geode") && json["geode"].is_number_integer()) {
+        schema = json["geode"];
+    }
+    if (schema < Loader::s_supportedSchemaMin) {
+        return Err<>(
+            "\"" + path + "\" has a lower target version (" + 
+            std::to_string(schema) + ") than this version of "
+            "geode supports (" + std::to_string(Loader::s_supportedSchemaMin) +
+            "). You may need to downdate geode in order to use "
+            "this mod."
+        );
+    }
+    if (schema > Loader::s_supportedSchemaMax) {
+        return Err<>(
+            "\"" + path + "\" has a higher target version (" + 
+            std::to_string(schema) + ") than this version of "
+            "geode supports (" + std::to_string(Loader::s_supportedSchemaMax) +
+            "). You may need to update geode in order to use "
+            "this mod."
+        );
+    }
+
+    // Handle mod.json data based on target
+    switch (schema) {
+        case 1: {
+            return this->checkBySchema<1>(path, const_cast<void*>(as<const void*>(&json)));
+        } break;
+    }
+
+    return Err<>(
+        "\"" + path + "\" has a version schema (" +
+        std::to_string(schema) + ") that isn't "
+        "supported by this version of geode. "
+        "This may be a bug, or the given version "
+        "schema is invalid."
+    );
+}
+
 template<>
-Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
+Result<ModInfo> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
     nlohmann::json json = *reinterpret_cast<nlohmann::json*>(jsonData);
 
     ModInfo info;
@@ -420,10 +445,11 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
         .has("spritesheets")
         .as<nlohmann::json::object_t>()
         .each([&info](auto key, auto) -> void {
-            info.m_spritesheets.push_back(key);
+            info.m_spritesheets.push_back(info.m_id + "_" + key);
         });
     
     json_assign_optional(json, "toggleable", info.m_supportsDisabling);
+    json_assign_optional(json, "unloadable", info.m_supportsUnloading);
 
     json_check::s_knownKeys.insert("geode");
     json_check::s_knownKeys.insert("binary");
@@ -470,18 +496,5 @@ Result<Mod*> Loader::checkBySchema<1>(std::string const& path, void* jsonData) {
     }
     skip_binary_check:
 
-    auto mod = new Mod(info);
-
-    mod->m_saveDirPath = Loader::get()->getGeodeSaveDirectory() / geodeModDirectory / info.m_id;
-
-    ghc::filesystem::create_directories(mod->m_saveDirPath);
-
-    auto r = mod->loadData();
-    if (!r) mod->logInfo(r.error(), Severity::Error);
-
-    mod->m_enabled = Loader::get()->shouldLoadMod(mod->m_info.m_id);
-    this->m_mods.insert({ info.m_id, mod });
-    mod->updateDependencyStates();
-
-    return Ok<Mod*>(mod);
+    return Ok(info);
 }
