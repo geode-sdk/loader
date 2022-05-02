@@ -33,6 +33,7 @@ jobs:
       with:
         submodules: recursive
         repository: geode-sdk/sdk
+        ref: restructure
         path: ./suite
 
     - uses: ilammy/msvc-dev-cmd@v1
