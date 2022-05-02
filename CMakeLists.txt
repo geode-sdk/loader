@@ -16,7 +16,6 @@ file(READ about.md LOADER_ABOUT_MD)
 configure_file(src/internal/about.hpp.in ${CMAKE_SOURCE_DIR}/src/internal/about.hpp)
 
 file(GLOB CORE_SOURCES
-	src/main.cpp
 	src/cocos2d-ext/*.cpp
 	src/core/*.cpp
 	src/hooks/*.cpp
@@ -24,19 +23,20 @@ file(GLOB CORE_SOURCES
 	src/internal/windows/*.cpp
 	src/load/*.cpp
 	src/load/windows/*.cpp
-	src/utils/*.cpp
-	src/utils/zip/*.cpp
 	src/mac/*.cpp
-	src/utils/windows.cpp
+	src/main.cpp
+	src/utils/*.cpp
+	src/utils/windows/*.cpp
+	src/utils/zip/*.cpp
 )
 
 file(GLOB OBJC_SOURCES
-	src/internal/mac/*.mm
 	src/internal/ios/*.mm
-	src/load/mac/*.mm
+	src/internal/mac/*.mm
 	src/load/ios/*.mm
-	src/utils/mac/*.mm
+	src/load/mac/*.mm
 	src/utils/ios/*.mm
+	src/utils/mac/*.mm
 )
 
 # not recurse because dont include platform specific headers
