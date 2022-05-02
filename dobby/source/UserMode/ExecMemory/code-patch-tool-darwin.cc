@@ -71,6 +71,7 @@ int code_remap_with_substrated(uint8_t *buffer, uint32_t buffer_size, addr_t add
 #endif
 
 PUBLIC MemoryOperationError CodePatch(void *address, uint8_t *buffer, uint32_t buffer_size) {
+
   kern_return_t kr;
 
   int page_size = (int)sysconf(_SC_PAGESIZE);

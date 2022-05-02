@@ -5,6 +5,8 @@ on:
     branches:    
     - '**'              # every branch
     - '!no-build-**'    # unless marked as no-build
+env:
+  GEODE_SUITE: ./suite
 
 jobs:
   build:
@@ -15,19 +17,25 @@ jobs:
         - name: "Windows"
           os: windows-2019
           extra_flags: '-G "Visual Studio 16 2019" -T host=x86 -A win32'
-          gen_paths:  './build/gen/*.hpp'
-          out_paths: './build/Release/geode.dll ./build/Release/geode.lib ./build/src/inject/windows/Release/XInput9_1_0.dll ./build/src/CCZipUtils/Release/CCZipUtils.lib'
+          gen_paths:  './build/codegen/*.hpp'
+          out_paths: './build/Release/geode.dll ./build/Release/geode.lib ./build/launcher/windows/Release/XInput9_1_0.dll'
         - name: "macOS"
           os: macos-latest
-          gen_paths:  './build/gen/*.hpp'
-          out_paths: './build/Geode.dylib ./build/src/CCZipUtils/libCCZipUtils.a'
+          extra_flags: "-DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
+          gen_paths:  './build/codegen/*.hpp'
+          out_paths: './build/Geode.dylib'
     name: ${{ matrix.config.name }}
     runs-on: ${{ matrix.config.os }}
 
     steps:
     - uses: actions/checkout@v2
+
+    - uses: actions/checkout@v2
       with:
         submodules: recursive
+        repository: geode-sdk/sdk
+        ref: restructure
+        path: ./suite
 
     - uses: ilammy/msvc-dev-cmd@v1
       with:
@@ -58,7 +66,16 @@ jobs:
 #        key: ${{ matrix.config.os }}-${{ steps.timestamp.outputs.timestamp }}
 #        restore-keys: ${{ matrix.config.os }}
 #      if: matrix.config.os == 'windows-latest'
+<<<<<<< HEAD
         
+=======
+    - name: Configure ccache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        key: ${{ matrix.config.os }}
+      if: matrix.config.os == 'macos-latest'
+
+>>>>>>> restructure
     - name: Configure CMake
       run: |
         cmake -B ${{ github.workspace }}/build ${{ matrix.config.extra_flags }} -DGEODE_DONT_BUILD_TEST_MODS=On -DGEODE_BUILD_UNIT_TESTS=On

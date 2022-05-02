@@ -6,7 +6,7 @@ set(PROJECT_NAME TestMod5)
 
 project(${PROJECT_NAME} VERSION 1.0.0)
 
-add_library(${PROJECT_NAME} SHARED mod5.cpp ../../sdk/include/implicitEntry.cpp)
+add_library(${PROJECT_NAME} SHARED mod5.cpp)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
 

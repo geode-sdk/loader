@@ -1,6 +1,8 @@
 #include <dobby.h>
 #include <iostream>
 #include "Core.hpp"
+#include <Log.hpp>
+#include <map>
 
 namespace geode::core::impl {
 	namespace {

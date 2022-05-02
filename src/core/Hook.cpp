@@ -1,4 +1,5 @@
-#include <core/Hook.hpp>
+
+#include <hook-core/Hook.hpp>
 #include <unordered_map>
 #include "Core.hpp"
 
