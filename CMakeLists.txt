@@ -64,7 +64,6 @@ endif()
 
 add_definitions(-DGEODE_EXPORTING)
 add_compile_definitions(GEODE_PLATFORM_CONSOLE)
-
 find_path(GEODE_SDK_PATH
   NAMES Geode.cmake
   PATHS $ENV{GEODE_SUITE} /usr/local/geode/sdk ~/.geode/sdk
