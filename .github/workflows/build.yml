@@ -21,7 +21,6 @@ jobs:
           out_paths: './build/Release/geode.dll ./build/Release/geode.lib ./build/src/inject/windows/Release/XInput9_1_0.dll ./build/src/CCZipUtils/Release/CCZipUtils.lib'
         - name: "macOS"
           os: macos-latest
-          extra_flags: "-DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
           gen_paths:  './build/gen/*.hpp'
           out_paths: './build/Geode.dylib ./build/src/CCZipUtils/libCCZipUtils.a'
     name: ${{ matrix.config.name }}
@@ -34,6 +33,7 @@ jobs:
       with:
         submodules: recursive
         repository: geode-sdk/sdk
+        ref: restructure
         path: ./suite
 
     - uses: ilammy/msvc-dev-cmd@v1
@@ -65,12 +65,6 @@ jobs:
 #        key: ${{ matrix.config.os }}-${{ steps.timestamp.outputs.timestamp }}
 #        restore-keys: ${{ matrix.config.os }}
 #      if: matrix.config.os == 'windows-latest'
-        
-    - name: Configure ccache
-      uses: hendrikmuhs/ccache-action@v1
-      with:
-        key: ${{ matrix.config.os }}
-      if: matrix.config.os == 'macos-latest'
     
     - name: Configure CMake
       run: |
