@@ -29,7 +29,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-      with:
 
     - uses: actions/checkout@v2
       with:
