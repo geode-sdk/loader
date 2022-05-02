@@ -66,6 +66,8 @@ add_definitions(-DGEODE_EXPORTING)
 add_compile_definitions(GEODE_PLATFORM_CONSOLE)
 
 
+message(STATUS "env: " $ENV{GEODE_SUITE})
+
 find_path(GEODE_SDK_PATH
   NAMES Geode.cmake
   PATHS $ENV{GEODE_SUITE}/sdk /usr/local/geode/sdk ~/.geode/sdk
