@@ -55,7 +55,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 	src/gui/
 	dobby/include/
 )
-target_link_directories(${PROJECT_NAME} PRIVATE dobby)
+target_link_directories(${PROJECT_NAME} PRIVATE dobby ${CMAKE_CURRENT_SOURCE_DIR}/link)
 target_link_libraries(${PROJECT_NAME} dobby z)
 
 if (WIN32)
