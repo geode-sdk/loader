@@ -68,10 +68,12 @@ add_compile_definitions(GEODE_PLATFORM_CONSOLE)
 
 find_path(GEODE_SDK_PATH
   NAMES Geode.cmake
-  PATHS $ENV{GEODE_SUITE} /usr/local/geode/sdk ~/.geode/sdk
+  PATHS $ENV{GEODE_SUITE}/sdk /usr/local/geode/sdk ~/.geode/sdk
   DOC "Geode SDK path."
   REQUIRED
 )
+
+message(STATUS "its: "${GEODE_SDK_PATH_TEST})
 
 include(${GEODE_SDK_PATH}/Geode.cmake)
 setup_geode_mod(BUILD_CODEGEN OUTPUT "Geode")
