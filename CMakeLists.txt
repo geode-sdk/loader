@@ -71,7 +71,6 @@ find_path(GEODE_SDK_PATH
   DOC "Geode SDK path."
   REQUIRED
 )
-
 include(${GEODE_SDK_PATH}/Geode.cmake)
 setup_geode_mod(BUILD_CODEGEN OUTPUT "Geode")
 
