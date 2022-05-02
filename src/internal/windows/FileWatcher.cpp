@@ -1,5 +1,6 @@
 #include <FileWatcher.hpp>
 #include <iostream>
+#include <thread>
 
 #ifdef GEODE_IS_WINDOWS
 
@@ -98,6 +99,7 @@ void FileWatcher::watch() {
 }
 
 bool FileWatcher::watching() const {
+	HANDLE handle = (HANDLE)this->m_platform_handle;
 	return handle != INVALID_HANDLE_VALUE &&
 		   handle != nullptr;
 }
