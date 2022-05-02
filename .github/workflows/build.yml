@@ -5,6 +5,8 @@ on:
     branches:    
     - '**'              # every branch
     - '!no-build-**'    # unless marked as no-build
+env:
+  GEODE_SUITE: ./suite
 
 jobs:
   build:
@@ -27,8 +29,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
+    - uses: actions/checkout@v2
       with:
         submodules: recursive
+        repository: geode-sdk/sdk
+        path: ./suite
 
     - uses: ilammy/msvc-dev-cmd@v1
       with:
