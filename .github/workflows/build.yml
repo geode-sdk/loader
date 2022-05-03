@@ -33,7 +33,7 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: recursive
-        repository: geode-sdk/sdk
+        repository: geode-sdk/suite
         path: ./suite
 
     - uses: ilammy/msvc-dev-cmd@v1
