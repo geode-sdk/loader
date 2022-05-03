@@ -37,11 +37,6 @@ jobs:
         ref: nightly
         path: ./suite
 
-    - name: Update SDK
-      shell: bash
-      working-directory: ${{ github.workspace }}/suite/sdk
-      run: git pull
-
     - uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: x86
