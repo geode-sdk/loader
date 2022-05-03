@@ -65,16 +65,11 @@ jobs:
 #        key: ${{ matrix.config.os }}-${{ steps.timestamp.outputs.timestamp }}
 #        restore-keys: ${{ matrix.config.os }}
 #      if: matrix.config.os == 'windows-latest'
-<<<<<<< HEAD
-        
-=======
     - name: Configure ccache
       uses: hendrikmuhs/ccache-action@v1
       with:
         key: ${{ matrix.config.os }}
       if: matrix.config.os == 'macos-latest'
-
->>>>>>> restructure
     - name: Configure CMake
       run: |
         cmake -B ${{ github.workspace }}/build ${{ matrix.config.extra_flags }} -DGEODE_DONT_BUILD_TEST_MODS=On -DGEODE_BUILD_UNIT_TESTS=On
