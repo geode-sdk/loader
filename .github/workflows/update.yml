@@ -15,12 +15,9 @@ jobs:
       with:
         repository: geode-sdk/suite
         path: suite
+        ref: nightly
         submodules: recursive
         token: '${{ secrets.GEODE_BOT_PUSH_BIN_TOKEN }}'
-
-    - name: Update SDK
-      working-directory: ${{ github.workspace }}/suite/sdk
-      run: git pull
 
     - name: Download Windows artifact
       uses: dawidd6/action-download-artifact@v2
