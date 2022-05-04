@@ -152,6 +152,7 @@ Result<> Loader::saveSettings() {
         if (mod->isUninstalled()) continue;
         auto value = nlohmann::json::object();
         value["enabled"] = mod->m_enabled;
+        value["datastore"] = this->m_dataStore[id];
         json["mods"][id] = value;
     }
     auto path = this->getGeodeSaveDirectory() / "mods.json";
@@ -180,6 +181,10 @@ Result<> Loader::loadSettings() {
                         } else {
                             return Err<>("[loader settings].mods.\"" + key + "\".enabled is not a boolean");
                         }
+                    }
+
+                    if (val.contains("datastore")) {
+                        this->m_dataStore[key] = val["datastore"];
                     }
                     this->m_loadedSettings.m_mods.insert({ key, mod });
                 }
