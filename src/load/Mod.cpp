@@ -13,12 +13,61 @@
 
 USE_GEODE_NAMESPACE();
 
+nlohmann::json& DataStore::operator[](std::string const& key) {
+    return m_mod->m_dataStore[key];
+}
+
+DataStore& DataStore::operator=(nlohmann::json& jsn) {
+    m_mod->m_dataStore = jsn;
+    return *this;
+}
+
+DataStore::operator nlohmann::json() {
+    return m_mod->m_dataStore;
+}
+
+DataStore::~DataStore() {
+    if (m_store != m_mod->m_dataStore) {
+        m_mod->postDSUpdate();
+    }
+}
+
 Mod::Mod(ModInfo const& info) {
     this->m_info = info;
+    this->loadDataStore();
 }
 
 Mod::~Mod() {
     this->unload();
+}
+
+Result<> Mod::loadDataStore() {
+    auto dsPath = this->m_saveDirPath / "ds.json";
+    if (!ghc::filesystem::exists(dsPath)) {
+        this->m_dataStore = this->m_info.m_defaultDataStore;
+    } else {
+        auto dsData = file_utils::readString(dsPath);
+        if (!dsData) return dsData;
+
+        this->m_dataStore = nlohmann::json::parse(dsData.value());
+    }
+    return Ok<>();
+}
+
+Result<> Mod::saveDataStore() {
+    auto dsPath = this->m_saveDirPath / "ds.json";
+    return file_utils::writeString(dsPath, m_dataStore.dump(4));
+}
+
+DataStore Mod::getDataStore() {
+    return DataStore(this, m_dataStore);
+}
+
+void Mod::postDSUpdate() {
+    EventCenter::get()->send(Event(
+        "datastore-changed",
+        this
+    ), this);
 }
 
 Result<> Mod::createTempDir() {
@@ -722,7 +771,7 @@ Result<ModInfo> ModInfo::createFromSchema<1>(std::string const& path, nlohmann::
         });
     
     json_check(json)
-        .has("persist")
+        .has("datastore")
         .as<nlohmann::json::object_t>()
         .into(info.m_defaultDataStore);
     
@@ -840,7 +889,7 @@ Result<ModInfo> ModInfo::createFromFile(std::string const& path) {
             "\"" + path + "\" has a lower target version (" + 
             std::to_string(schema) + ") than this version of "
             "geode supports (" + std::to_string(Loader::s_supportedSchemaMin) +
-            "). You may need to downdate geode in order to use "
+            "). You may need to downgrade geode in order to use "
             "this mod."
         );
     }
@@ -849,7 +898,7 @@ Result<ModInfo> ModInfo::createFromFile(std::string const& path) {
             "\"" + path + "\" has a higher target version (" + 
             std::to_string(schema) + ") than this version of "
             "geode supports (" + std::to_string(Loader::s_supportedSchemaMax) +
-            "). You may need to update geode in order to use "
+            "). You may need to upgrade geode in order to use "
             "this mod."
         );
     }
