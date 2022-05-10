@@ -7,6 +7,7 @@
 #include <loader/Log.hpp>
 #include <loader/Loader.hpp>
 #include <Geode.hpp>
+#include <thread>
 // #include <HotReloadLayer.hpp>
 
 InternalLoader::InternalLoader() {
@@ -230,6 +231,75 @@ void InternalLoader::setupPlatformConsole() {
 }
 
 void InternalLoader::awaitPlatformConsole() {
+    std::thread([=] (){
+        std::string inp;
+        getline(std::cin, inp);
+        std::string inpa;
+        std::stringstream ss(inp);
+        std::vector<std::string> args;
+
+        while (ss >> inpa) args.push_back(inpa);
+        ss.clear();
+
+        this->queueInGDThread([=]() {
+            if (inp == "reload") {
+                Loader::get()->refreshMods();
+            }
+
+            if (args.size() > 1 && args[0] == "unload") {
+                auto mod = Loader::get()->getLoadedMod(args[1]);
+                if (mod) {
+                    auto res = mod->unload();
+                    if (res) {
+                        std::cout << "Mod unloaded\n";
+                    } else {
+                        std::cout << "Failed to unload: " << res.error() << "\n";
+                    }
+                } else {
+                    std::cout << "No mod with ID \"" << args[1] << "\" loaded\n";
+                }
+            }
+
+            if (args.size() > 1 && args[0] == "load") {
+                auto mod = Loader::get()->getLoadedMod(args[1]);
+                if (mod) {
+                    auto res = mod->load();
+                    if (res) {
+                        std::cout << "Mod loaded\n";
+                    } else {
+                        std::cout << "Failed to load: " << res.error() << "\n";
+                    }
+                } else {
+                    std::cout << "No mod with ID \"" << args[1] << "\" loaded\n";
+                }
+            }
+
+            if (args.size() > 2 && args[0] == "hot") {
+                auto mod = Loader::get()->getLoadedMod(args[1]);
+                if (!mod) {
+                    std::cout << "No mod with ID \"" << args[1] << "\" loaded\n";
+                } else {
+                    if (args[2] == "on") {
+                        if (args.size() > 3) {
+                            auto r = this->enableHotReload(mod, args[3]);
+                            if (r) {
+                                std::cout << "hot reload enabled\n";
+                            } else {
+                                std::cout << r.error() << "\n";
+                            }
+                        } else {
+                            std::cout << "No path specified\n";
+                        }
+                    } else {
+                        this->disableHotReload(mod);
+                        std::cout << "hot reload disabled\n";
+                    }
+                }
+            }
+
+            if (inp != "e") this->awaitPlatformConsole();
+        });
+    }).detach();
 }
 
 void InternalLoader::closePlatformConsole() {
