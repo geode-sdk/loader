@@ -63,6 +63,13 @@ if (WIN32)
 	add_subdirectory(launcher/windows)
 endif()
 
+if (APPLE)
+	message(WARNING "Bandaid patch for MacOS being used; Please remove in a future version")
+	add_subdirectory(src/core/bandaid)
+	target_link_libraries(${PROJECT_NAME} GDML)
+	target_include_directories(${PROJECT_NAME} PRIVATE src/core/bandaid)
+endif()
+
 add_definitions(-DGEODE_EXPORTING)
 add_compile_definitions(GEODE_PLATFORM_CONSOLE)
 find_path(GEODE_SDK_PATH
@@ -73,7 +80,7 @@ find_path(GEODE_SDK_PATH
 )
 
 include(${GEODE_SDK_PATH}/Geode.cmake)
-setup_geode_mod(BUILD_CODEGEN OUTPUT "Geode")
+setup_geode_mod(BUILD_CODEGEN NO_LOADER OUTPUT "Geode")
 
 if (APPLE) 
 	if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR GEODE_TARGET_PLATFORM STREQUAL "iOS")
