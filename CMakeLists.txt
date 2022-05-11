@@ -30,6 +30,12 @@ file(GLOB CORE_SOURCES
 	src/utils/zip/*.cpp
 )
 
+# embed version info in binary
+if (WIN32)
+	configure_file(src/internal/windows/info.rc.in info.rc)
+	set(CORE_SOURCES ${CORE_SOURCES} ${CMAKE_CURRENT_BINARY_DIR}/info.rc)
+endif()
+
 file(GLOB OBJC_SOURCES
 	src/internal/ios/*.mm
 	src/internal/mac/*.mm
@@ -56,7 +62,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 	dobby/include/
 )
 
-target_link_directories(${PROJECT_NAME} PRIVATE dobby ${CMAKE_CURRENT_SOURCE_DIR}/link)
+target_link_directories(${PROJECT_NAME} PUBLIC dobby ${CMAKE_CURRENT_SOURCE_DIR}/link)
 target_link_libraries(${PROJECT_NAME} dobby z)
 
 if (WIN32)
@@ -73,10 +79,10 @@ endif()
 add_definitions(-DGEODE_EXPORTING)
 add_compile_definitions(GEODE_PLATFORM_CONSOLE)
 find_path(GEODE_SDK_PATH
-  NAMES Geode.cmake
-  PATHS $ENV{GEODE_SUITE}/sdk /usr/local/geode/sdk ~/.geode/sdk
-  DOC "Geode SDK path."
-  REQUIRED
+	NAMES Geode.cmake
+	PATHS $ENV{GEODE_SUITE}/sdk /usr/local/geode/sdk ~/.geode/sdk
+	DOC "Geode SDK path."
+	REQUIRED
 )
 
 include(${GEODE_SDK_PATH}/Geode.cmake)

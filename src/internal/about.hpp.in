@@ -1,3 +1,4 @@
 #pragma once
 
 static constexpr const char* loader_about_md = R"MD_SEPARATOR(@LOADER_ABOUT_MD@)MD_SEPARATOR";
+static constexpr const char* loader_version = "@PROJECT_VERSION@";
