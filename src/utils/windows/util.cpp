@@ -67,8 +67,13 @@ std::string utils::clipboard::read() {
     return text;
 }
 
-ghc::filesystem::path utils::dirs::geode_root() {
+ghc::filesystem::path utils::dirs::geodeRoot() {
     return ghc::filesystem::path(CCFileUtils::sharedFileUtils()->getWritablePath2().c_str());
+}
+
+bool utils::dirs::openFolder(ghc::filesystem::path const& path) {
+	ShellExecuteA(NULL, "open", path.string().c_str(), NULL, NULL, SW_SHOWDEFAULT);
+	return true;
 }
 
 void geode::utils::web::openLinkInBrowser(std::string const& url) {

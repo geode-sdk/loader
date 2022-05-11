@@ -365,7 +365,7 @@ ghc::filesystem::path Loader::getSaveDirectory() const {
 }
 
 ghc::filesystem::path Loader::getGeodeDirectory() const {
-    return geode::utils::dirs::geode_root() / geodeDirectory;
+    return geode::utils::dirs::geodeRoot() / geodeDirectory;
 }
 
 ghc::filesystem::path Loader::getGeodeSaveDirectory() const {
