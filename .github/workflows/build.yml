@@ -86,9 +86,9 @@ jobs:
       working-directory: ${{ github.workspace }}
       run: |
         mkdir ./out
-        mkdir ./out/gen
+        mkdir ./out/codegen
         mv ${{ matrix.config.out_paths }} ./out
-        mv ${{ matrix.config.gen_paths }} ./out/gen
+        mv ${{ matrix.config.gen_paths }} ./out/codegen
         
     - name: Upload Artifacts
       uses: actions/upload-artifact@v2
