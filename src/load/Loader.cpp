@@ -356,12 +356,7 @@ ghc::filesystem::path Loader::getGameDirectory() const {
 }
 
 ghc::filesystem::path Loader::getSaveDirectory() const {
-    #ifdef __APPLE__
-    // ~/library/caches sucks
-    return ghc::filesystem::path(CCFileUtils::sharedFileUtils()->getWritablePath2().c_str());
-    #else
     return ghc::filesystem::path(CCFileUtils::sharedFileUtils()->getWritablePath().c_str());
-    #endif
 }
 
 ghc::filesystem::path Loader::getGeodeDirectory() const {

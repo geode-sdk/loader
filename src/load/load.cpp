@@ -34,6 +34,7 @@ Result<Mod*> Loader::loadModFromFile(std::string const& path) {
     
     auto mod = new Mod(res.value());
     mod->m_saveDirPath = Loader::get()->getGeodeSaveDirectory() / geodeModDirectory / res.value().m_id;
+    mod->loadDataStore();
     ghc::filesystem::create_directories(mod->m_saveDirPath);
 
     mod->m_enabled = Loader::get()->shouldLoadMod(mod->m_info.m_id);

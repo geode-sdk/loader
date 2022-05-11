@@ -27,14 +27,23 @@ GEODE_API bool GEODE_CALL geode_unload() {
 
 // Modify
 class $modify(GJGarageLayer) {
+	field<int> myValue = 42;
 	bool init() {
 		if (!GJGarageLayer::init()) return false;
 
 	    auto label = CCLabelBMFont::create("Modify works!", "bigFont.fnt");
-	    label->setPosition(100, 100);
+	    label->setPosition(100, 110);
 	    label->setScale(.4f);
 	    label->setZOrder(99999);
 	    addChild(label);
+
+	    if (this->*myValue == 42) {
+	    	auto label = CCLabelBMFont::create("Field default works!", "bigFont.fnt");
+		    label->setPosition(100, 100);
+		    label->setScale(.4f);
+		    label->setZOrder(99999);
+		    addChild(label);
+	    }
 
 	    // Data Store
 	    auto ds = Mod::get()->getDataStore();

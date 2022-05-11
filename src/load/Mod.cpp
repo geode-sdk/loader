@@ -34,7 +34,6 @@ DataStore::~DataStore() {
 
 Mod::Mod(ModInfo const& info) {
     this->m_info = info;
-    this->loadDataStore();
 }
 
 Mod::~Mod() {
