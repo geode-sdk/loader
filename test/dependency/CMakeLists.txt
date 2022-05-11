@@ -18,5 +18,3 @@ target_link_libraries(
 )
 
 setup_geode_mod(NO_LOADER)
-
-create_geode_file(${PROJECT_NAME})
