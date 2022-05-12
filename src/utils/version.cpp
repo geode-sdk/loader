@@ -56,31 +56,27 @@ bool VersionInfo::operator==(VersionInfo const& other) const {
 }
 
 bool VersionInfo::operator<(VersionInfo const& other) const {
-    // First check major, then minor, then patch
-    return other.m_major < this->m_major ||
-           other.m_minor < this->m_minor ||
-           other.m_patch < this->m_patch;
+    return
+        std::tie(m_major, m_minor, m_patch) < 
+        std::tie(other.m_major, other.m_minor, other.m_patch);
 }
 
 bool VersionInfo::operator<=(VersionInfo const& other) const {
-    // First check major, then minor, then patch
-    return other.m_major <= this->m_major ||
-           other.m_minor <= this->m_minor ||
-           other.m_patch <= this->m_patch;
+    return
+        std::tie(m_major, m_minor, m_patch) <=
+        std::tie(other.m_major, other.m_minor, other.m_patch);
 }
 
 bool VersionInfo::operator>(VersionInfo const& other) const {
-    // First check major, then minor, then patch
-    return other.m_major > this->m_major ||
-           other.m_minor > this->m_minor ||
-           other.m_patch > this->m_patch;
+    return
+        std::tie(m_major, m_minor, m_patch) >
+        std::tie(other.m_major, other.m_minor, other.m_patch);
 }
 
 bool VersionInfo::operator>=(VersionInfo const& other) const {
-    // First check major, then minor, then patch
-    return other.m_major >= this->m_major ||
-           other.m_minor >= this->m_minor ||
-           other.m_patch >= this->m_patch;
+    return
+        std::tie(m_major, m_minor, m_patch) >=
+        std::tie(other.m_major, other.m_minor, other.m_patch);
 }
 
 bool VersionInfo::match(VersionInfo const& other) const {
