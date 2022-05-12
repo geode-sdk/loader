@@ -8,9 +8,8 @@ ModInfo getInternalModInfo() {
     info.m_name        = "Geode";
     info.m_developer   = "Geode Team";
     info.m_description = "Internal representation";
-    info.m_details     = loader_about_md;
-    info.m_creditsString = "";
-    info.m_version     = { 1, 0, 0 };
+    info.m_details     = LOADER_ABOUT_MD;
+    info.m_version     = LOADER_VERSION;
     info.m_supportsDisabling = false;
 
     return info;

@@ -1,4 +1,15 @@
 #pragma once
 
-static constexpr const char* loader_about_md = R"MD_SEPARATOR(@LOADER_ABOUT_MD@)MD_SEPARATOR";
-static constexpr const char* loader_version = "@PROJECT_VERSION@";
+#include <VersionInfo.hpp>
+
+static constexpr const char* LOADER_ABOUT_MD = R"MD_SEPARATOR(@LOADER_ABOUT_MD@)MD_SEPARATOR";
+static constexpr const char* LOADER_VERSION_STR = "@PROJECT_VERSION@";
+static constexpr int LOADER_VERSION_MAJOR = @PROJECT_VERSION_MAJOR@;
+static constexpr int LOADER_VERSION_MINOR = @PROJECT_VERSION_MINOR@;
+static constexpr int LOADER_VERSION_PATCH = @PROJECT_VERSION_PATCH@;
+static constexpr VersionInfo LOADER_VERSION = {
+    @PROJECT_VERSION_MAJOR@,
+    @PROJECT_VERSION_MINOR@,
+    @PROJECT_VERSION_PATCH@
+};
+static constexpr const char* LOADER_VERSION_TYPE = "@PROJECT_VERSION_TYPE@";

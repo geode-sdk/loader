@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
 
-project(GeodeLoader VERSION 0.1.0 LANGUAGES C CXX)
+project(GeodeLoader VERSION 0.0.6 LANGUAGES C CXX)
+set(PROJECT_VERSION_TYPE Alpha)
 
 set(GEODE_NO_GEODE_FILE On)
 set(GEODE_BUILD_CODEGEN On)

@@ -384,10 +384,6 @@ decltype(ModInfo::m_developer) Mod::getDeveloper() const {
     return this->m_info.m_developer;
 }
 
-decltype(ModInfo::m_creditsString) Mod::getCredits() const {
-    return this->m_info.m_creditsString;
-}
-
 decltype(ModInfo::m_description) Mod::getDescription() const {
     return this->m_info.m_description;
 }

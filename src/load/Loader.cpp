@@ -11,11 +11,20 @@
 #include <utils/types.hpp>
 #include <mutex>
 #include <Geode.hpp>
+#include <about.hpp>
 
 USE_GEODE_NAMESPACE();
 
 bool Loader::s_unloading = false;
 std::mutex g_unloadMutex;
+
+VersionInfo Loader::getVersion() const {
+    return LOADER_VERSION;
+}
+
+std::string Loader::getVersionType() const {
+    return LOADER_VERSION_TYPE;
+}
 
 Loader* Loader::get() {
     static auto g_loader = new Loader;

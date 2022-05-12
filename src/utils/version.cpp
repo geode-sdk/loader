@@ -14,14 +14,7 @@ USE_GEODE_NAMESPACE();
 #define THE_SSCANF sscanf
 #endif
 
-VersionInfo::VersionInfo(int major, int minor, int patch) {
-    this->m_major = major;
-    this->m_minor = minor;
-    this->m_patch = patch;
-}
-
 VersionInfo::VersionInfo(const char* versionString) {
-
     if (!THE_SSCANF(
         versionString, "v%d.%d.%d",
         &this->m_major, &this->m_minor, &this->m_patch
