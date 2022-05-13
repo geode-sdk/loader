@@ -27,9 +27,8 @@ std::string Loader::getVersionType() const {
 }
 
 Loader* Loader::get() {
-    static auto g_loader = new Loader;
-    return g_loader;
-} 
+    return InternalLoader::get();
+}
 
 void Loader::createDirectories() {
     auto modDir = this->getGeodeDirectory() / geodeModDirectory;
@@ -90,13 +89,6 @@ void Loader::updateModResources(Mod* mod) {
     }
 }
 
-bool Loader::isModInstalled(std::string const& id) const {
-    for (auto& [mid, mod] : m_mods) {
-        if (mid == id && !mod->isUninstalled()) return true;
-    }
-    return false;
-}
-
 void Loader::updateResources() {
     for (auto const& [_, mod] : this->m_mods) {
         this->updateModResources(mod);
@@ -147,10 +139,8 @@ size_t Loader::refreshMods() {
         }
     }
 
-    auto [count, unresolvedCount] = Loader::get()->getLoadedModCount();
-    InternalMod::get()->log()
-        << Severity::Debug
-        << "Loaded " << count << " mods (" << unresolvedCount << "unresolved)";
+    auto count = Loader::get()->getAllMods().size();
+    InternalMod::get()->log() << Severity::Debug << "Loaded " << count << " mods";
     return count;
 }
 
@@ -211,46 +201,37 @@ bool Loader::shouldLoadMod(std::string const& id) const {
     return true;
 }
 
-bool Loader::isModLoaded(std::string const& id, bool resolved) const {
-    if (this->m_mods.count(id)) {
-        if (resolved && this->m_mods.at(id)->hasUnresolvedDependencies()) {
-            return false;
-        }
-        return true;
-    }
-    return false;
+bool Loader::isModInstalled(std::string const& id) const {
+    return m_mods.count(id) && !m_mods.at(id)->isUninstalled();
 }
 
-Mod* Loader::getLoadedMod(std::string const& id, bool resolved) const {
-    if (this->m_mods.count(id)) {
-        auto mod = this->m_mods.at(id);
-        if (resolved && mod->hasUnresolvedDependencies()) {
-            return nullptr;
-        }
-        return mod;
+Mod* Loader::getInstalledMod(std::string const& id) const {
+    if (m_mods.count(id) && !m_mods.at(id)->isUninstalled()) {
+        return m_mods.at(id);
     }
     return nullptr;
 }
 
-std::vector<Mod*> Loader::getLoadedMods(bool resolved) const {
-    if (!resolved) {
-        return map_utils::getValues(this->m_mods);
-    }
-    std::vector<Mod*> res;
-    for (auto const& [_, val] : this->m_mods) {
-        if (!val->hasUnresolvedDependencies()) {
-            res.push_back(val);
-        }
-    }
-    return res;
+bool Loader::isModLoaded(std::string const& id) const {
+    return m_mods.count(id) && m_mods.at(id)->isLoaded();
 }
 
-std::tuple<size_t, size_t> Loader::getLoadedModCount() const {
-    auto count = 0u;
-    for (auto const& [_, mod] : this->m_mods) {
-        if (mod->hasUnresolvedDependencies()) count++;
+Mod* Loader::getLoadedMod(std::string const& id) const {
+    if (m_mods.count(id)) {
+        auto mod = m_mods.at(id);
+        if (mod->isLoaded()) {
+            return mod;
+        }
     }
-    return { this->m_mods.size(), count };
+    return nullptr;
+}
+
+std::vector<Mod*> Loader::getAllMods() const {
+    return map_utils::getValues(m_mods);
+}
+
+std::vector<Loader::FailedModInfo> const& Loader::getFailedMods() const {
+    return m_erroredMods;
 }
 
 void Loader::updateAllDependencies() {
@@ -281,9 +262,6 @@ bool Loader::setup() {
     this->m_isSetup = true;
 
     return true;
-}
-
-Loader::Loader() {
 }
 
 Loader::~Loader() {
@@ -354,10 +332,6 @@ Mod* Loader::getInternalMod() {
 
 bool Loader::isUnloading() {
     return Loader::s_unloading;
-}
-
-std::vector<Loader::UnloadedModInfo> const& Loader::getFailedMods() const {
-    return m_erroredMods;
 }
 
 ghc::filesystem::path Loader::getGameDirectory() const {

@@ -70,13 +70,13 @@ class $modify(GJGarageLayer) {
 
 // Event system pt. 2
 $observe("test-garage-open", GJGarageLayer*, evt) {
-		auto gl = evt.object();
-	    auto label = CCLabelBMFont::create("EventCenter works!", "bigFont.fnt");
-	    label->setPosition(100, 80);
-	    label->setScale(.4f);
-	    label->setZOrder(99999);
-	    gl->addChild(label);
+	auto gl = evt.object();
+	auto label = CCLabelBMFont::create("EventCenter works!", "bigFont.fnt");
+	label->setPosition(100, 80);
+	label->setScale(.4f);
+	label->setZOrder(99999);
+	gl->addChild(label);
 
-	    // API pt. 2
-	    TestDependency::depTest(gl);
+	// API pt. 2
+	TestDependency::depTest(gl);
 }

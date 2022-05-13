@@ -8,18 +8,17 @@
 #include <loader/Loader.hpp>
 #include <Geode.hpp>
 #include <thread>
-// #include <HotReloadLayer.hpp>
 
-InternalLoader::InternalLoader() {
-
+InternalLoader::InternalLoader() : Loader() {
     #ifdef GEODE_PLATFORM_CONSOLE
     this->setupPlatformConsole();
     #endif
 }
 
 InternalLoader::~InternalLoader() {
+    #ifdef GEODE_PLATFORM_CONSOLE
     this->closePlatformConsole();
-    delete Loader::get();
+    #endif
 }
 
 InternalLoader* InternalLoader::get() {
@@ -57,59 +56,6 @@ void InternalLoader::executeGDThreadQueue() {
     this->m_gdThreadQueue.clear();
 }
 
-Result<> InternalLoader::enableHotReload(Mod* mod, ghc::filesystem::path const& path) {
-    if (this->m_hotReloads.count(mod)) {
-        return Ok<>();
-    }
-    FileWatcher* reload = new FileWatcher(path, [this, mod](ghc::filesystem::path const& file) -> void {
-        try {
-            if (!ghc::filesystem::copy_file(file, mod->m_info.m_path, ghc::filesystem::copy_options::overwrite_existing)) {
-                mod->logInfo("Unable to copy compiled .geode file!", Severity::Error);
-            }
-        } catch(std::exception const& e) {
-            mod->logInfo(e.what(), Severity::Error);
-        }
-
-        this->queueInGDThread([file, mod]() -> void {
-            #ifdef GEODE_LOADER
-            HotReloadLayer::scene(file.filename().string());
-            #endif
-
-            auto unload = mod->unload();
-            if (!unload) mod->logInfo(unload.error(), Severity::Error);
-
-            auto temp = mod->createTempDir();
-            if (!temp) mod->logInfo(temp.error(), Severity::Error);
-
-            auto load = mod->load();
-            if (!load) mod->logInfo(load.error(), Severity::Error);
-
-            cocos2d::CCDirector::sharedDirector()->replaceScene(MenuLayer::scene(false));
-        });
-
-    }, [this, mod, reload](std::string const& err) -> void {
-        mod->logInfo(err, Severity::Error);
-        this->disableHotReload(mod);
-    });
-    if (!reload->watching()) {
-        delete reload;
-        return Err<>("yeek");
-    }
-    this->m_hotReloads.insert({ mod, reload });
-    return Ok<>();
-}
-
-void InternalLoader::disableHotReload(Mod* mod) {
-    if (this->m_hotReloads.count(mod)) {
-        delete this->m_hotReloads[mod];
-        this->m_hotReloads.erase(mod);
-    }
-}
-
-bool InternalLoader::isHotReloadEnabled(Mod* mod) const {
-    return this->m_hotReloads.count(mod);
-}
-
 void InternalLoader::queueConsoleMessage(LogPtr* msg) {
     this->m_logQueue.push_back(msg);
 }
@@ -119,7 +65,6 @@ bool InternalLoader::platformConsoleReady() const {
 }
 
 #if defined(GEODE_IS_WINDOWS)
-
 void InternalLoader::platformMessageBox(const char* title, const char* info) {
     MessageBoxA(nullptr, title, info, MB_OK);
 }
@@ -150,64 +95,7 @@ void InternalLoader::awaitPlatformConsole() {
 
     while (ss >> inpa) args.push_back(inpa);
     ss.clear();
-
-    // CLIManager::get()->execute(args);
-
-    if (inp == "reload") {
-        Loader::get()->refreshMods();
-    }
-
-    if (args.size() > 1 && args[0] == "unload") {
-        auto mod = Loader::get()->getLoadedMod(args[1]);
-        if (mod) {
-            auto res = mod->unload();
-            if (res) {
-                std::cout << "Mod unloaded\n";
-            } else {
-                std::cout << "Failed to unload: " << res.error() << "\n";
-            }
-        } else {
-            std::cout << "No mod with ID \"" << args[1] << "\" loaded\n";
-        }
-    }
-
-    if (args.size() > 1 && args[0] == "load") {
-        auto mod = Loader::get()->getLoadedMod(args[1]);
-        if (mod) {
-            auto res = mod->load();
-            if (res) {
-                std::cout << "Mod loaded\n";
-            } else {
-                std::cout << "Failed to load: " << res.error() << "\n";
-            }
-        } else {
-            std::cout << "No mod with ID \"" << args[1] << "\" loaded\n";
-        }
-    }
-
-    if (args.size() > 2 && args[0] == "hot") {
-        auto mod = Loader::get()->getLoadedMod(args[1]);
-        if (!mod) {
-            std::cout << "No mod with ID \"" << args[1] << "\" loaded\n";
-        } else {
-            if (args[2] == "on") {
-                if (args.size() > 3) {
-                    auto r = this->enableHotReload(mod, args[3]);
-                    if (r) {
-                        std::cout << "hot reload enabled\n";
-                    } else {
-                        std::cout << r.error() << "\n";
-                    }
-                } else {
-                    std::cout << "No path specified\n";
-                }
-            } else {
-                this->disableHotReload(mod);
-                std::cout << "hot reload disabled\n";
-            }
-        }
-    }
-
+    
     if (inp != "e") this->awaitPlatformConsole();
 }
 

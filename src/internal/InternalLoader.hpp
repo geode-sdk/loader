@@ -11,12 +11,11 @@ USE_GEODE_NAMESPACE();
 
 /**
  * Internal extension of Loader for private information
- * @class Geode
+ * @class InternalLoader
  */
 class InternalLoader : public Loader {
 protected:
 	std::vector<LogPtr*> m_logQueue;
-	std::unordered_map<Mod*, FileWatcher*> m_hotReloads;
 	std::vector<std::function<void(void)>> m_gdThreadQueue;
 	bool m_platformConsoleReady = false;
 
@@ -28,10 +27,6 @@ public:
 	bool setup();
 
 	bool loadHooks();
-
-	Result<> enableHotReload(Mod* mod, ghc::filesystem::path const& path);
-	void disableHotReload(Mod* mod);
-	bool isHotReloadEnabled(Mod* mod) const;
 
 	void queueInGDThread(std::function<void GEODE_CALL(void)> func);
 	void executeGDThreadQueue();

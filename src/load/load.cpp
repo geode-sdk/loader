@@ -27,7 +27,7 @@ bool Mod::validateID(std::string const& id) {
 }
 
 Result<Mod*> Loader::loadModFromFile(std::string const& path) {
-    auto res = ModInfo::createFromFile(path);
+    auto res = ModInfo::createFromGeodeFile(path);
     if (!res) {
         return Err<>(res.error());
     }

@@ -92,7 +92,7 @@ int geodeEntry(void* platformData) {
 
     // set up loader, load mods, etc.
     if (!Loader::get()->setup()) {
-        InternalLoader::get()->platformMessageBox(
+        InternalLoader::platformMessageBox(
             "Unable to Load Geode!",
             "There was an unknown fatal error setting up "
             "the loader and Geode can not be loaded."
