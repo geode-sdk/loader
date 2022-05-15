@@ -46,14 +46,20 @@ bool InternalLoader::setup() {
 }
 
 void InternalLoader::queueInGDThread(std::function<void GEODE_CALL()> func) {
+    std::lock_guard<std::mutex> lock(m_gdThreadMutex);
     this->m_gdThreadQueue.push_back(func);
 }
 
 void InternalLoader::executeGDThreadQueue() {
-    for (auto const& func : this->m_gdThreadQueue) {
+    m_gdThreadMutex.lock();
+    auto queue = std::move(m_gdThreadQueue);
+    m_gdThreadMutex.unlock();
+    for (auto const& func : queue) {
         func();
     }
-    this->m_gdThreadQueue.clear();
+    m_gdThreadMutex.lock();
+    m_gdThreadQueue.clear();
+    m_gdThreadMutex.unlock();
 }
 
 void InternalLoader::queueConsoleMessage(LogPtr* msg) {

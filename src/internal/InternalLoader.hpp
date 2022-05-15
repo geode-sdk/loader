@@ -6,6 +6,7 @@
 #include <utils/Result.hpp>
 #include <Loader.hpp>
 #include "FileWatcher.hpp"
+#include <mutex>
 
 USE_GEODE_NAMESPACE();
 
@@ -17,6 +18,7 @@ class InternalLoader : public Loader {
 protected:
 	std::vector<LogPtr*> m_logQueue;
 	std::vector<std::function<void(void)>> m_gdThreadQueue;
+	mutable std::mutex m_gdThreadMutex;
 	bool m_platformConsoleReady = false;
 
 	InternalLoader();
