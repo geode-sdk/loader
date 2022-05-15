@@ -20,7 +20,7 @@ Developed by
  
  * [Mat](https://github.com/matcool/)
 
- * [HJfod](https://github.com/hjfod)
+ * [HJfod](user:104257)
 
  * [Camila314](https://github.com/camila314/)
 
