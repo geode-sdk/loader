@@ -60,21 +60,14 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 	src/internal/
 	src/platform/
 	src/gui/
-	dobby/include/
+	./ # lilac
 )
 
-target_link_directories(${PROJECT_NAME} PUBLIC dobby ${CMAKE_CURRENT_SOURCE_DIR}/link)
-target_link_libraries(${PROJECT_NAME} dobby z)
+target_link_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/link)
+target_link_libraries(${PROJECT_NAME} z lilac_hook) # lilac
 
 if (WIN32)
 	add_subdirectory(launcher/windows)
-endif()
-
-if (APPLE)
-	message(WARNING "Bandaid patch for MacOS being used; Please remove in a future version")
-	add_subdirectory(src/core/bandaid)
-	target_link_libraries(${PROJECT_NAME} GDML)
-	target_include_directories(${PROJECT_NAME} PRIVATE src/core/bandaid)
 endif()
 
 add_definitions(-DGEODE_EXPORTING)
@@ -87,7 +80,9 @@ find_path(GEODE_SDK_PATH
 )
 
 include(${GEODE_SDK_PATH}/Geode.cmake)
-setup_geode_mod(BUILD_CODEGEN NO_LOADER OUTPUT "Geode")
+setup_geode_mod(BUILD_CODEGEN NO_LOADER NO_GEODE_FILE OUTPUT  "Geode")
+
+add_subdirectory(lilac)
 
 if (APPLE) 
 	if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm" OR GEODE_TARGET_PLATFORM STREQUAL "iOS")
@@ -101,10 +96,6 @@ endif()
 set_source_files_properties(${OBJC_SOURCES} PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${HEADERS})
-
-SET(DOBBY_GENERATE_SHARED OFF CACHE BOOL "Build dobby shared library" FORCE)
-# SET(DOBBY_DEBUG ON CACHE BOOL "Build dobby shared library" FORCE)
-add_subdirectory(dobby)
 
 if(NOT GEODE_DONT_BUILD_TEST_MODS)
 	if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)

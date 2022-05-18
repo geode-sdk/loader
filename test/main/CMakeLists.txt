@@ -17,4 +17,4 @@ target_link_libraries(
     GeodeLoader
 )
 
-setup_geode_mod(NO_LOADER)
+setup_geode_mod(NO_LOADER BUILD_CODEGEN)

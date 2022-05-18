@@ -11,3 +11,4 @@ void TestDependency::depTest(GJGarageLayer* gl) {
 	label->setZOrder(99999);
 	gl->addChild(label);
 }
+

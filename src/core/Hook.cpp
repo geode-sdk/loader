@@ -1,7 +1,7 @@
-
-#include <hook-core/Hook.hpp>
 #include <unordered_map>
 #include "Core.hpp"
+
+#include <hook-core/Hook.hpp>
 
 namespace geode::core::impl {
 	namespace {
@@ -36,17 +36,7 @@ namespace geode::core::impl {
 		void* generatedTrampoline
 		) {
 
-		
-
-	    if (mappedHandlers().find(address) == mappedHandlers().end()) {
-	        // std::cout << "allocate handler vector for " << address << std::endl;
-	        mappedHandlers().insert({address, new std::vector<void*>});
-	        currentHandlers()[address] = generatedHandler;
-	        addJump(address, generatedHandler);
-	    }
-	    mappedHandlers()[address]->push_back(generatedHandler);
-
-        if (mappedTrampolines().find(address) == mappedTrampolines().end()) {
+		if (mappedTrampolines().find(address) == mappedTrampolines().end()) {
 	        // std::cout << "allocate trampoline vector for " << address << std::endl;
 	        mappedTrampolines().insert({address, new std::vector<void*>});
 	        if (generatedTrampolines().find(address) == generatedTrampolines().end()) {
@@ -56,6 +46,14 @@ namespace geode::core::impl {
 	    auto puretramp = generatedTrampolines()[address];
 	    mappedTrampolines()[address]->push_back(generatedTrampoline); 
 	    *originalTrampolineAddress = puretramp;
+
+	    if (mappedHandlers().find(address) == mappedHandlers().end()) {
+	        // std::cout << "allocate handler vector for " << address << std::endl;
+	        mappedHandlers().insert({address, new std::vector<void*>});
+	        currentHandlers()[address] = generatedHandler;
+	        addJump(address, generatedHandler);
+	    }
+	    mappedHandlers()[address]->push_back(generatedHandler);
 
 	    if (mappedDetours().find(address) == mappedDetours().end()) {
 	        // std::cout << "allocate detour vector for " << address << std::endl;
