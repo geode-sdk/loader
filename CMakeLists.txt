@@ -94,7 +94,6 @@ if (APPLE)
 endif()
 
 set_source_files_properties(${OBJC_SOURCES} PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
-
 target_precompile_headers(${PROJECT_NAME} PUBLIC ${HEADERS})
 
 if(NOT GEODE_DONT_BUILD_TEST_MODS)
