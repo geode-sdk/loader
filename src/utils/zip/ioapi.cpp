@@ -19,6 +19,12 @@
 
 #include <ioapi.h>
 
+// FIXME: uhh
+#if defined(__ANDROID__)
+    #define fseeko fseek
+    #define ftello ftell
+#endif
+
 namespace cocos2d {
 
 voidpf call_zopen64 (const zlib_filefunc64_32_def* pfilefunc,const void*filename,int mode)

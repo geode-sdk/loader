@@ -24,11 +24,13 @@ file(GLOB CORE_SOURCES
 	src/internal/windows/*.cpp
 	src/load/*.cpp
 	src/load/windows/*.cpp
+	src/load/android/*.cpp
 	src/mac/*.cpp
 	src/main.cpp
 	src/utils/*.cpp
 	src/utils/windows/*.cpp
 	src/utils/zip/*.cpp
+	src/utils/android/*.cpp
 )
 
 # embed version info in binary
@@ -78,7 +80,9 @@ if (APPLE)
 endif()
 
 add_definitions(-DGEODE_EXPORTING)
-add_compile_definitions(GEODE_PLATFORM_CONSOLE)
+if (WIN32 OR APPLE)
+	add_compile_definitions(GEODE_PLATFORM_CONSOLE)
+endif()
 find_path(GEODE_SDK_PATH
 	NAMES Geode.cmake
 	PATHS $ENV{GEODE_SUITE}/sdk /usr/local/geode/sdk ~/.geode/sdk

@@ -166,5 +166,21 @@ void InternalLoader::awaitPlatformConsole() {
 
 void InternalLoader::closePlatformConsole() {
 }
+
+#elif defined(GEODE_IS_ANDROID)
+
+void InternalLoader::platformMessageBox(const char* title, const char* info) {
+    std::cout << title << ": " << info << std::endl;
+}
+
+void InternalLoader::setupPlatformConsole() {
+    m_platformConsoleReady = true;
+}
+
+void InternalLoader::awaitPlatformConsole() {
+}
+
+void InternalLoader::closePlatformConsole() {
+}
 #endif
 
