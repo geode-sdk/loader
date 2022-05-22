@@ -45,6 +45,18 @@ BOOL WINAPI DllMain(HINSTANCE lib, DWORD reason, LPVOID) {
     }
     return TRUE;
 }
+#elif defined(GEODE_IS_ANDROID)
+#include <fstream>
+
+__attribute__((constructor)) void _entry() {
+    __android_log_print(ANDROID_LOG_VERBOSE, "Geode Geometry Dash", "hello from geode?!!");
+    const auto path = utils::dirs::geodeRoot() / "geode_log.txt";
+    __android_log_print(ANDROID_LOG_VERBOSE, "Geode Geometry Dash", "going to save to %s", path.string().c_str());
+    // std::ofstream file(path);
+    // file << "hello world!\n";
+    // file.close();
+    geodeEntry(nullptr);
+}
 #endif
 
 

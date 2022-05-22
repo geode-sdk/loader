@@ -170,10 +170,12 @@ void InternalLoader::closePlatformConsole() {
 #elif defined(GEODE_IS_ANDROID)
 
 void InternalLoader::platformMessageBox(const char* title, const char* info) {
-    std::cout << title << ": " << info << std::endl;
+    // std::cout << title << ": " << info << std::endl;
+    __android_log_print(ANDROID_LOG_VERBOSE, "Geode Geometry Dash", "%s: %s", title, info);
 }
 
 void InternalLoader::setupPlatformConsole() {
+    // freopen(ghc::filesystem::path(utils::dirs::geodeRoot() / "geode_log.txt").string().c_str(), "w", stdout);
     m_platformConsoleReady = true;
 }
 

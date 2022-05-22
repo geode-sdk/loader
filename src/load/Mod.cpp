@@ -11,6 +11,7 @@
 #include <utils/string.hpp>
 #include <InternalMod.hpp>
 #include <about.hpp>
+#include <Interface.hpp>
 
 USE_GEODE_NAMESPACE();
 

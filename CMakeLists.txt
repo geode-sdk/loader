@@ -25,7 +25,8 @@ file(GLOB CORE_SOURCES
 	src/load/*.cpp
 	src/load/windows/*.cpp
 	src/load/android/*.cpp
-	src/mac/*.cpp
+	src/gdstdlib/android/*.cpp
+	src/gdstdlib/mac/*.cpp
 	src/main.cpp
 	src/utils/*.cpp
 	src/utils/windows/*.cpp

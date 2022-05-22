@@ -291,7 +291,8 @@ void Loader::pushLog(LogPtr* logptr) {
         InternalLoader::get()->queueConsoleMessage(logptr);
     }
     #endif
-
+    __android_log_print(ANDROID_LOG_VERBOSE, "Geode Geometry Dash", "Log: %s", logptr->toString(true).c_str());
+    
     this->m_logStream << logptr->toString(true) << std::endl;
 }
 
@@ -339,7 +340,8 @@ ghc::filesystem::path Loader::getGameDirectory() const {
 }
 
 ghc::filesystem::path Loader::getSaveDirectory() const {
-    return ghc::filesystem::path(CCFileUtils::sharedFileUtils()->getWritablePath().c_str());
+    return geode::utils::dirs::geodeRoot() / "geode_save";
+    // return ghc::filesystem::path(CCFileUtils::sharedFileUtils()->getWritablePath().c_str());
 }
 
 ghc::filesystem::path Loader::getGeodeDirectory() const {

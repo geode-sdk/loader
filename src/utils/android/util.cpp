@@ -17,7 +17,7 @@ std::string utils::clipboard::read() {
 }
 
 ghc::filesystem::path utils::dirs::geodeRoot() {
-    return ghc::filesystem::path(CCFileUtils::sharedFileUtils()->getWritablePath2().c_str());
+    return ghc::filesystem::path("/sdcard/geode/");
 }
 
 bool utils::dirs::openFolder(ghc::filesystem::path const& path) {

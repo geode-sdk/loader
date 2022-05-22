@@ -27,3 +27,9 @@ class $modify(AppDelegate) {
 };
 
 #endif
+
+class $modify(MenuLayer) {
+	void onMoreGames(cocos2d::CCObject*) {
+		FLAlertLayer::create("hello", "hello", "ok")->show();
+	}
+};
