@@ -14,15 +14,15 @@ using namespace std::string_literals;
 
 bool Mod::validateID(std::string const& id) {
     if (!id.size()) return false;
-    for (auto const& c : id) {
-        if (!(
-            ('a' <= c && c <= 'z') ||
-            ('A' <= c && c <= 'Z') ||
-            (c == '-') ||
-            (c == '_') ||
-            (c == '.')
-        )) return false;
-    }
+    // for (auto const& c : id) {
+    //     if (!(
+    //         ('a' <= c && c <= 'z') ||
+    //         ('A' <= c && c <= 'Z') ||
+    //         (c == '-') ||
+    //         (c == '_') ||
+    //         (c == '.')
+    //     )) return false;
+    // }
     return true;
 }
 
