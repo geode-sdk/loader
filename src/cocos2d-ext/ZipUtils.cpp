@@ -31,10 +31,10 @@
 #include <stdlib.h>
 #include <gdstdlib.hpp>
 
-#include <ZipUtils.h>
+#include <support/zip_support/ZipUtils.h>
 #include "ccMacros.h"
 #include "platform/CCFileUtils.h"
-#include <unzip.h>
+#include <support/zip_support/unzip.h>
 #include <map>
 
 NS_CC_BEGIN

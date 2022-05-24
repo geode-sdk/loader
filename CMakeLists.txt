@@ -12,6 +12,7 @@ set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-ferror-limit=9999")
 
 file(READ about.md LOADER_ABOUT_MD)
 configure_file(src/internal/about.hpp.in ${CMAKE_SOURCE_DIR}/src/internal/about.hpp)
@@ -56,14 +57,31 @@ add_library(${PROJECT_NAME} SHARED
 	${OBJC_SOURCES}
 )
 
+find_path(GEODE_SDK_PATH
+	NAMES Geode.cmake
+	PATHS $ENV{GEODE_SUITE}/sdk /usr/local/geode/sdk ~/.geode/sdk
+	DOC "Geode SDK path."
+	REQUIRED
+)
+
 target_include_directories(${PROJECT_NAME} PUBLIC
 	src/internal/
 	src/platform/
 	src/gui/
 	dobby/include/
+
+	${GEODE_SDK_PATH}/include/c++stl
+	${GEODE_SDK_PATH}/include/loader
+	${GEODE_SDK_PATH}/include/utils
+	${GEODE_SDK_PATH}/include/meta
+	${GEODE_SDK_PATH}/include/fmod
+	${GEODE_SDK_PATH}/include/cocos2dx/include
 )
 
-target_link_directories(${PROJECT_NAME} PUBLIC dobby ${CMAKE_CURRENT_SOURCE_DIR}/link)
+target_link_directories(${PROJECT_NAME} PUBLIC 
+	${CMAKE_CURRENT_SOURCE_DIR}/dobby 
+	${CMAKE_CURRENT_SOURCE_DIR}/link
+)
 target_link_libraries(${PROJECT_NAME} dobby z)
 
 if (WIN32)
@@ -79,12 +97,6 @@ endif()
 
 add_definitions(-DGEODE_EXPORTING)
 add_compile_definitions(GEODE_PLATFORM_CONSOLE)
-find_path(GEODE_SDK_PATH
-	NAMES Geode.cmake
-	PATHS $ENV{GEODE_SUITE}/sdk /usr/local/geode/sdk ~/.geode/sdk
-	DOC "Geode SDK path."
-	REQUIRED
-)
 
 include(${GEODE_SDK_PATH}/Geode.cmake)
 setup_geode_mod(BUILD_CODEGEN NO_LOADER OUTPUT "Geode")

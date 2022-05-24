@@ -4,7 +4,7 @@
 #include <loader/Log.hpp>
 #undef snprintf
 #include <utils/json.hpp>
-#include <ZipUtils.h>
+#include <support/zip_support/ZipUtils.h>
 #include <utils/general.hpp>
 #include <utils/string.hpp>
 #include <Geode.hpp>

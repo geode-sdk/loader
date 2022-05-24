@@ -3,7 +3,7 @@
 #include <loader/Log.hpp>
 #include <loader/Loader.hpp>
 #include <InternalLoader.hpp>
-#include <ZipUtils.h>
+#include <support/zip_support/ZipUtils.h>
 #include <utils/file.hpp>
 #include <utils/vector.hpp>
 #include <utils/map.hpp>
