@@ -5,7 +5,8 @@
 #include <utils/casts.hpp>
 #include <utils/vector.hpp>
 #include <InternalLoader.hpp>
-#include <dobby.h>
+
+#include <lilac/include/geode/core/hook/hook.hpp>
 
 USE_GEODE_NAMESPACE();
 
@@ -41,9 +42,13 @@ Result<> Mod::unpatch(Patch* patch) {
 }
 
 bool Patch::apply() {
-	return CodePatch(m_address, m_patch.data(), m_patch.size()) == kMemoryOperationSuccess;
+    return lilac::hook::write_memory(
+         this->m_address, this->m_patch.data(), this->m_patch.size()
+    );
 }
 
 bool Patch::restore() {
-	return CodePatch(m_address, m_original.data(), m_original.size()) == kMemoryOperationSuccess;
+    return lilac::hook::write_memory(
+        this->m_address, this->m_original.data(), this->m_original.size()
+    );
 }

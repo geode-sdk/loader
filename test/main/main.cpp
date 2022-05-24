@@ -1,5 +1,6 @@
 #include <Geode.hpp>
 #include "../shared.hpp"
+#include <malloc/malloc.h>
 
 USE_GEODE_NAMESPACE();
 
@@ -23,7 +24,6 @@ GEODE_API bool GEODE_CALL geode_unload() {
 	geode::log << "Unoaded";
 	return true;
 }
-
 
 // Modify
 class $modify(GJGarageLayer) {

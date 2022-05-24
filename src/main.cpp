@@ -12,6 +12,9 @@ int geodeEntry(void* platformData);
 #if defined(GEODE_IS_IOS) || defined(GEODE_IS_MACOS)
 #include <mach-o/dyld.h>
 #include <unistd.h>
+
+std::length_error::~length_error() _NOEXCEPT {} // don't ask
+
 __attribute__((constructor)) void _entry() {
     char gddir[PATH_MAX];
     uint32_t out = PATH_MAX;
