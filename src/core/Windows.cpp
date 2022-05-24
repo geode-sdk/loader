@@ -30,8 +30,8 @@ void* Windows::allocateVM(size_t size) {
 
 std::vector<std::byte> Windows::jump(void* from, void* to) {
 	constexpr size_t size = sizeof(int) + 1;
-	std::vector<unsigned char> ret(size);
-	ret[0] = {0xe9};
+	std::vector<std::byte> ret(size);
+	ret[0] = std::byte(0xe9);
 
 	int offset = (int)((size_t)to - (size_t)from - size);
 	// im too lazy
