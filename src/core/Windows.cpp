@@ -30,7 +30,7 @@ void* Windows::allocateVM(size_t size) {
 
 std::vector<std::byte> Windows::jump(void* from, void* to) {
 	constexpr size_t size = sizeof(int) + 1;
-	std::vector<std::byte> ret(size);
+	std::vector<unsigned char> ret(size);
 	ret[0] = {0xe9};
 
 	int offset = (int)((size_t)to - (size_t)from - size);
@@ -68,12 +68,8 @@ bool Windows::writeMemory(void* to, void* from, size_t size) {
     return res;
 }
 
-bool Windows::readMemory(void* addr, void* to, size_t size) {
-    return ReadProcessMemory(GetCurrentProcess(), addr, to, size, nullptr);
-}
-
 bool Windows::initialize() {
-    return AddVectoredExceptionHandler(true, handler);
+    return AddVectoredExceptionHandler(true, signalHandler);
 }
 
 #endif
