@@ -22,5 +22,5 @@ namespace geode::core::impl {
         static void* allocateVM(size_t size);
     };
 
-    using TargetPlatform = Platform<WindowsX86>;
+    using TargetPlatform = Platform<Windows>;
 }
