@@ -24,8 +24,10 @@ namespace {
 }
 
 void* Windows::allocateVM(size_t size) {
-	// Please somebody implement this
-	return nullptr;
+	return VirtualAlloc(
+		nullptr, size,
+		MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE
+	);
 }
 
 std::vector<std::byte> Windows::jump(void* from, void* to) {
