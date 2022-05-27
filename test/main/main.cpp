@@ -1,6 +1,5 @@
 #include <Geode.hpp>
 #include "../shared.hpp"
-#include <malloc/malloc.h>
 
 USE_GEODE_NAMESPACE();
 
@@ -64,7 +63,6 @@ class $modify(GJGarageLayer) {
 	}
 };
 
-
 /*// Event system pt. 2
 int a = (0, []() {
 
@@ -80,3 +78,4 @@ int a = (0, []() {
 
 	return 0;
 }());*/
+
