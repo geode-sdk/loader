@@ -15,17 +15,17 @@ namespace geode::core::impl {
         }
 
         static const std::vector<std::byte> getJump(void* from, void* to) {
-			static_assert(&T::jump, "implement jump");
+			// static_assert(&Platform<T>::jump != T::jump, "implement jump");
             return T::jump(from, to);
         }
 
         static const size_t getJumpSize(void* from, void* to) {
-        	static_assert(&T::jump, "implement trap");
+        	// static_assert(&Platform<T>::jump != T::jump, "implement trap");
             return T::jump(from, to).size();
         }
 
         static void* allocateVM(size_t size) {
-        	static_assert(&T::allocateVM, "implement allocateVM");
+        	// static_assert(&Platform<T>::allocateVM != T::allocateVM, "implement allocateVM");
             return T::allocateVM(size);
         }
 

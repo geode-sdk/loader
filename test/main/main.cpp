@@ -1,6 +1,5 @@
 #include <Geode.hpp>
 #include "../shared.hpp"
-#include <malloc/malloc.h>
 
 USE_GEODE_NAMESPACE();
 

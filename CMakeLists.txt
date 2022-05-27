@@ -70,7 +70,8 @@ if (WIN32)
 	add_subdirectory(launcher/windows)
 endif()
 
-add_definitions(-DGEODE_EXPORTING)
+add_definitions(-DGEODE_EXPORTING -DGEODE_EXPORTING_CODEGEN)
+
 add_compile_definitions(GEODE_PLATFORM_CONSOLE)
 find_path(GEODE_SDK_PATH
 	NAMES Geode.cmake
