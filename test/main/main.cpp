@@ -82,6 +82,12 @@ class $modify(GJGarageLayer) {
 	}
 };
 
+class $modify(PlayLayer) {
+	void destroyPlayer(PlayerObject* p0, GameObject* p1) {
+		PlayLayer::destroyPlayer(p0, p1);
+	}
+};
+
 
 // Event system pt. 2
 $observe("test-garage-open", GJGarageLayer*, evt) {

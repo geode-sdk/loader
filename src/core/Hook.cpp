@@ -90,7 +90,8 @@ namespace geode::core::impl {
 	        delete trampolines;
 	        mappedTrampolines().erase(address);
 
-	        addJump(address, generatedTrampolines()[address]);
+	        // TODO: bandaid
+	        // addJump(address, generatedTrampolines()[address]);
 	        // afterHookHander = (decltype(afterHookHander))generatedTrampoline[address]; // switch the trampoline (inline)
 	    }
 	    else if (currentHandlers()[address] == handler) {
