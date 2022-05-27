@@ -68,6 +68,22 @@ class $modify(GJGarageLayer) {
 	}
 };
 
+class $modify(GJGarageLayer) {
+	field<int> myValue = 42;
+	bool init() {
+		if (!GJGarageLayer::init()) return false;
+
+	    auto label = CCLabelBMFont::create("Multiple hooks work!", "bigFont.fnt");
+	    label->setPosition(100, 120);
+	    label->setScale(.4f);
+	    label->setZOrder(99999);
+	    addChild(label);
+
+	    return true;
+	}
+};
+
+
 // Event system pt. 2
 $observe("test-garage-open", GJGarageLayer*, evt) {
 	auto gl = evt.object();
