@@ -58,25 +58,25 @@ class $modify(GJGarageLayer) {
 	    label2->setZOrder(99999);
 	    addChild(label2);
 
-	    // Event system pt. 1
-	    EventCenter::get()->broadcast(Event(
-	    	"test-garage-open",
-	    	this,
-	    	Mod::get()
-	    ));
+	    // Dispatch system pt. 1
+	    //auto fn = Dispatcher::get()->getSelector<void(GJGarageLayer*)>("test-garage-open");
 	    return true;
 	}
 };
 
-// Event system pt. 2
-$observe("test-garage-open", GJGarageLayer*, evt) {
-	auto gl = evt.object();
-	auto label = CCLabelBMFont::create("EventCenter works!", "bigFont.fnt");
-	label->setPosition(100, 80);
-	label->setScale(.4f);
-	label->setZOrder(99999);
-	gl->addChild(label);
 
-	// API pt. 2
-	TestDependency::depTest(gl);
-}
+/*// Event system pt. 2
+int a = (0, []() {
+
+	Dispatcher::get()->addSelector("test-garage-open", [](GJGarageLayer* gl) {
+		auto label = CCLabelBMFont::create("EventCenter works!", "bigFont.fnt");
+		label->setPosition(100, 80);
+		label->setScale(.4f);
+		label->setZOrder(99999);
+		gl->addChild(label);
+
+		TestDependency::depTest(gl);
+	});
+
+	return 0;
+}());*/

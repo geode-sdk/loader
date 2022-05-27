@@ -19,16 +19,6 @@ void Interface::init(Mod* mod) {
 		}
 		this->m_scheduledLogs.clear();
 
-		for (auto const& scheduled : this->m_scheduledExports) {
-			if (auto fn = static_cast<std::add_const_t<unknownmemfn_t>*>(std::get_if<0>(&scheduled.m_func))) {
-				this->m_mod->exportAPIFunction(scheduled.m_selector, static_cast<unknownmemfn_t>(*fn));
-			}
-			else if (auto fn = static_cast<std::add_const_t<unknownfn_t>*>(std::get_if<1>(&scheduled.m_func))) {
-				this->m_mod->exportAPIFunction(scheduled.m_selector, static_cast<unknownfn_t>(*fn));
-			}
-		}
-		this->m_scheduledExports.clear();
-
 		for (auto const& fn : this->m_scheduledFunctions) {
 			fn(this->m_mod);
 		}
@@ -44,19 +34,6 @@ void Interface::logInfo(
 		return this->m_mod->logInfo(info, severity);
 	}
 	this->m_scheduledLogs.push_back({ info, severity });
-}
-
-void Interface::exportAPIFunctionInternal(std::string const& selector, unknownmemfn_t fn) {
-	if (this->m_mod) {
-		m_mod->exportAPIFunction(selector, fn);
-	}
-	this->m_scheduledExports.push_back({ selector, fn });
-}
-void Interface::exportAPIFunctionInternal(std::string const& selector, unknownfn_t fn) {
-	if (this->m_mod) {
-		m_mod->exportAPIFunction(selector, fn);
-	}
-	this->m_scheduledExports.push_back({ selector, fn });
 }
 
 void Interface::scheduleOnLoad(loadfn_t fn) {

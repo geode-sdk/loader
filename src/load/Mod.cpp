@@ -64,10 +64,11 @@ DataStore Mod::getDataStore() {
 }
 
 void Mod::postDSUpdate() {
-    EventCenter::get()->send(Event(
+    /*EventCenter::get()->send(Event(
         "datastore-changed",
         this
-    ), this);
+    ), this);*/
+    #warning Dispatch
 }
 
 Result<> Mod::createTempDir() {
