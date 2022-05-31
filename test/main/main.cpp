@@ -1,5 +1,4 @@
 #include <Geode.hpp>
-#include "../shared.hpp"
 
 USE_GEODE_NAMESPACE();
 
@@ -58,7 +57,9 @@ class $modify(GJGarageLayer) {
 	    addChild(label2);
 
 	    // Dispatch system pt. 1
-	    //auto fn = Dispatcher::get()->getSelector<void(GJGarageLayer*)>("test-garage-open");
+	    auto fn = Dispatcher::get()->getFunction<void(GJGarageLayer*)>("test-garage-open");
+	    fn(this);
+
 	    return true;
 	}
 };

@@ -7,28 +7,32 @@ USE_GEODE_NAMESPACE();
 std::vector<dispatch_handle> Dispatcher::allFunctions_() {
 	std::vector<dispatch_handle> b;
 
-	char c[offsetof(GJEffectManager, m_itemValues)];
-	c = 100;
-
-	char a[offsetof(GJEffectManager, m_acceleration)];
-	a = 100;
+	for (auto& [k, v] : m_selectorMap) {
+		b.insert(b.end(), v.begin(), v.end());
+	}
 	return b;
 }
 
-std::vector<dispatch_handle> Dispatcher::getFunctions_(std::string_view const& a) {
-	std::vector<dispatch_handle> b;
-	return b;
+std::vector<dispatch_handle> Dispatcher::getFunctions_(std::string const& a) {
+	return m_selectorMap[a];
 }
 
 void Dispatcher::removeFunction(dispatch_handle u) {
 	if (!m_dispatchMap.count(u))
 		throw std::invalid_argument("Dispatch handle not found");
+
+
+	auto& vtr = m_selectorMap[m_dispatchMap[u].first];
+	vtr.erase(std::remove(vtr.begin(), vtr.end(), u), vtr.end());
+
 	m_dispatchMap.erase(m_dispatchMap.find(u));
-	m_selectorMap
+
+	delete u.handle;
 }
 
 void Dispatcher::addFunction_(Mod* m, std::string const& a, dispatch_handle u) {
-
+	m_dispatchMap[u] = std::make_pair(a, m);
+	m_selectorMap[a].push_back(u);
 }
 
 std::pair<std::string, Mod*> Dispatcher::getFunctionInfo(dispatch_handle u) {
