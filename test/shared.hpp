@@ -5,6 +5,6 @@ API_INIT("com.geode.testdep")
 
 class TestDependency {
 public:
-	static void depTest(GJGarageLayer* gl)
-		API_DECL(&TestDependency::depTest, gl);
+	static void depTest(GJGarageLayer* gl);
+		// API_DECL(&TestDependency::depTest, gl);
 };
