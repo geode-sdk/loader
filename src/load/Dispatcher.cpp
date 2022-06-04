@@ -1,8 +1,6 @@
-#include <Dispatcher.hpp>
-#include <stdexcept>
+#include <loader/Dispatcher.hpp>
 
 USE_GEODE_NAMESPACE();
-
 
 std::vector<dispatch_handle> Dispatcher::allFunctions_() {
 	std::vector<dispatch_handle> b;
