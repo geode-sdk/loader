@@ -26,7 +26,6 @@ namespace geode::core::impl {
 			return ret;
 		}
 	}
-
 	void addHook(
 		void* address, 
 		void* detour, 
@@ -36,6 +35,15 @@ namespace geode::core::impl {
 		void* generatedTrampoline
 		) {
 
+#ifdef GEODE_IS_WINDOWS
+		if (mappedHandlers().find(address) == mappedHandlers().end()) {
+	        // std::cout << "allocate handler vector for " << address << std::endl;
+	        mappedHandlers().insert({address, new std::vector<void*>});
+	        currentHandlers()[address] = generatedHandler;
+	        addJump(address, generatedHandler);
+	    }
+	    mappedHandlers()[address]->push_back(generatedHandler);
+#endif
 		if (mappedTrampolines().find(address) == mappedTrampolines().end()) {
 	        // std::cout << "allocate trampoline vector for " << address << std::endl;
 	        mappedTrampolines().insert({address, new std::vector<void*>});
@@ -47,6 +55,7 @@ namespace geode::core::impl {
 	    mappedTrampolines()[address]->push_back(generatedTrampoline); 
 	    *originalTrampolineAddress = puretramp;
 
+#ifndef GEODE_IS_WINDOWS
 	    if (mappedHandlers().find(address) == mappedHandlers().end()) {
 	        // std::cout << "allocate handler vector for " << address << std::endl;
 	        mappedHandlers().insert({address, new std::vector<void*>});
@@ -54,6 +63,7 @@ namespace geode::core::impl {
 	        addJump(address, generatedHandler);
 	    }
 	    mappedHandlers()[address]->push_back(generatedHandler);
+#endif
 
 	    if (mappedDetours().find(address) == mappedDetours().end()) {
 	        // std::cout << "allocate detour vector for " << address << std::endl;
