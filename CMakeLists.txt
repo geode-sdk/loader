@@ -68,6 +68,9 @@ target_link_libraries(${PROJECT_NAME} z lilac_hook) # lilac
 
 if (WIN32)
 	add_subdirectory(launcher/windows)
+	target_include_directories(${PROJECT_NAME} PUBLIC dobby/include)
+	target_link_directories(${PROJECT_NAME} PUBLIC dobby)
+	target_link_libraries(${PROJECT_NAME} dobby)
 endif()
 
 add_definitions(-DGEODE_EXPORTING -DGEODE_EXPORTING_CODEGEN)
@@ -96,7 +99,13 @@ if (APPLE)
 endif()
 
 set_source_files_properties(${OBJC_SOURCES} PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
-target_precompile_headers(${PROJECT_NAME} PUBLIC ${HEADERS})
+target_precompile_headers(${PROJECT_NAME} PUBLIC ${GEODE_SDK_PATH}/include/Geode.hpp)
+
+if (WIN32)
+	SET(DOBBY_GENERATE_SHARED OFF CACHE BOOL "Build dobby shared library" FORCE)
+	# SET(DOBBY_DEBUG ON CACHE BOOL "Build dobby shared library" FORCE)
+	add_subdirectory(dobby)
+endif()
 
 if(NOT GEODE_DONT_BUILD_TEST_MODS)
 	if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
