@@ -68,10 +68,11 @@ DataStore Mod::getDataStore() {
 }
 
 void Mod::postDSUpdate() {
-    // EventCenter::get()->send(Event(
-    //     "datastore-changed",
-    //     this
-    // ), this);
+    /*EventCenter::get()->send(Event(
+        "datastore-changed",
+        this
+    ), this);*/
+    // FIXME: Dispatch
 }
 
 Result<> Mod::createTempDir() {

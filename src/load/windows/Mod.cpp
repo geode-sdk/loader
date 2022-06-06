@@ -1,7 +1,8 @@
-#include <Geode.hpp>
+#include <utils/platform.hpp>
 
 #ifdef GEODE_IS_WINDOWS
 
+#include <Geode.hpp>
 USE_GEODE_NAMESPACE();
 
 template<typename T>

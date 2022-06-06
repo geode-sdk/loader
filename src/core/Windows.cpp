@@ -17,7 +17,7 @@ namespace {
         auto current = reinterpret_cast<void*>(info->ContextRecord->Eip);
     #endif
 
-        handleContext((void*)info, current);
+        // handleContext(reinterpret_cast<void*>(info), current);
 
         return EXCEPTION_CONTINUE_EXECUTION;
     }
@@ -31,13 +31,19 @@ void* Windows::allocateVM(size_t size) {
 }
 
 std::vector<std::byte> Windows::jump(void* from, void* to) {
-	constexpr size_t size = sizeof(int) + 1;
-	std::vector<std::byte> ret(size);
+	std::vector<std::byte> ret;
+    ret.resize(5, std::byte(0u));
 	ret[0] = std::byte(0xe9);
+    
+    // target - src - 5
 
-	int offset = (int)((size_t)to - (size_t)from - size);
-	// im too lazy
-	((int*)((size_t)ret.data() + 1))[0] = offset;
+    intptr_t offset = reinterpret_cast<intptr_t>(to) - reinterpret_cast<intptr_t>(from) - 5;
+    std::byte data[4];
+    std::memcpy(data, &offset, 4);
+    ret[1] = data[0];
+    ret[2] = data[1];
+    ret[3] = data[2];
+    ret[4] = data[3];
 
 	return ret;
 }
@@ -71,7 +77,8 @@ bool Windows::writeMemory(void* to, void* from, size_t size) {
 }
 
 bool Windows::initialize() {
-    return AddVectoredExceptionHandler(true, signalHandler);
+    // return AddVectoredExceptionHandler(true, signalHandler);
+    return true;
 }
 
 #endif

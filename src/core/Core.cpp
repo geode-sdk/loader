@@ -1,9 +1,9 @@
 #include "Core.hpp"
 #include <map>
 
-#if defined(GEODE_IS_WINDOWS)
-    #include "Windows.hpp"
-#elif defined(GEODE_IS_MACOS)
+#ifndef GEODE_IS_WINDOWS
+
+#if defined(GEODE_IS_MACOS)
     #include "MacOS.hpp"
 #elif defined(GEODE_IS_IOS)
     // #include "iOS.hpp"
@@ -144,3 +144,31 @@ namespace geode::core::impl {
 bool geode::core::hook::initialize() {
 	return geode::core::impl::TargetPlatform::initialize();
 }
+
+#else
+
+#include <dobby.h>
+
+namespace geode::core::impl {
+	namespace {
+		auto& trampolines() {
+			static std::map<void*, void*> ret;
+			return ret;
+		}
+	}
+
+	void* generateRawTrampoline(void* address) {
+        return trampolines()[address];
+	}
+
+	void addJump(void* at, void* to) {
+        DobbyDestroy(at);
+        DobbyHook(at, to, &trampolines()[at]);
+	}
+}
+
+bool geode::core::hook::initialize() {
+	return true;
+}
+
+#endif

@@ -46,6 +46,7 @@ void Interface::logInfo(
 	this->m_scheduledLogs.push_back({ info, severity });
 }
 
+
 // void Interface::exportAPIFunctionInternal(std::string const& selector, unknownmemfn_t fn) {
 // 	if (this->m_mod) {
 // 		m_mod->exportAPIFunction(selector, fn);

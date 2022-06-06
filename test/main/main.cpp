@@ -1,5 +1,4 @@
 #include <Geode.hpp>
-#include "../shared.hpp"
 
 USE_GEODE_NAMESPACE();
 
@@ -57,31 +56,26 @@ class $modify(GJGarageLayer) {
 	    label2->setZOrder(99999);
 	    addChild(label2);
 
-	    // Event system pt. 1
-	    // EventCenter::get()->broadcast(Event(
-	    // 	"test-garage-open",
-	    // 	this,
-	    // 	Mod::get()
-	    // ));
-	    return true;
-	}
-};
-
-class $modify(GJGarageLayer) {
-	field<int> myValue = 42;
-	bool init() {
-		if (!GJGarageLayer::init()) return false;
-
-	    auto label = CCLabelBMFont::create("Multiple hooks work!", "bigFont.fnt");
-	    label->setPosition(100, 120);
-	    label->setScale(.4f);
-	    label->setZOrder(99999);
-	    addChild(label);
+	    // Dispatch system pt. 1
+	    auto fn = Dispatcher::get()->getFunction<void(GJGarageLayer*)>("test-garage-open");
+	    fn(this);
 
 	    return true;
 	}
 };
 
+/*// Event system pt. 2
+int a = (0, []() {
+
+	Dispatcher::get()->addSelector("test-garage-open", [](GJGarageLayer* gl) {
+		auto label = CCLabelBMFont::create("EventCenter works!", "bigFont.fnt");
+		label->setPosition(100, 80);
+		label->setScale(.4f);
+		label->setZOrder(99999);
+		gl->addChild(label);
+
+		TestDependency::depTest(gl);
+	});
 
 // Event system pt. 2
 // $observe("test-garage-open", GJGarageLayer*, evt) {
@@ -95,3 +89,6 @@ class $modify(GJGarageLayer) {
 // 	// API pt. 2
 // 	TestDependency::depTest(gl);
 // }
+	return 0;
+}());*/
+
