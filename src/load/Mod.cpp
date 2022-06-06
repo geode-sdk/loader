@@ -23,6 +23,10 @@ DataStore& DataStore::operator=(nlohmann::json& jsn) {
     return *this;
 }
 
+bool DataStore::contains(std::string const& key) {
+    return m_mod->m_dataStore.contains(key);
+}
+
 DataStore::operator nlohmann::json() {
     return m_mod->m_dataStore;
 }
