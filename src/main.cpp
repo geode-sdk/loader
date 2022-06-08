@@ -13,7 +13,7 @@ int geodeEntry(void* platformData);
 #include <mach-o/dyld.h>
 #include <unistd.h>
 
-std::length_error::~length_error() _NOEXCEPT {} // do not ask
+std::length_error::~length_error() _NOEXCEPT {} // do not ask...
 
 __attribute__((constructor)) void _entry() {
     char gddir[PATH_MAX];
