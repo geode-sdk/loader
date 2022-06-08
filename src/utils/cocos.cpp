@@ -85,7 +85,7 @@ CCNode* geode::cocos::getChildByTagRecursive(cocos2d::CCNode* node, int tag) {
     if (node->getTag() == tag) return node;
     auto children = node->getChildren();
     for (int i = 0; i < children->count(); ++i) {
-        auto child = getChildByTagRecursive(children->objectAtIndex(i), tag);
+        auto child = getChildByTagRecursive((cocos2d::CCNode*)children->objectAtIndex(i), tag);
         if(child)
             return child;
     }
