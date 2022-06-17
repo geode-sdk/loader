@@ -125,20 +125,7 @@ void InternalLoader::setupPlatformConsole() {
 }
 
 void InternalLoader::awaitPlatformConsole() {
-    std::thread([=] (){
-        std::string inp;
-        getline(std::cin, inp);
-        std::string inpa;
-        std::stringstream ss(inp);
-        std::vector<std::string> args;
-
-        while (ss >> inpa) args.push_back(inpa);
-        ss.clear();
-
-        this->queueInGDThread([=]() {
-            if (inp != "e") this->awaitPlatformConsole();
-        });
-    }).detach();
+	
 }
 
 void InternalLoader::closePlatformConsole() {
