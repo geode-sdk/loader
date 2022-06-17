@@ -163,11 +163,6 @@ Result<> Mod::load() {
         }
     }
     this->m_loaded = true;
-    auto r = this->enable(); // why wasnt the case before
-    if (!r) {
-    	this->m_enabled = false;
-    	return r;
-    }
     if (this->m_loadDataFunc) {
         if (!this->m_loadDataFunc(this->m_saveDirPath.string().c_str())) {
             this->logInfo("Mod load data function returned false", Severity::Error);
@@ -325,6 +320,13 @@ bool Mod::updateDependencyStates() {
                         dep.m_state = ModResolveState::Unloaded;
                         dep.m_mod->logInfo(r.error(), Severity::Error);
                     }
+                    else {
+                    	auto r = dep.m_mod->enable();
+                    	if (!r) {
+	                        dep.m_state = ModResolveState::Disabled;
+	                        dep.m_mod->logInfo(r.error(), Severity::Error);
+	                    }
+                    }
 				} else {
 					if (dep.m_mod->isEnabled()) {
 						dep.m_state = ModResolveState::Loaded;
@@ -350,6 +352,12 @@ bool Mod::updateDependencyStates() {
             auto r = this->load();
             if (!r) {
                 Log::get() << Severity::Error << this << "Error loading: " << r.error();
+            }
+            else {
+            	auto r = this->enable();
+	            if (!r) {
+	                Log::get() << Severity::Error << this << "Error enabling: " << r.error();
+	            }
             }
         } else {
             Log::get() << Severity::Debug << "Resolved " << m_info.m_id << ", however not loading it as it is disabled";
