@@ -131,6 +131,9 @@ Result<> Mod::createTempDir() {
 }
 
 Result<> Mod::load() {
+	if (this->m_loaded) {
+        return Ok<>();
+    }
     #define RETURN_LOAD_ERR(str) \
         {m_loadErrorInfo = str; \
         return Err<>(m_loadErrorInfo);}
@@ -139,9 +142,7 @@ Result<> Mod::load() {
         auto err = this->createTempDir();
         if (!err) RETURN_LOAD_ERR("Unable to create temp directory: " + err.error());
     }
-    if (this->m_loaded) {
-        return Ok<>();
-    }
+
     if (this->hasUnresolvedDependencies()) {
         RETURN_LOAD_ERR("Mod has unresolved dependencies");
     }
@@ -162,7 +163,11 @@ Result<> Mod::load() {
         }
     }
     this->m_loaded = true;
-    this->m_enabled = true;
+    auto r = this->enable(); // why wasnt the case before
+    if (!r) {
+    	this->m_enabled = false;
+    	return r;
+    }
     if (this->m_loadDataFunc) {
         if (!this->m_loadDataFunc(this->m_saveDirPath.string().c_str())) {
             this->logInfo("Mod load data function returned false", Severity::Error);
@@ -218,9 +223,7 @@ Result<> Mod::unload() {
 
 Result<> Mod::enable() {
     if (!this->m_loaded) {
-        auto r = this->load();
-        if (!r) this->m_enabled = false;
-        return r;
+        return Err<>("Mod is not loaded");
     }
     
     if (this->m_enableFunc) {
