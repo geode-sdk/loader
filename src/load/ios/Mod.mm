@@ -17,7 +17,7 @@ T findSymbolOrMangled(void* dylib, const char* name, const char* mangled) {
 }
 
 Result<> Mod::loadPlatformBinary() {
-	auto dylib = dlopen((this->m_tempDirName / this->m_info.m_binaryName).string().c_str(), RTLD_NOW);
+	auto dylib = dlopen((this->m_tempDirName / this->m_info.m_binaryName).string().c_str(), RTLD_LAZY);
 	if (dylib) {
 		this->m_implicitLoadFunc = findSymbolOrMangled<geode_load>(dylib, "geode_implicit_load", "_geode_implicit_load");
 		this->m_loadFunc = findSymbolOrMangled<geode_load>(dylib, "geode_load", "_geode_load");
@@ -39,7 +39,8 @@ Result<> Mod::loadPlatformBinary() {
 
 		return Ok<>();
 	}
-	return Err<>("Unable to load the DYLIB");
+	std::string err = (char const*)dlerror();
+	return Err<>("Unable to load the DYLIB: dlerror returned (" + err + ")");
 }
 
 Result<> Mod::unloadPlatformBinary() {
