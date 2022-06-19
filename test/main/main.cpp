@@ -4,22 +4,22 @@ USE_GEODE_NAMESPACE();
 
 // Exported functions
 GEODE_API bool GEODE_CALL geode_enable() {
-	geode::log << "Enabled";
+	Log::get() << "Enabled";
 	return true;
 }
 
 GEODE_API bool GEODE_CALL geode_disable() {
-	geode::log << "Disabled";
+	Log::get() << "Disabled";
 	return true;
 }
 
 GEODE_API bool GEODE_CALL geode_load(Mod*) {
-	geode::log << "Loaded";
+	Log::get() << "Loaded";
 	return true;
 }
 
 GEODE_API bool GEODE_CALL geode_unload() {
-	geode::log << "Unoaded";
+	Log::get() << "Unoaded";
 	return true;
 }
 
