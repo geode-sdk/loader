@@ -131,6 +131,9 @@ Result<> Mod::createTempDir() {
 }
 
 Result<> Mod::load() {
+	if (this->m_loaded) {
+        return Ok<>();
+    }
     #define RETURN_LOAD_ERR(str) \
         {m_loadErrorInfo = str; \
         return Err<>(m_loadErrorInfo);}
@@ -139,9 +142,7 @@ Result<> Mod::load() {
         auto err = this->createTempDir();
         if (!err) RETURN_LOAD_ERR("Unable to create temp directory: " + err.error());
     }
-    if (this->m_loaded) {
-        return Ok<>();
-    }
+
     if (this->hasUnresolvedDependencies()) {
         RETURN_LOAD_ERR("Mod has unresolved dependencies");
     }
@@ -162,7 +163,6 @@ Result<> Mod::load() {
         }
     }
     this->m_loaded = true;
-    this->m_enabled = true;
     if (this->m_loadDataFunc) {
         if (!this->m_loadDataFunc(this->m_saveDirPath.string().c_str())) {
             this->logInfo("Mod load data function returned false", Severity::Error);
@@ -218,9 +218,7 @@ Result<> Mod::unload() {
 
 Result<> Mod::enable() {
     if (!this->m_loaded) {
-        auto r = this->load();
-        if (!r) this->m_enabled = false;
-        return r;
+        return Err<>("Mod is not loaded");
     }
     
     if (this->m_enableFunc) {
@@ -322,6 +320,13 @@ bool Mod::updateDependencyStates() {
                         dep.m_state = ModResolveState::Unloaded;
                         dep.m_mod->logInfo(r.error(), Severity::Error);
                     }
+                    else {
+                    	auto r = dep.m_mod->enable();
+                    	if (!r) {
+	                        dep.m_state = ModResolveState::Disabled;
+	                        dep.m_mod->logInfo(r.error(), Severity::Error);
+	                    }
+                    }
 				} else {
 					if (dep.m_mod->isEnabled()) {
 						dep.m_state = ModResolveState::Loaded;
@@ -347,6 +352,12 @@ bool Mod::updateDependencyStates() {
             auto r = this->load();
             if (!r) {
                 Log::get() << Severity::Error << this << "Error loading: " << r.error();
+            }
+            else {
+            	auto r = this->enable();
+	            if (!r) {
+	                Log::get() << Severity::Error << this << "Error enabling: " << r.error();
+	            }
             }
         } else {
             Log::get() << Severity::Debug << "Resolved " << m_info.m_id << ", however not loading it as it is disabled";
