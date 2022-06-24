@@ -4,28 +4,28 @@ USE_GEODE_NAMESPACE();
 
 // Exported functions
 GEODE_API bool GEODE_CALL geode_enable() {
-	geode::log << "Enabled";
+	Log::get() << "Enabled";
 	return true;
 }
 
 GEODE_API bool GEODE_CALL geode_disable() {
-	geode::log << "Disabled";
+	Log::get() << "Disabled";
 	return true;
 }
 
 GEODE_API bool GEODE_CALL geode_load(Mod*) {
-	geode::log << "Loaded";
+	Log::get() << "Loaded";
 	return true;
 }
 
 GEODE_API bool GEODE_CALL geode_unload() {
-	geode::log << "Unoaded";
+	Log::get() << "Unoaded";
 	return true;
 }
 
 // Modify
 class $modify(GJGarageLayer) {
-	field<int> myValue = 42;
+	int myValue;
 	bool init() {
 		if (!GJGarageLayer::init()) return false;
 
@@ -35,7 +35,7 @@ class $modify(GJGarageLayer) {
 	    label->setZOrder(99999);
 	    addChild(label);
 
-	    if (this->*myValue == 42) {
+	    if (m_fields->myValue == 0) {
 	    	auto label = CCLabelBMFont::create("Field default works!", "bigFont.fnt");
 		    label->setPosition(100, 100);
 		    label->setScale(.4f);
