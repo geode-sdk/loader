@@ -113,6 +113,10 @@ std::string LogPtr::toString(bool logTime) const {
     return res.str();
 }
 
+std::vector<LogMetadata*> const& LogPtr::getData() const {
+    return m_data;
+}
+
 std::string geode::generateLogName() {
     std::stringstream tmp;
     tmp << "Geode_" 
