@@ -27,8 +27,11 @@ GEODE_API bool GEODE_CALL geode_unload() {
 class $modify(GJGarageLayer) {
 	void fieldConstructor() {
 		m_fields->myValue = 1907;
+		// placement new is needed since m_fields is not initialized
+		new (&m_fields->myString) std::string("yeah have fun finding a better thing for this");
 	}
 	int myValue;
+	std::string myString;
 	bool init() {
 		if (!GJGarageLayer::init()) return false;
 
@@ -38,7 +41,7 @@ class $modify(GJGarageLayer) {
 	    label->setZOrder(99999);
 	    addChild(label);
 
-	    if (m_fields->myValue == 1907) {
+	    if (m_fields->myValue == 1907 && m_fields->myString != "") {
 	    	auto label = CCLabelBMFont::create("Field default works!", "bigFont.fnt");
 		    label->setPosition(100, 100);
 		    label->setScale(.4f);
