@@ -25,7 +25,7 @@ void Dispatcher::removeFunction(dispatch_handle u) {
 
 	m_dispatchMap.erase(m_dispatchMap.find(u));
 
-	delete u.handle;
+	operator delete(u.handle);
 }
 
 void Dispatcher::addFunction_(Mod* m, std::string const& a, dispatch_handle u) {

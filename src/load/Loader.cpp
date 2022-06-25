@@ -349,3 +349,8 @@ ghc::filesystem::path Loader::getGeodeDirectory() const {
 ghc::filesystem::path Loader::getGeodeSaveDirectory() const {
     return this->getSaveDirectory() / geodeDirectory;
 }
+
+size_t Loader::getFieldIndexForClass(size_t hash) {
+	static std::unordered_map<size_t, size_t> nextIndex;
+	return nextIndex[hash]++;
+}
