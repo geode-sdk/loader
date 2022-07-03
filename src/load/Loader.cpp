@@ -31,22 +31,22 @@ Loader* Loader::get() {
 }
 
 void Loader::createDirectories() {
-    auto modDir = this->getGeodeDirectory() / geodeModDirectory;
-    auto logDir = this->getGeodeDirectory() / geodeLogDirectory;
-    auto resDir = this->getGeodeDirectory() / geodeResourceDirectory;
-    auto tempDir = this->getGeodeDirectory() / geodeTempDirectory;
+    auto modDir = this->getGeodeDirectory() / GEODE_MOD_DIRECTORY;
+    auto logDir = this->getGeodeDirectory() / GEODE_LOG_DIRECTORY;
+    auto resDir = this->getGeodeDirectory() / GEODE_RESOURCE_DIRECTORY;
+    auto tempDir = this->getGeodeDirectory() / GEODE_TEMP_DIRECTORY;
 
     ghc::filesystem::create_directories(resDir);
     ghc::filesystem::create_directory(modDir);
     ghc::filesystem::create_directory(logDir);
     ghc::filesystem::create_directory(tempDir);
 
-    if (!vector_utils::contains(this->m_modDirectories, modDir)) {
-        this->m_modDirectories.push_back(modDir);
+    if (!vector_utils::contains(m_modDirectories, modDir)) {
+        m_modDirectories.push_back(modDir);
     }
 
     // files too
-    this->m_logStream = std::ofstream(logDir / generateLogName());
+    m_logStream = std::ofstream(logDir / generateLogName());
 }
 
 void Loader::addModResourcesPath(Mod* mod) {
@@ -61,7 +61,7 @@ void Loader::addModResourcesPath(Mod* mod) {
 }
 
 void Loader::updateResourcePaths() {
-	auto resDir = this->getGeodeDirectory() / geodeResourceDirectory;
+	auto resDir = this->getGeodeDirectory() / GEODE_RESOURCE_DIRECTORY;
     CCFileUtils::sharedFileUtils()->addSearchPath(resDir.string().c_str());
     for (auto const& [_, mod] : this->m_mods) {
         this->addModResourcesPath(mod);
@@ -95,53 +95,83 @@ void Loader::updateResources() {
     }
 }
 
-size_t Loader::refreshMods() {
-    InternalMod::get()->log()
-        << Severity::Debug
-        << "Loading mods...";
+size_t Loader::loadModsFromDirectory(ghc::filesystem::path const& dir, bool recursive) {
+    InternalMod::get()->log() << Severity::Debug << "Searching " << dir;
+        
+    size_t loadedCount = 0;
+    for (auto const& entry : ghc::filesystem::directory_iterator(dir)) {
+        // recursively search directories
+        if (ghc::filesystem::is_directory(entry) && recursive) {
+            loadedCount += this->loadModsFromDirectory(entry.path(), true);
+            continue;
+        }
 
-    this->createDirectories();
+        // skip this entry if it's not a file
+        if (!ghc::filesystem::is_regular_file(entry)) {
+            continue;
+        }
 
-    for (auto const& dir : this->m_modDirectories) {
+        // skip this entry if its extension is not .geode 
+        if (entry.path().extension() != GEODE_MOD_EXTENSION) {
+            continue;
+        }
+
+        // skip this entry if it's already loaded
+        if (map_utils::contains<std::string, Mod*>(
+            m_mods,
+            [entry](Mod* p) -> bool {
+                return p->m_info.m_path == entry.path();
+            }
+        )) continue;
+
+        // load mod
+
         InternalMod::get()->log()
             << Severity::Debug
-            << "Searching " << dir ;
+            << "Loading " << entry.path().string();
 
-        for (auto const& entry : ghc::filesystem::directory_iterator(dir)) {
-            if (
-                ghc::filesystem::is_regular_file(entry) &&
-                entry.path().extension() == geodeModExtension
-            ) {
+        auto res = this->loadModFromFile(entry.path().string());
+        if (res && res.value()) {
+            // succesfully loaded
+            loadedCount++;
+
+            // check for dependencies
+            if (!res.value()->hasUnresolvedDependencies()) {
                 InternalMod::get()->log()
-                    << Severity::Debug
-                    << "Loading " << entry.path().string();
-                if (!map_utils::contains<std::string, Mod*>(
-                    this->m_mods,
-                    [entry](Mod* p) -> bool {
-                        return p->m_info.m_path == entry.path();
-                    }
-                )) {
-                    auto res = this->loadModFromFile(entry.path().string());
-                    if (res && res.value()) {
-                        if (!res.value()->hasUnresolvedDependencies()) {
-                            InternalMod::get()->log()
-                                << "Succesfully loaded " << res.value();
-                        } else {
-                            InternalMod::get()->log()
-                                << res.value() << " has unresolved dependencies";
-                        }
-                    } else {
-                        InternalMod::get()->logInfo(res.error(), Severity::Error);
-                        this->m_erroredMods.push_back({ entry.path().string(), res.error() });
-                    }
-                }
+                    << "Succesfully loaded " << res.value();
+            } else {
+                InternalMod::get()->log()
+                    << res.value() << " has unresolved dependencies";
             }
+        } else {
+            // something went wrong
+            InternalMod::get()->logInfo(res.error(), Severity::Error);
+            m_erroredMods.push_back({ entry.path().string(), res.error() });
         }
     }
+    return loadedCount;
+}
 
-    auto count = Loader::get()->getAllMods().size();
-    InternalMod::get()->log() << Severity::Debug << "Loaded " << count << " mods";
-    return count;
+size_t Loader::refreshMods() {
+    InternalMod::get()->log() << Severity::Debug << "Loading mods...";
+    
+    // clear errored mods since that list will be 
+    // reconstructed from scratch
+    m_erroredMods.clear();
+
+    // make sure mod directory exists
+    this->createDirectories();
+
+    size_t loadedCount = 0;
+
+    // find all mods in search directories
+    for (auto const& dir : m_modDirectories) {
+        // find all mods in this search directory
+        loadedCount += loadModsFromDirectory(dir, true);
+    }
+
+    InternalMod::get()->log() << Severity::Debug << "Loaded " << loadedCount << " mods";
+    return loadedCount;
 }
 
 Result<> Loader::saveSettings() {
@@ -277,7 +307,7 @@ Loader::~Loader() {
     }
     this->m_logs.clear();
 
-    auto tempDir = this->getGeodeDirectory() / geodeTempDirectory;
+    auto tempDir = this->getGeodeDirectory() / GEODE_TEMP_DIRECTORY;
     ghc::filesystem::remove_all(tempDir);
 }
 
@@ -343,11 +373,11 @@ ghc::filesystem::path Loader::getSaveDirectory() const {
 }
 
 ghc::filesystem::path Loader::getGeodeDirectory() const {
-    return geode::utils::dirs::geodeRoot() / geodeDirectory;
+    return geode::utils::dirs::geodeRoot() / GEODE_DIRECTORY;
 }
 
 ghc::filesystem::path Loader::getGeodeSaveDirectory() const {
-    return this->getSaveDirectory() / geodeDirectory;
+    return this->getSaveDirectory() / GEODE_DIRECTORY;
 }
 
 size_t Loader::getFieldIndexForClass(size_t hash) {
