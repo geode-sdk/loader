@@ -13,6 +13,7 @@ USE_GEODE_NAMESPACE();
 using namespace std::string_literals;
 
 bool Mod::validateID(std::string const& id) {
+    // ids may not be empty
     if (!id.size()) return false;
     for (auto const& c : id) {
         if (!(
@@ -28,26 +29,27 @@ bool Mod::validateID(std::string const& id) {
 }
 
 Result<Mod*> Loader::loadModFromFile(std::string const& path) {
+    // load mod.json
     auto res = ModInfo::createFromGeodeFile(path);
     if (!res) {
-        return Err<>(res.error());
+        return Err(res.error());
+    }
+
+    // check that a duplicate has not been loaded
+    if (m_mods.count(res.value().m_id)) {
+        return Err("Mod with ID \"" + res.value().m_id + "\" has already been loaded!");
     }
     
+    // create and set up Mod instance
     auto mod = new Mod(res.value());
-    mod->m_saveDirPath = Loader::get()->getGeodeSaveDirectory() / geodeModDirectory / res.value().m_id;
+    mod->m_saveDirPath = Loader::get()->getGeodeSaveDirectory() / GEODE_MOD_DIRECTORY / res.value().m_id;
     mod->loadDataStore();
     ghc::filesystem::create_directories(mod->m_saveDirPath);
 
+    // enable mod if needed
     mod->m_enabled = Loader::get()->shouldLoadMod(mod->m_info.m_id);
     this->m_mods.insert({ res.value().m_id, mod });
     mod->updateDependencyStates();
 
     return Ok<>(mod);
-    /*} catch(nlohmann::json::exception const& e) {
-        return Err<>("\"" + path + "\": Unable to parse mod.json - \"" + e.what() + "\"");
-    } catch(std::exception const& e) {
-	    return Err<>("\"" + path + "\": Unable to open mod.json - \"" + e.what() + "\"");
-	} catch(...) {
-        return Err<>("\"" + path + "\": Unable to open mod.json - Unknown Error");
-    }*/
 }

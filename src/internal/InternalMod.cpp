@@ -4,7 +4,7 @@
 ModInfo getInternalModInfo() {
     ModInfo info;
     
-    info.m_id          = "com.geode.loader";
+    info.m_id          = "geode.loader";
     info.m_name        = "Geode";
     info.m_developer   = "Geode Team";
     info.m_description = "Internal representation";
