@@ -24,12 +24,11 @@ GEODE_API bool GEODE_CALL geode_unload() {
 }
 
 // Modify
-class $modify(GJGarageLayer) {
-	void fieldConstructor() {
-		m_fields->myValue = 1907;
-		// placement new is needed since m_fields is not initialized
-		new (&m_fields->myString) std::string("yeah have fun finding a better thing for this");
-	}
+class $modify(GJGarageLayerTest, GJGarageLayer) {
+	GJGarageLayerTest() : 
+		myValue(1907), 
+		myString("yeah have fun finding a better thing for this") {}
+
 	int myValue;
 	std::string myString;
 	bool init() {
