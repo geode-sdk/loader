@@ -720,13 +720,20 @@ Result<ModInfo> ModInfo::createFromGeodeFile(ghc::filesystem::path const& path) 
     auto info = res.value();
     info.m_path = path;
     
-    if (unzip.fileExists("about.md")) {
-        unsigned long readSize = 0;
-        auto aboutData = unzip.getFileData("about.md", &readSize);
-        if (!aboutData || !readSize) {
-            return Err<>("Unable to read \"" + path.string() + "\"/about.md");
-        } else {
-            info.m_details = sanitizeDetailsData(aboutData, aboutData + readSize);
+    // unzip known MD files
+    using God = std::initializer_list<std::pair<std::string, std::string*>>;
+    for (auto [file, target] : God {
+        { "about.md", &info.m_details },
+        { "changelog.md", &info.m_changelog },
+    }) {
+        if (unzip.fileExists(file)) {
+            unsigned long readSize = 0;
+            auto fileData = unzip.getFileData(file, &readSize);
+            if (!fileData || !readSize) {
+                return Err("Unable to read \"" + path.string() + "\"/" + file);
+            } else {
+                *target = sanitizeDetailsData(fileData, fileData + readSize);
+            }
         }
     }
 
