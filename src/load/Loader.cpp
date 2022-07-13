@@ -12,6 +12,7 @@
 #include <mutex>
 #include <Geode.hpp>
 #include <about.hpp>
+#include <crashlog.hpp>
 
 USE_GEODE_NAMESPACE();
 
@@ -63,7 +64,7 @@ void Loader::addModResourcesPath(Mod* mod) {
 void Loader::updateResourcePaths() {
 	auto resDir = this->getGeodeDirectory() / GEODE_RESOURCE_DIRECTORY;
     CCFileUtils::sharedFileUtils()->addSearchPath(resDir.string().c_str());
-    for (auto const& [_, mod] : this->m_mods) {
+    for (auto const& [_, mod] : m_mods) {
         this->addModResourcesPath(mod);
     }
 }
@@ -72,30 +73,38 @@ void Loader::updateModResources(Mod* mod) {
     for (auto const& sheet : mod->m_info.m_spritesheets) {
         auto png = sheet + ".png";
         auto plist = sheet + ".plist";
+        auto ccfu = CCFileUtils::sharedFileUtils();
 
         if (
-            png == std::string(CCFileUtils::sharedFileUtils()->fullPathForFilename(png.c_str(), false)) ||
-            plist == std::string(CCFileUtils::sharedFileUtils()->fullPathForFilename(plist.c_str(), false))
+            png == std::string(
+                ccfu->fullPathForFilename(png.c_str(), false)
+            ) ||
+            plist == std::string(
+                ccfu->fullPathForFilename(plist.c_str(), false)
+            )
         ) {
             InternalMod::get()->logInfo(
-                "The resource dir of \"" + mod->m_info.m_id + "\" is missing \"" + 
-                sheet + "\" png and/or plist files",
+                "The resource dir of \"" + mod->m_info.m_id +
+                "\" is missing \"" + sheet + "\" png and/or plist files",
                 Severity::Warning
             );
         } else {
             CCTextureCache::sharedTextureCache()->addImage(png.c_str(), false);
-            CCSpriteFrameCache::sharedSpriteFrameCache()->addSpriteFramesWithFile(plist.c_str());
+            CCSpriteFrameCache::sharedSpriteFrameCache()
+                ->addSpriteFramesWithFile(plist.c_str());
         }
     }
 }
 
 void Loader::updateResources() {
-    for (auto const& [_, mod] : this->m_mods) {
+    for (auto const& [_, mod] : m_mods) {
         this->updateModResources(mod);
     }
 }
 
-size_t Loader::loadModsFromDirectory(ghc::filesystem::path const& dir, bool recursive) {
+size_t Loader::loadModsFromDirectory(
+    ghc::filesystem::path const& dir, bool recursive
+) {
     InternalMod::get()->log() << Severity::Debug << "Searching " << dir;
         
     size_t loadedCount = 0;
@@ -170,63 +179,81 @@ size_t Loader::refreshMods() {
         loadedCount += loadModsFromDirectory(dir, true);
     }
 
-    InternalMod::get()->log() << Severity::Debug << "Loaded " << loadedCount << " mods";
+    InternalMod::get()->log()
+        << Severity::Debug
+        << "Loaded " << loadedCount << " mods";
     return loadedCount;
 }
 
 Result<> Loader::saveSettings() {
     auto json = nlohmann::json::object();
     json["mods"] = nlohmann::json::object();
-    for (auto [id, mod] : this->m_mods) {
+    for (auto [id, mod] : m_mods) {
         if (mod->isUninstalled()) continue;
         auto value = nlohmann::json::object();
         value["enabled"] = mod->m_enabled;
         mod->saveDataStore();
         json["mods"][id] = value;
     }
+    json["succesfully-closed"] = true;
     auto path = this->getGeodeSaveDirectory() / "mods.json";
     return file_utils::writeString(path, json.dump(4));
 }
 
 Result<> Loader::loadSettings() {
     auto path = this->getGeodeSaveDirectory() / "mods.json";
-    if (!ghc::filesystem::exists(path))
-        return Ok<>();
+    if (!ghc::filesystem::exists(path)) {
+        return Ok();
+    }
+
     auto read = file_utils::readString(path);
-    if (!read) return read;
+    if (!read) {
+        return read;
+    }
     try {
         auto json = nlohmann::json::parse(read.value());
         if (json.contains("mods")) {
             auto mods = json["mods"];
-            if (mods.is_object()) {
-                for (auto [key, val] : mods.items()) {
-                    if (!val.is_object()) {
-                        return Err<>("[loader settings].mods.\"" + key + "\" is not an object");
-                    }
-                    LoaderSettings::ModSettings mod;
-                    if (val.contains("enabled")) {
-                        if (val["enabled"].is_boolean()) {
-                            mod.m_enabled = val["enabled"];
-                        } else {
-                            return Err<>("[loader settings].mods.\"" + key + "\".enabled is not a boolean");
-                        }
-                    }
-
-                    this->m_loadedSettings.m_mods.insert({ key, mod });
+            if (!mods.is_object()) {
+                return Err("[loader settings].mods is not an object");
+            }
+            for (auto [key, val] : mods.items()) {
+                if (!val.is_object()) {
+                    return Err(
+                        "[loader settings].mods.\"" + key +
+                        "\" is not an object"
+                    );
                 }
-            } else {
-                return Err<>("[loader settings].mods is not an object");
+                LoaderSettings::ModSettings mod;
+                if (val.contains("enabled")) {
+                    if (!val["enabled"].is_boolean()) {
+                        return Err(
+                            "[loader settings].mods.\"" + key +
+                            "\".enabled is not a boolean"
+                        );
+                    }
+                    mod.m_enabled = val["enabled"];
+                }
+                m_loadedSettings.m_mods.insert({ key, mod });
             }
         }
-        return Ok<>();
+        return Ok();
     } catch(std::exception const& e) {
-        return Err<>(e.what());
+        return Err(e.what());
     }
 }
 
+bool Loader::didLastLaunchCrash() const {
+    return crashlog::didLastLaunchCrash();
+}
+
+ghc::filesystem::path Loader::getCrashLogDirectory() const {
+    return crashlog::getCrashLogDirectory();
+}
+
 bool Loader::shouldLoadMod(std::string const& id) const {
-    if (this->m_loadedSettings.m_mods.count(id)) {
-        return this->m_loadedSettings.m_mods.at(id).m_enabled;
+    if (m_loadedSettings.m_mods.count(id)) {
+        return m_loadedSettings.m_mods.at(id).m_enabled;
     }
     return true;
 }
@@ -265,20 +292,20 @@ std::vector<Loader::FailedModInfo> const& Loader::getFailedMods() const {
 }
 
 void Loader::updateAllDependencies() {
-    for (auto const& [_, mod] : this->m_mods) {
+    for (auto const& [_, mod] : m_mods) {
         mod->updateDependencyStates();
     }
 }
 
 void Loader::unloadMod(Mod* mod) {
-    this->m_mods.erase(mod->m_info.m_id);
+    m_mods.erase(mod->m_info.m_id);
     // ~Mod will call FreeLibrary 
     // automatically
     delete mod;
 }
 
 bool Loader::setup() {
-    if (this->m_isSetup)
+    if (m_isSetup)
         return true;
 
     InternalMod::get()->log()
@@ -289,7 +316,17 @@ bool Loader::setup() {
     this->loadSettings();
     this->refreshMods();
 
-    this->m_isSetup = true;
+    if (crashlog::setupPlatformHandler()) {
+        InternalMod::get()->log()
+            << Severity::Debug
+            << "Set up platform crash logger";
+    } else {
+        InternalMod::get()->log()
+            << Severity::Debug
+            << "Unable to set up platform crash logger";
+    }
+
+    m_isSetup = true;
 
     return true;
 }
@@ -298,21 +335,21 @@ Loader::~Loader() {
     g_unloadMutex.lock();
     s_unloading = true;
     g_unloadMutex.unlock();
-    for (auto const& [_, mod] : this->m_mods) {
+    for (auto const& [_, mod] : m_mods) {
         delete mod;
     }
-    this->m_mods.clear();
-    for (auto const& log : this->m_logs) {
+    m_mods.clear();
+    for (auto const& log : m_logs) {
         delete log;
     }
-    this->m_logs.clear();
+    m_logs.clear();
 
     auto tempDir = this->getGeodeDirectory() / GEODE_TEMP_DIRECTORY;
     ghc::filesystem::remove_all(tempDir);
 }
 
 void Loader::pushLog(LogPtr* logptr) {
-    this->m_logs.push_back(logptr);
+    m_logs.push_back(logptr);
 
     #ifdef GEODE_PLATFORM_CONSOLE
     if (InternalLoader::get()->platformConsoleReady()) {
@@ -322,29 +359,31 @@ void Loader::pushLog(LogPtr* logptr) {
     }
     #endif
 
-    this->m_logStream << logptr->toString(true) << std::endl;
+    m_logStream << logptr->toString(true) << std::endl;
 }
 
 void Loader::popLog(LogPtr* log) {
-    vector_utils::erase(this->m_logs, log);
+    vector_utils::erase(m_logs, log);
     delete log;
 }
 
 std::vector<LogPtr*> const& Loader::getLogs() const {
-    return this->m_logs;
+    return m_logs;
 }
 
 std::vector<LogPtr*> Loader::getLogs(
     std::initializer_list<Severity> severityFilter
 ) {
     if (!severityFilter.size()) {
-        return this->m_logs;
+        return m_logs;
     }
 
     std::vector<LogPtr*> logs;
 
-    for (auto const& log : this->m_logs) {
-        if (vector_utils::contains<Severity>(severityFilter, log->getSeverity())) {
+    for (auto const& log : m_logs) {
+        if (vector_utils::contains<Severity>(
+            severityFilter, log->getSeverity()
+        )) {
             logs.push_back(log);
         }
     }
@@ -365,11 +404,15 @@ bool Loader::isUnloading() {
 }
 
 ghc::filesystem::path Loader::getGameDirectory() const {
-    return ghc::filesystem::path(CCFileUtils::sharedFileUtils()->getWritablePath2().c_str());
+    return ghc::filesystem::path(
+        CCFileUtils::sharedFileUtils()->getWritablePath2().c_str()
+    );
 }
 
 ghc::filesystem::path Loader::getSaveDirectory() const {
-    return ghc::filesystem::path(CCFileUtils::sharedFileUtils()->getWritablePath().c_str());
+    return ghc::filesystem::path(
+        CCFileUtils::sharedFileUtils()->getWritablePath().c_str()
+    );
 }
 
 ghc::filesystem::path Loader::getGeodeDirectory() const {

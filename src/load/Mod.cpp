@@ -105,7 +105,7 @@ Result<> Mod::createTempDir() {
     if (!ghc::filesystem::exists(tempPath) && !ghc::filesystem::create_directories(tempPath)) {
         return Err<>("Unable to create temp directory");
     }
-    this->m_tempDirName = tempPath;
+    m_tempDirName = tempPath;
 
     for (auto file : unzip.getAllFiles()) {
         auto path = ghc::filesystem::path(file);
@@ -416,6 +416,14 @@ decltype(ModInfo::m_details) Mod::getDetails() const {
 
 ModInfo Mod::getModInfo() const {
     return m_info;
+}
+
+ghc::filesystem::path Mod::getTempDir() const {
+    return m_tempDirName;
+}
+
+ghc::filesystem::path Mod::getBinaryPath() const {
+    return m_tempDirName / m_info.m_binaryName;
 }
 
 std::string Mod::getPath() const {

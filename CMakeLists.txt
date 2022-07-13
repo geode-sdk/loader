@@ -105,6 +105,8 @@ if (WIN32)
 	SET(DOBBY_GENERATE_SHARED OFF CACHE BOOL "Build dobby shared library" FORCE)
 	# SET(DOBBY_DEBUG ON CACHE BOOL "Build dobby shared library" FORCE)
 	add_subdirectory(dobby)
+
+	target_link_libraries(${PROJECT_NAME} dbghelp)
 endif()
 
 if(NOT GEODE_DONT_BUILD_TEST_MODS)
