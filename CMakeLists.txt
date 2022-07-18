@@ -22,6 +22,8 @@ file(GLOB CORE_SOURCES
 	src/hooks/*.cpp
 	src/internal/*.cpp
 	src/internal/windows/*.cpp
+	src/internal/mac/*.cpp
+	src/internal/ios/*.cpp
 	src/load/*.cpp
 	src/load/windows/*.cpp
 	src/mac/*.cpp
