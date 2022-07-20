@@ -16,7 +16,9 @@ bool utils::clipboard::write(std::string const& data) {
 }
 
 std::string utils::clipboard::read() {
-	return std::string([[[NSPasteboard generalPasteboard] stringForType: NSPasteboardTypeString] UTF8String]);
+	auto clipboard = [[[NSPasteboard generalPasteboard] stringForType: NSPasteboardTypeString] UTF8String];
+	if (!clipboard) return std::string("");
+	return std::string(clipboard);
 }
 
 ghc::filesystem::path utils::dirs::geodeRoot() {
