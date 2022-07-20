@@ -62,8 +62,8 @@ class $modify(GJGarageLayerTest, GJGarageLayer) {
 	    addChild(label2);
 
 	    // Dispatch system pt. 1
-	    auto fn = Dispatcher::get()->getFunction<void(GJGarageLayer*)>("test-garage-open");
-	    fn(this);
+	    // auto fn = Dispatcher::get()->getFunction<void(GJGarageLayer*)>("test-garage-open");
+	    // fn(this);
 
 	    return true;
 	}

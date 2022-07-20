@@ -24,7 +24,11 @@ DataStore& DataStore::operator=(nlohmann::json& jsn) {
     return *this;
 }
 
-bool DataStore::contains(std::string const& key) {
+nlohmann::json& DataStore::getJson() const {
+    return m_mod->m_dataStore;
+}
+
+bool DataStore::contains(std::string const& key) const {
     return m_mod->m_dataStore.contains(key);
 }
 
@@ -101,7 +105,7 @@ Result<> Mod::createTempDir() {
     if (!ghc::filesystem::exists(tempPath) && !ghc::filesystem::create_directories(tempPath)) {
         return Err<>("Unable to create temp directory");
     }
-    this->m_tempDirName = tempPath;
+    m_tempDirName = tempPath;
 
     for (auto file : unzip.getAllFiles()) {
         auto path = ghc::filesystem::path(file);
@@ -414,6 +418,14 @@ ModInfo Mod::getModInfo() const {
     return m_info;
 }
 
+ghc::filesystem::path Mod::getTempDir() const {
+    return m_tempDirName;
+}
+
+ghc::filesystem::path Mod::getBinaryPath() const {
+    return m_tempDirName / m_info.m_binaryName;
+}
+
 std::string Mod::getPath() const {
     return this->m_info.m_path.string();
 }
@@ -708,13 +720,20 @@ Result<ModInfo> ModInfo::createFromGeodeFile(ghc::filesystem::path const& path) 
     auto info = res.value();
     info.m_path = path;
     
-    if (unzip.fileExists("about.md")) {
-        unsigned long readSize = 0;
-        auto aboutData = unzip.getFileData("about.md", &readSize);
-        if (!aboutData || !readSize) {
-            return Err<>("Unable to read \"" + path.string() + "\"/about.md");
-        } else {
-            info.m_details = sanitizeDetailsData(aboutData, aboutData + readSize);
+    // unzip known MD files
+    using God = std::initializer_list<std::pair<std::string, std::string*>>;
+    for (auto [file, target] : God {
+        { "about.md", &info.m_details },
+        { "changelog.md", &info.m_changelog },
+    }) {
+        if (unzip.fileExists(file)) {
+            unsigned long readSize = 0;
+            auto fileData = unzip.getFileData(file, &readSize);
+            if (!fileData || !readSize) {
+                return Err("Unable to read \"" + path.string() + "\"/" + file);
+            } else {
+                *target = sanitizeDetailsData(fileData, fileData + readSize);
+            }
         }
     }
 
