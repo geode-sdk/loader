@@ -1,9 +1,9 @@
-#include <Mod.hpp>
-#include <Loader.hpp>
+#include <Geode/loader/Mod.hpp>
+#include <Geode/loader/Loader.hpp>
 #include <InternalLoader.hpp>
 #include <InternalMod.hpp>
-#include <Log.hpp>
-#include <Interface.hpp>
+#include <Geode/loader/Log.hpp>
+#include <Geode/loader/Interface.hpp>
 #include "../core/Core.hpp"
 
 int geodeEntry(void* platformData);

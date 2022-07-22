@@ -1,6 +1,6 @@
 #define WIN32_LEAN_AND_MEAN
 
-#include <Geode.hpp>
+#include <Geode/Geode.hpp>
 
 #ifdef GEODE_IS_WINDOWS
 
@@ -300,7 +300,7 @@ bool crashlog::didLastLaunchCrash() {
     return g_lastLaunchCrashed;
 }
 
-std::string const& crashlog::getCrashLogDirectory() {
+std::string crashlog::getCrashLogDirectory() {
     static auto dir = (
         Loader::get()->getGeodeDirectory() / "crashlogs"
     ).string();

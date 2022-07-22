@@ -1,8 +1,8 @@
-#include <utils/platform.hpp>
+#include <Geode/utils/platform.hpp>
 
 #ifdef GEODE_IS_MACOS
 
-#include <Geode.hpp>
+#include <Geode/Geode.hpp>
 #include <dlfcn.h>
 
 USE_GEODE_NAMESPACE();

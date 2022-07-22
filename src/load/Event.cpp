@@ -1,5 +1,5 @@
-#include <Event.hpp>
-#include <utils/include.hpp>
+#include <Geode/loader/Event.hpp>
+#include <Geode/Utils.hpp>
 
 USE_GEODE_NAMESPACE();
 

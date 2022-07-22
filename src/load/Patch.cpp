@@ -1,9 +1,9 @@
-#include <loader/Hook.hpp>
+#include <Geode/loader/Hook.hpp>
 #include <vector>
-#include <loader/Mod.hpp>
-#include <loader/Loader.hpp>
-#include <utils/casts.hpp>
-#include <utils/vector.hpp>
+#include <Geode/loader/Mod.hpp>
+#include <Geode/loader/Loader.hpp>
+#include <Geode/utils/casts.hpp>
+#include <Geode/utils/vector.hpp>
 #include <InternalLoader.hpp>
 
 #include <lilac/include/geode/core/hook/hook.hpp>

@@ -1,7 +1,7 @@
 #include <unordered_map>
 #include "Core.hpp"
 
-#include <hook-core/Hook.hpp>
+#include <Geode/hook-core/Hook.hpp>
 
 namespace geode::core::impl {
 	namespace {

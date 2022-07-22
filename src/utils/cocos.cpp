@@ -1,5 +1,5 @@
-#include <utils/cocos.hpp>
-#include <utils/WackyGeodeMacros.hpp>
+#include <Geode/utils/cocos.hpp>
+#include <Geode/utils/WackyGeodeMacros.hpp>
 
 USE_GEODE_NAMESPACE();
 

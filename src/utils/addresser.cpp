@@ -2,10 +2,10 @@
  * Adapted from https://gist.github.com/altalk23/29b97969e9f0624f783b673f6c1cd279
  */
 
-#include <utils/addresser.hpp>
+#include <Geode/utils/addresser.hpp>
 #include <cstdlib>
 #include <stddef.h>
-#include <Macros.hpp>
+#include <Geode/DefaultInclude.hpp>
 
 #define GEODE_ADDRESSER_NEST1(macro, begin)           \
 macro(GEODE_CONCAT(begin, 0)),                        \

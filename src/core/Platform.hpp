@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include <platform/platform.hpp>
+#include <Geode/platform/platform.hpp>
 
 namespace geode::core::impl {
 	template <typename T>

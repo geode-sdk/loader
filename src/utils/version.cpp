@@ -2,9 +2,9 @@
 #define _CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES 1
 #endif
 
-#include <utils/VersionInfo.hpp>
-#include <utils/ext.hpp>
-#include <utils/general.hpp>
+#include <Geode/utils/VersionInfo.hpp>
+#include <Geode/utils/ext.hpp>
+#include <Geode/utils/general.hpp>
 
 USE_GEODE_NAMESPACE();
 

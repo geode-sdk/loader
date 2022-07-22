@@ -101,7 +101,7 @@ if (APPLE)
 endif()
 
 set_source_files_properties(${OBJC_SOURCES} PROPERTIES SKIP_PRECOMPILE_HEADERS ON)
-target_precompile_headers(${PROJECT_NAME} PUBLIC ${GEODE_SDK_PATH}/include/Geode.hpp)
+target_precompile_headers(${PROJECT_NAME} PUBLIC ${GEODE_SDK_PATH}/include/Geode/Geode.hpp)
 
 if (WIN32)
 	SET(DOBBY_GENERATE_SHARED OFF CACHE BOOL "Build dobby shared library" FORCE)

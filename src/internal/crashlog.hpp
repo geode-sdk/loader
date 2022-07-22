@@ -21,5 +21,5 @@ namespace crashlog {
      * @returns Path to the directory, or an empty string if the platform does 
      * not support crash logs
      */
-    std::string const& getCrashLogDirectory();
+    std::string getCrashLogDirectory();
 }

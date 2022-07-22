@@ -1,4 +1,4 @@
-#include <utils/general.hpp>
+#include <Geode/utils/general.hpp>
 
 #ifdef GEODE_IS_WINDOWS
 #define GEODE_CTIME() ctime_s(buf, sizeof buf, &t);

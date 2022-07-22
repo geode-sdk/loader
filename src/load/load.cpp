@@ -1,13 +1,13 @@
-#include <loader/Loader.hpp>
-#include <loader/Mod.hpp>
+#include <Geode/loader/Loader.hpp>
+#include <Geode/loader/Mod.hpp>
 #include <InternalMod.hpp>
-#include <loader/Log.hpp>
+#include <Geode/loader/Log.hpp>
 #undef snprintf
-#include <utils/json.hpp>
+#include <Geode/utils/json.hpp>
 #include <ZipUtils.h>
-#include <utils/general.hpp>
-#include <utils/string.hpp>
-#include <Geode.hpp>
+#include <Geode/utils/general.hpp>
+#include <Geode/utils/string.hpp>
+#include <Geode/Geode.hpp>
 
 USE_GEODE_NAMESPACE();
 using namespace std::string_literals;

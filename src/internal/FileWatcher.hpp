@@ -2,9 +2,9 @@
 
 #include <functional>
 #include <string>
-#include <fs/filesystem.hpp>
-#include <Macros.hpp>
-#include <utils/types.hpp>
+#include <Geode/utils/fs/filesystem.hpp>
+#include <Geode/DefaultInclude.hpp>
+#include <Geode/utils/types.hpp>
 
 class FileWatcher {
 public:

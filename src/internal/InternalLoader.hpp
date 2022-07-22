@@ -1,12 +1,12 @@
 #pragma once
 
-#include <loader/Log.hpp>
-#include <vector>
-#include <unordered_map>
-#include <utils/Result.hpp>
-#include <Loader.hpp>
-#include "FileWatcher.hpp"
 #include <mutex>
+#include <unordered_map>
+#include <vector>
+#include "FileWatcher.hpp"
+#include <Geode/loader/Loader.hpp>
+#include <Geode/loader/Log.hpp>
+#include <Geode/utils/Result.hpp>
 
 USE_GEODE_NAMESPACE();
 

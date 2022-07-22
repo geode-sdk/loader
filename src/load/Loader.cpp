@@ -1,16 +1,16 @@
-#include <loader/Hook.hpp>
-#include <loader/Mod.hpp>
-#include <loader/Log.hpp>
-#include <loader/Loader.hpp>
+#include <Geode/loader/Hook.hpp>
+#include <Geode/loader/Mod.hpp>
+#include <Geode/loader/Log.hpp>
+#include <Geode/loader/Loader.hpp>
 #include <InternalLoader.hpp>
 #include <InternalMod.hpp>
-#include <utils/file.hpp>
-#include <utils/conststring.hpp>
-#include <utils/vector.hpp>
-#include <utils/map.hpp>
-#include <utils/types.hpp>
+#include <Geode/utils/file.hpp>
+#include <Geode/utils/conststring.hpp>
+#include <Geode/utils/vector.hpp>
+#include <Geode/utils/map.hpp>
+#include <Geode/utils/types.hpp>
 #include <mutex>
-#include <Geode.hpp>
+#include <Geode/Geode.hpp>
 #include <about.hpp>
 #include <crashlog.hpp>
 

@@ -1,9 +1,9 @@
-#include <Geode.hpp>
-#include <loader/Log.hpp>
-#include <loader/Mod.hpp>
-#include <loader/Loader.hpp>
-#include <utils/general.hpp>
-#include <utils/casts.hpp>
+#include <Geode/Geode.hpp>
+#include <Geode/loader/Log.hpp>
+#include <Geode/loader/Mod.hpp>
+#include <Geode/loader/Loader.hpp>
+#include <Geode/utils/general.hpp>
+#include <Geode/utils/casts.hpp>
 #include <InternalLoader.hpp>
 #include <iomanip>
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <VersionInfo.hpp>
+#include <Geode/utils/VersionInfo.hpp>
 
 static constexpr const char* LOADER_ABOUT_MD = R"MD_SEPARATOR(@LOADER_ABOUT_MD@)MD_SEPARATOR";
 static constexpr const char* LOADER_VERSION_STR = "@PROJECT_VERSION@";

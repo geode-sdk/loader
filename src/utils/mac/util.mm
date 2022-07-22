@@ -1,4 +1,4 @@
-#include <utils/platform.hpp>
+#include <Geode/utils/platform.hpp>
 
 #ifdef GEODE_IS_MACOS
 

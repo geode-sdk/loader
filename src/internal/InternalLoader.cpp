@@ -4,9 +4,9 @@
 #include <sstream>
 #include <iostream>
 #include "InternalMod.hpp"
-#include <loader/Log.hpp>
-#include <loader/Loader.hpp>
-#include <Geode.hpp>
+#include <Geode/loader/Log.hpp>
+#include <Geode/loader/Loader.hpp>
+#include <Geode/Geode.hpp>
 #include <thread>
 
 InternalLoader::InternalLoader() : Loader() {

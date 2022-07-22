@@ -1,8 +1,8 @@
-#include <loader/Interface.hpp>
-#include <loader/Mod.hpp>
-#include <loader/Hook.hpp>
-#include <loader/Log.hpp>
-#include <loader/Loader.hpp>
+#include <Geode/loader/Interface.hpp>
+#include <Geode/loader/Mod.hpp>
+#include <Geode/loader/Hook.hpp>
+#include <Geode/loader/Log.hpp>
+#include <Geode/loader/Loader.hpp>
 
 USE_GEODE_NAMESPACE();
 
