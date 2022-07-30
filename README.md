@@ -1,3 +1,5 @@
+# Note: This repo has been archived! All further loader development is happening over at the [main Geode repository](https://github.com/geode-sdk/geode).
+
 # Loader
 
 Repository for the Geode Mod Loader
